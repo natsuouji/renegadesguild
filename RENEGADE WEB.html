@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>RENEGADES — Guild Hub & Database</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --renegade-red: #ff3300;
+      --renegade-red-glow: rgba(255, 51, 0, 0.6);
+      --renegade-dark: #4a0012;
+      --dark-bg: #050508;
+      --dark-card: #0b0b12;
+      --dark-card-border: #1e1e2e;
+      --text-primary: #f0f0f8;
+      --text-secondary: #b0b0cb;
+      --text-dim: #70708a;
+      --neon-cyan: #00f0ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body { font-family: 'Rajdhani', sans-serif; background-color: var(--dark-bg); color: var(--text-primary); overflow-x: hidden; line-height: 1.6; -webkit-text-size-adjust: 100%; }
+
+    .scanline-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.1) 2px, rgba(0, 0, 0, 0.1) 4px); }
+    #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+
+    h1, h2, h3, .mono { font-family: 'Orbitron', monospace; }
+    .tech { font-family: 'Share Tech Mono', monospace; }
+    .text-red { color: var(--renegade-red); }
+
+    /* TRIANGLE SVG */
+    .tri { display: inline-block; vertical-align: baseline; fill: var(--renegade-red); filter: drop-shadow(0 0 6px var(--renegade-red-glow)); flex-shrink: 0; }
+    .nav-title .tri { width: 0.7em; height: 0.75em; margin: 0 0.02em; transform: translateY(0.04em); }
+    .hero-title .tri { width: 0.72em; height: 0.75em; margin: 0 0.01em; transform: translateY(0.06em); filter: drop-shadow(0 0 12px var(--renegade-red-glow)); }
+    
+    /* NAVIGATION */
+    .navbar { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: rgba(5, 5, 8, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--dark-card-border); }
+    .nav-container { max-width: 1400px; margin: 0 auto; padding: 0 1.25rem; display: flex; justify-content: space-between; align-items: center; height: 65px; }
+    .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; white-space: nowrap; }
+    .nav-logo-svg { width: 28px; height: 32px; filter: drop-shadow(0 0 5px var(--renegade-red-glow)); }
+    .nav-title { font-size: 1.1rem; font-weight: 900; color: #fff; letter-spacing: 2px; display: inline-flex; align-items: baseline; white-space: nowrap; }
+    .nav-links { display: flex; list-style: none; gap: 1.25rem; }
+    .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; transition: 0.3s; padding: 0.5rem; }
+    .nav-links a:hover { color: var(--renegade-red); text-shadow: 0 0 10px var(--renegade-red-glow); }
+
+    .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 44px; height: 44px; background: transparent; border: none; cursor: pointer; z-index: 1002; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: #fff; margin: 0 auto; transition: 0.3s; }
+    .hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); background: var(--renegade-red); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background: var(--renegade-red); }
+
+    /* HERO */
+    .hero { min-height: 90vh; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; padding: 6rem 1.25rem 3rem; text-align: center; }
+    .hero-bg-grid { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(255, 0, 60, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 0, 60, 0.04) 1px, transparent 1px); background-size: 30px 30px; z-index: -1; }
+    .hero-logo-container { width: 120px; height: 120px; margin: 0 auto 1.5rem; animation: pulseGlow 4s infinite alternate; }
+    @keyframes pulseGlow { 0% { filter: drop-shadow(0 0 15px rgba(255,0,60,0.3)); } 100% { filter: drop-shadow(0 0 30px rgba(255,0,60,0.8)); } }
+    .hero-title { font-size: clamp(2.2rem, 9vw, 5rem); font-weight: 900; color: #fff; letter-spacing: clamp(4px, 2vw, 10px); text-shadow: 0 0 20px rgba(255,0,60,0.4); margin-bottom: 1.2rem; display: inline-flex; align-items: baseline; justify-content: center; white-space: nowrap; width: 100%; }
+    .hero-desc { font-size: 1rem; color: var(--text-secondary); max-width: 680px; margin: 0 auto; border-left: 3px solid var(--renegade-red); padding: 1rem 1.25rem; background: rgba(255,0,60,0.03); text-align: left; line-height: 1.7; }
+
+    /* SECTIONS */
+    .section { padding: 4rem 1.25rem; position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 2.5rem; }
+    .section-tag { font-size: 0.75rem; color: var(--renegade-red); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 0.4rem; display: block; }
+    .section-title { font-size: clamp(1.6rem, 5vw, 2.2rem); font-weight: 900; color: #fff; letter-spacing: 2px; }
+    .section-line { width: 50px; height: 3px; background: var(--renegade-red); margin: 0.8rem auto; box-shadow: 0 0 10px var(--renegade-red); }
+    .section-desc { font-size: 0.9rem; color: var(--text-dim); max-width: 520px; margin: 0 auto; }
+
+    /* MANIFESTO */
+    .manifesto-container { max-width: 850px; margin: 0 auto; }
+    .manifesto-item { background: var(--dark-card); border: 1px solid var(--dark-card-border); margin-bottom: 0.8rem; border-radius: 4px; }
+    .manifesto-header { display: flex; align-items: center; padding: 1rem 1.25rem; min-height: 54px; cursor: pointer; gap: 12px; transition: 0.2s; user-select: none; }
+    .manifesto-header:active { background: rgba(255,0,60,0.1); }
+    .m-num { font-size: 1.1rem; font-weight: 900; color: var(--renegade-red); flex-shrink: 0; }
+    .m-title { font-size: 0.85rem; font-weight: 700; color: #fff; letter-spacing: 1px; flex: 1; text-transform: uppercase; line-height: 1.3; }
+    .m-icon { font-size: 1.2rem; color: var(--renegade-red); flex-shrink: 0; }
+    .manifesto-content { padding: 0 1.25rem; max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0,1,0,1); }
+    .manifesto-item.active .manifesto-content { padding: 0 1.25rem 1.25rem; max-height: 2000px; transition: max-height 0.5s ease-in-out; }
+    .m-text { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.75; border-left: 2px solid var(--renegade-red); padding-left: 12px; margin-bottom: 1rem; }
+    .m-text strong { color: #fff; }
+    .m-list { list-style: none; padding-left: 18px; margin-bottom: 1rem; }
+    .m-list li { position: relative; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-secondary); }
+    .m-list li::before { content: '>'; position: absolute; left: -14px; color: var(--renegade-red); font-family: monospace; font-weight: bold; }
+
+    /* RANKS */
+    .rank-table-container { max-width: 850px; margin: 0 auto; background: var(--dark-card); border: 1px solid var(--dark-card-border); border-radius: 4px; overflow: hidden; }
+    .rank-table { width: 100%; border-collapse: collapse; text-align: left; }
+    .rank-table th { background: rgba(255, 0, 60, 0.12); color: var(--renegade-red); padding: 1rem 1.25rem; font-size: 0.8rem; letter-spacing: 1.5px; text-transform: uppercase; border-bottom: 1px solid var(--renegade-red); }
+    .rank-table td { padding: 1rem 1.25rem; border-bottom: 1px solid var(--dark-card-border); color: var(--text-secondary); font-size: 0.9rem; }
+    .rank-icon { font-size: 1.1rem; margin-right: 6px; }
+    .rank-cof { font-family: 'Share Tech Mono', monospace; color: var(--neon-cyan); font-weight: bold; white-space: nowrap; }
+
+    /* FOUNDERS GRID */
+    .database-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 4rem; }
+    .db-card { background: #000; border: 1px solid var(--dark-card-border); position: relative; overflow: hidden; border-radius: 4px; }
+    .db-card:hover { border-color: var(--renegade-red); }
+    .db-header { background: var(--dark-card-border); padding: 0.75rem 1rem; border-bottom: 1px solid var(--renegade-dark); display: flex; justify-content: space-between; align-items: center; }
+    .db-file-id { font-size: 0.7rem; color: var(--text-dim); letter-spacing: 2px; }
+    .db-status { font-size: 0.7rem; color: #00ff88; letter-spacing: 2px; }
+    .db-body { padding: 1.25rem; }
+    .db-row { display: flex; justify-content: space-between; margin-bottom: 0.75rem; border-bottom: 1px dashed rgba(255,255,255,0.08); padding-bottom: 0.4rem; gap: 10px; }
+    .db-label { font-size: 0.7rem; color: var(--renegade-red); letter-spacing: 1px; flex-shrink: 0; }
+    .db-value { font-size: 0.85rem; color: #fff; font-weight: 600; text-transform: uppercase; text-align: right; word-break: break-word; }
+    .db-value.cof { color: var(--neon-cyan); }
+    .threat-bar { color: var(--renegade-red); letter-spacing: 1px; font-size: 0.75rem; }
+
+    /* AUTO-GENERATED PROFILES (Like the "TEN" Reference) */
+    .roster-grid { display: flex; flex-direction: column; gap: 3rem; max-width: 900px; margin: 0 auto; }
+    .profile-card { background: #111116; border: 1px solid var(--dark-card-border); border-left: 4px solid var(--renegade-red); padding: 2.5rem; position: relative; }
+    .profile-name { font-size: clamp(2rem, 8vw, 3.5rem); font-weight: 900; color: var(--renegade-red); line-height: 1; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 2px; font-family: 'Orbitron', monospace; }
+    .profile-bio { font-size: 1.05rem; color: var(--text-secondary); line-height: 1.8; margin-bottom: 1.2rem; }
+    .profile-bio strong { color: #fff; }
+    .fav-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 2rem; }
+    .fav-item { display: flex; flex-direction: column; gap: 0.5rem; text-align: center; }
+    .fav-title { font-family: 'Orbitron', monospace; font-size: 0.9rem; color: #fff; }
+    .fav-box { background: var(--renegade-red); color: #fff; padding: 1rem; font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%); }
+
+    /* NATIVE ON-PAGE REGISTRATION FORM */
+    .form-box {
+      max-width: 850px;
+      margin: 0 auto;
+      background: #000;
+      border: 1px solid var(--renegade-red);
+      padding: 2.5rem 1.5rem;
+      position: relative;
+      border-radius: 4px;
+    }
+    .form-box::before { content:''; position:absolute; top:0; left:0; width:100%; height:4px; background: var(--renegade-red); }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem;
+      margin-top: 2rem;
+      text-align: left;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group.full { grid-column: 1 / -1; }
+    
+    .form-label {
+      font-size: 0.75rem;
+      color: var(--renegade-red);
+      font-family: 'Orbitron', monospace;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .form-input {
+      width: 100%;
+      background: rgba(15, 15, 22, 0.9);
+      border: 1px solid var(--dark-card-border);
+      padding: 0.8rem 1rem;
+      color: #fff;
+      font-size: 1rem;
+      font-family: 'Share Tech Mono', monospace;
+      outline: none;
+      transition: 0.3s;
+      border-radius: 2px;
+    }
+    .form-input:focus {
+      border-color: var(--renegade-red);
+      box-shadow: 0 0 10px rgba(255, 51, 0, 0.2);
+    }
+    
+    .btn-submit {
+      width: 100%;
+      max-width: 350px;
+      background: var(--renegade-red);
+      color: #fff;
+      border: none;
+      padding: 1.2rem;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: 0.3s;
+      min-height: 50px;
+      font-family: 'Orbitron', monospace;
+      margin-top: 2rem;
+      clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
+    }
+    .btn-submit:hover { filter: brightness(1.2); box-shadow: 0 0 20px var(--renegade-red-glow); }
+    .btn-submit:active { transform: scale(0.98); }
+
+    /* SYSTEM MESSAGES */
+    .sys-status { text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 0.9rem; color: var(--text-dim); margin-bottom: 2rem; }
+    .sys-status.loading { color: var(--neon-cyan); animation: pulse 1.5s infinite; }
+    .sys-status.error { color: #ff4d6d; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+    footer { border-top: 1px solid var(--dark-card-border); padding: 2rem 1.25rem; text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; color: var(--text-dim); }
+
+    /* MOBILE BREAKPOINTS */
+    @media (max-width: 820px) {
+      .hamburger { display: flex; }
+      .nav-links { position: fixed; top: 65px; left: 0; width: 100%; height: calc(100vh - 65px); background: rgba(5, 5, 8, 0.98); backdrop-filter: blur(20px); flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 3rem; gap: 2rem; transform: translateY(-100%); opacity: 0; visibility: hidden; transition: 0.3s ease; }
+      .nav-links.open { transform: translateY(0); opacity: 1; visibility: visible; }
+      .nav-links a { font-size: 1.1rem; letter-spacing: 3px; width: 100%; text-align: center; padding: 0.8rem; }
+      .rank-table, .rank-table tbody, .rank-table tr, .rank-table td { display: block; width: 100%; }
+      .rank-table thead { display: none; }
+      .rank-table tr { border-bottom: 1px solid var(--dark-card-border); padding: 1.2rem; }
+      .rank-table tr:last-child { border-bottom: none; }
+      .rank-table td { padding: 0.3rem 0; border: none; }
+      .rank-table td:nth-child(1) { font-size: 1rem; font-weight: bold; color: #fff; margin-bottom: 0.2rem; }
+      .rank-table td:nth-child(2) { font-size: 0.85rem; margin-bottom: 0.4rem; }
+      .rank-table td:nth-child(2)::before { content: 'COFs: '; color: var(--text-dim); }
+      .profile-card { padding: 1.5rem; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .hero-desc { font-size: 0.9rem; padding: 0.8rem 1rem; }
+      .db-row { flex-direction: column; align-items: flex-start; gap: 2px; }
+      .db-value { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scanline-overlay"></div>
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- NAVIGATION -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-brand">
+        <svg class="nav-logo-svg" viewBox="0 0 200 200" fill="none"><path d="M 40 40 A 75 75 0 0 1 170 145" stroke="#ff3300" stroke-width="18" stroke-linecap="square"/><path d="M 145 150 A 75 75 0 0 1 35 55" stroke="#ff3300" stroke-width="4" stroke-linecap="round"/></svg>
+        <div class="nav-title">RENEG<svg class="tri" viewBox="0 0 100 110" aria-hidden="true"><polygon points="50,8 94,102 6,102"/></svg>DES</div>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Toggle Navigation"><span></span><span></span><span></span></button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">The Guild</a></li>
+        <li><a href="#manifesto">Manifesto</a></li>
+        <li><a href="#database">Database</a></li>
+        <li><a href="#ranks">Ranks</a></li>
+        <li><a href="#register">Register</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="hero" id="about">
+    <div class="hero-bg-grid"></div>
+    <div style="width: 100%;">
+      <div class="hero-logo-container">
+        <svg viewBox="0 0 200 200" fill="none" style="width:100%; height:100%;"><path d="M 40 38 A 75 75 0 0 1 172 145" stroke="#ff3300" stroke-width="18" stroke-linecap="square"/><path d="M 145 150 A 75 75 0 0 1 35 55" stroke="#ff3300" stroke-width="3.5" stroke-linecap="round"/></svg>
+      </div>
+      <h1 class="hero-title">RENEG<svg class="tri" viewBox="0 0 100 110" aria-hidden="true"><polygon points="50,8 94,102 6,102"/></svg>DES</h1>
+      <div class="hero-desc tech">
+        > Welcome to RENEGADES.<br>
+        > You have already crossed the first threshold.<br>
+        > You found the door. You accepted the invitation.<br>
+        > Now you need to understand what you've joined.<br><br>
+        <strong class="text-red">Nobody gets left behind.</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- MANIFESTO -->
+  <section class="section" id="manifesto">
+    <div class="section-header">
+      <span class="section-tag">// Core Directives</span>
+      <h2 class="section-title">GUILD MANIFESTO</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="manifesto-container">
+      <div class="manifesto-item active">
+        <div class="manifesto-header" onclick="toggleAccordion(this)"><span class="m-num">01</span><span class="m-title">WHAT IS RENEGADES?</span><span class="m-icon">[+]</span></div>
+        <div class="manifesto-content">
+          <p class="m-text">RENEGADES is not a competition. It is not a hierarchy built around popularity, talent or activity.<br><br>It is a guild.<br>A place for people to create, collaborate, compete, cause trouble and, most importantly, have fun together.</p>
+          <p class="m-text">Members can participate in missions, events and collaborations while earning <strong>COFs</strong>, the guild's internal currency. Every member has their own role, reputation and progression within the guild. The more you participate and contribute, the more COFs you earn — and the further you can rise within RENEGADES.</p>
+          <p class="m-text">There are rules. There are missions. There are rewards. But above everything else, there is one principle:<br><strong class="text-red">Nobody gets left behind.</strong></p>
+        </div>
+      </div>
+      <div class="manifesto-item">
+        <div class="manifesto-header" onclick="toggleAccordion(this)"><span class="m-num">02</span><span class="m-title">THE FOUNDERS</span><span class="m-icon">[+]</span></div>
+        <div class="manifesto-content">
+          <p class="m-text">The five people who established RENEGADES are <strong>Nezumi, Ouji, Mamiki, Ten &amp; Sam</strong>.<br>The Founders are the highest authority within the guild and are responsible for keeping RENEGADES organized, active and true to its original purpose.</p>
+          <ul class="m-list tech"><li>Unlimited COFs</li><li>Final authority over group decisions</li><li>Ability to create missions &amp; issue rewards</li><li>Ability to invite new members</li><li>Ability to approve and manage events</li><li>Ability to modify guild regulations</li><li>Ability to resolve conflicts and disciplinary matters</li></ul>
+          <p class="m-text">The Founders may delegate responsibilities to other members when necessary, but final authority always remains with the Founders.</p>
+        </div>
+      </div>
+      <div class="manifesto-item">
+        <div class="manifesto-header" onclick="toggleAccordion(this)"><span class="m-num">03</span><span class="m-title">JOINING RENEGADES</span><span class="m-icon">[+]</span></div>
+        <div class="manifesto-content">
+          <p class="m-text">RENEGADES follows an <strong>Invitation-only system</strong>. Only the 5 founders have the ability to recruit new members.</p>
+          <p class="m-text">Once accepting the invitation, the recruiter must add all information required in the RENEGADES DATABASE. Every new member starts at the lowest available rank and can progress through the guild by participating in missions, events and collaborations.</p>
+        </div>
+      </div>
+      <div class="manifesto-item">
+        <div class="manifesto-header" onclick="toggleAccordion(this)"><span class="m-num">04</span><span class="m-title">THE RENEGADE’S BANK (COFs)</span><span class="m-icon">[+]</span></div>
+        <div class="manifesto-content">
+          <p class="m-text"><strong>COFs</strong> are the official currency of RENEGADES.<br>They represent a member's activity and contribution to the guild. They have no real-world monetary value.</p>
+          <p class="m-text tech" style="color: var(--neon-cyan);">HOW TO EARN COFs:</p>
+          <ul class="m-list tech"><li>Completing missions / Participating in events</li><li>Winning or placing in competitions</li><li>Organizing approved events / Managing collabs</li><li>Creating scripts, covers, artwork or creative material</li><li>Helping with guild projects or tasks assigned by Founders</li></ul>
+          <p class="m-text tech" style="color: var(--neon-cyan);">HOW TO SPEND COFs:</p>
+          <ul class="m-list tech"><li>Joining collaborations</li><li>Special guild activities &amp; Event-related benefits</li><li>Exclusive rewards</li></ul>
+          <p class="m-text">The Bookkeeper <strong>Sam</strong> will be responsible for maintaining the official COF balance.</p>
+        </div>
+      </div>
+      <div class="manifesto-item">
+        <div class="manifesto-header" onclick="toggleAccordion(this)"><span class="m-num">05</span><span class="m-title">MISSIONS &amp; EVENTS</span><span class="m-icon">[+]</span></div>
+        <div class="manifesto-content">
+          <p class="m-text"><strong>MISSIONS:</strong> Tasks created to encourage participation. Can involve writing scripts, creating cover art, managing collabs, joining Chorus Battles, managing the server, etc.</p>
+          <p class="m-text">Every mission must clearly state: Objective, Requirements, Deadline, COF Reward, and Restrictions. Rewards require Founder approval.</p>
+          <p class="m-text"><strong>EVENTS:</strong> Internal or external special activities (Chorus Battles, Daily Missions, Seasonal activities). Must last 3 to 30 days. All members can propose events. The organizer prepares rules, manages participants, tracks results, and distributes approved COFs.</p>
+        </div>
+      </div>
+      <div class="manifesto-item">
+        <div class="manifesto-header" onclick="toggleAccordion(this)"><span class="m-num">06</span><span class="m-title">COLLABORATION SYSTEM</span><span class="m-icon">[+]</span></div>
+        <div class="manifesto-content">
+          <p class="m-text">Collaborations are one of the main activities within RENEGADES. Members may create collaborations by proposing a project.</p>
+          <p class="m-text">Depending on the scale, participants may be required to <strong>pay a specific amount of COFs</strong>. The creator must state the concept, participant limit, and deadline. COF costs must be Founder-approved.</p>
+          <p class="m-text">Failure to complete an agreed role without a valid reason may result in the loss of paid COFs and additional consequences.</p>
+        </div>
+      </div>
+      <div class="manifesto-item">
+        <div class="manifesto-header" onclick="toggleAccordion(this)"><span class="m-num">07</span><span class="m-title">RULES &amp; CONDUCT</span><span class="m-icon">[+]</span></div>
+        <div class="manifesto-content">
+          <p class="m-text"><strong>CONFIDENTIALITY:</strong> Private discussions and internal decisions should remain within the guild.<br><strong>NO DRAMA:</strong> Personal disagreements should not be public. Contact a Founder if needed.</p>
+          <p class="m-text tech" style="color: var(--neon-cyan);">INACTIVITY:</p>
+          <p class="m-text">RENEGADES IS A HOBBY, NOT A JOB. The system exists to reward participation — not punish absence. Members can take breaks. Inform a Founder if leaving for an extended period.</p>
+          <p class="m-text tech" style="color: var(--neon-cyan);">LEAVING RENEGADES:</p>
+          <p class="m-text">Members are free to leave anytime without justification. Privileges are removed, unused COFs forfeited. Returning requires a new invite.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RANKS -->
+  <section class="section" id="ranks">
+    <div class="section-header">
+      <span class="section-tag">// Hierarchy</span>
+      <h2 class="section-title">RANKING SYSTEM</h2>
+      <div class="section-line"></div>
+      <p class="section-desc">Promotions are determined by accumulated COFs, activity, and reliability.</p>
+    </div>
+    <div class="rank-table-container">
+      <table class="rank-table tech">
+        <thead>
+          <tr><th>Rank</th><th>Required COFs</th><th>Privileges &amp; Responsibilities</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="rank-icon">🩸</span> Rookie</td><td class="rank-cof">0 – 99</td><td>Join basic missions &amp; events</td></tr>
+          <tr><td><span class="rank-icon">⚡</span> Runner</td><td class="rank-cof">100 – 399</td><td>Access to more missions + create small missions</td></tr>
+          <tr><td><span class="rank-icon">🔧</span> Operative</td><td class="rank-cof">400 – 699</td><td>Create missions + organize basic collabs</td></tr>
+          <tr><td><span class="rank-icon">🎯</span> Specialist</td><td class="rank-cof">700 – 899</td><td>Manage larger collabs &amp; events</td></tr>
+          <tr><td><span class="rank-icon">☠️</span> Elite</td><td class="rank-cof">900 – 1000</td><td>Special missions + leadership responsibilities</td></tr>
+          <tr><td><span class="rank-icon">👑</span> Legend</td><td class="rank-cof">1000+</td><td>Prestige privileges + special Founder-approved responsibilities</td></tr>
+          <tr style="background: rgba(255,0,60,0.15);"><td style="color: #fff; font-weight:bold;"><span class="rank-icon">🜏</span> Founder</td><td class="rank-cof" style="color: #fff;">UNLIMITED</td><td style="color: #fff;">Full guild authority</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- DATABASE SECTION -->
+  <section class="section" id="database">
+    <div class="section-header">
+      <span class="section-tag">// System Registry</span>
+      <h2 class="section-title">RENEGADES DATABASE</h2>
+      <div class="section-line"></div>
+      <p class="section-desc">Accessing High-Clearance Files &amp; Registered Operatives.</p>
+    </div>
+
+    <!-- HIGH CLEARANCE: FOUNDERS -->
+    <h3 class="tech" style="text-align:center; color: var(--renegade-red); margin-bottom: 2rem;">[ CLASSIFIED: FOUNDERS ]</h3>
+    <div class="database-grid tech">
+      <div class="db-card"><div class="db-header"><span class="db-file-id">// FILE 001</span><span class="db-status">ACTIVE</span></div><div class="db-body"><div class="db-row"><span class="db-label">CODENAME</span><span class="db-value">SAM</span></div><div class="db-row"><span class="db-label">ROLE</span><span class="db-value text-red">FOUNDER / BOOKKEEPER</span></div><div class="db-row"><span class="db-label">SPECIALIZATION</span><span class="db-value">Economy &amp; Operations</span></div><div class="db-row"><span class="db-label">WEAPON</span><span class="db-value">The Ledger</span></div><div class="db-row"><span class="db-label">COF BALANCE</span><span class="db-value cof">UNLIMITED</span></div><div class="db-row"><span class="db-label">MISSIONS / COLLABS</span><span class="db-value">CLASSIFIED</span></div><div class="db-row" style="border:none;"><span class="db-label">THREAT LEVEL</span><span class="db-value threat-bar">██████████ [MAX]</span></div></div></div>
+      <div class="db-card"><div class="db-header"><span class="db-file-id">// FILE 002</span><span class="db-status">ACTIVE</span></div><div class="db-body"><div class="db-row"><span class="db-label">CODENAME</span><span class="db-value">NEZUMI</span></div><div class="db-row"><span class="db-label">ROLE</span><span class="db-value text-red">FOUNDER</span></div><div class="db-row"><span class="db-label">SPECIALIZATION</span><span class="db-value">Guild Overseer</span></div><div class="db-row"><span class="db-label">WEAPON</span><span class="db-value">Neural Interface</span></div><div class="db-row"><span class="db-label">COF BALANCE</span><span class="db-value cof">UNLIMITED</span></div><div class="db-row"><span class="db-label">MISSIONS / COLLABS</span><span class="db-value">CLASSIFIED</span></div><div class="db-row" style="border:none;"><span class="db-label">THREAT LEVEL</span><span class="db-value threat-bar">██████████ [MAX]</span></div></div></div>
+      <div class="db-card"><div class="db-header"><span class="db-file-id">// FILE 003</span><span class="db-status">ACTIVE</span></div><div class="db-body"><div class="db-row"><span class="db-label">CODENAME</span><span class="db-value">OUJI</span></div><div class="db-row"><span class="db-label">ROLE</span><span class="db-value text-red">FOUNDER</span></div><div class="db-row"><span class="db-label">SPECIALIZATION</span><span class="db-value">Mission Director</span></div><div class="db-row"><span class="db-label">WEAPON</span><span class="db-value">Tactical Array</span></div><div class="db-row"><span class="db-label">COF BALANCE</span><span class="db-value cof">UNLIMITED</span></div><div class="db-row"><span class="db-label">MISSIONS / COLLABS</span><span class="db-value">CLASSIFIED</span></div><div class="db-row" style="border:none;"><span class="db-label">THREAT LEVEL</span><span class="db-value threat-bar">██████████ [MAX]</span></div></div></div>
+      <div class="db-card"><div class="db-header"><span class="db-file-id">// FILE 004</span><span class="db-status">ACTIVE</span></div><div class="db-body"><div class="db-row"><span class="db-label">CODENAME</span><span class="db-value">MAMIKI</span></div><div class="db-row"><span class="db-label">ROLE</span><span class="db-value text-red">FOUNDER</span></div><div class="db-row"><span class="db-label">SPECIALIZATION</span><span class="db-value">Event Coordinator</span></div><div class="db-row"><span class="db-label">WEAPON</span><span class="db-value">Cyber-Optics</span></div><div class="db-row"><span class="db-label">COF BALANCE</span><span class="db-value cof">UNLIMITED</span></div><div class="db-row"><span class="db-label">MISSIONS / COLLABS</span><span class="db-value">CLASSIFIED</span></div><div class="db-row" style="border:none;"><span class="db-label">THREAT LEVEL</span><span class="db-value threat-bar">██████████ [MAX]</span></div></div></div>
+      <div class="db-card"><div class="db-header"><span class="db-file-id">// FILE 005</span><span class="db-status">ACTIVE</span></div><div class="db-body"><div class="db-row"><span class="db-label">CODENAME</span><span class="db-value">TEN</span></div><div class="db-row"><span class="db-label">ROLE</span><span class="db-value text-red">FOUNDER</span></div><div class="db-row"><span class="db-label">SPECIALIZATION</span><span class="db-value">Internal Security</span></div><div class="db-row"><span class="db-label">WEAPON</span><span class="db-value">Plasma Blade</span></div><div class="db-row"><span class="db-label">COF BALANCE</span><span class="db-value cof">UNLIMITED</span></div><div class="db-row"><span class="db-label">MISSIONS / COLLABS</span><span class="db-value">CLASSIFIED</span></div><div class="db-row" style="border:none;"><span class="db-label">THREAT LEVEL</span><span class="db-value threat-bar">██████████ [MAX]</span></div></div></div>
+    </div>
+
+    <!-- DYNAMIC ROSTER -->
+    <h3 class="tech" style="text-align:center; color: var(--neon-cyan); margin: 4rem 0 2rem;">[ REGISTERED OPERATIVES ]</h3>
+    
+    <div id="sys-status" class="sys-status loading">Loading member dossiers...</div>
+    <div id="rosterContainer" class="roster-grid">
+      <!-- Generated Profiles Appear Here -->
+    </div>
+  </section>
+
+  <!-- ON-PAGE REGISTRATION FORM -->
+  <section class="section" id="register" style="border-top: 1px solid var(--dark-card-border); background: rgba(255,0,60,0.02);">
+    <div class="form-box">
+      <h2 class="section-title">OPERATIVE REGISTRATION</h2>
+      <p class="section-desc tech" style="margin: 1rem 0 0.5rem;">
+        Complete your dossier to officially register into the RENEGADES database.
+      </p>
+
+      <form id="nativeRegisterForm">
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">Name / Nickname</label><input type="text" id="f_name" class="form-input" required placeholder="e.g. Ten"></div>
+          <div class="form-group"><label class="form-label">Smule ID</label><input type="text" id="f_smule" class="form-input" required placeholder="e.g. 96_10"></div>
+          <div class="form-group"><label class="form-label">Country</label><input type="text" id="f_country" class="form-input" required placeholder="e.g. USA"></div>
+          <div class="form-group"><label class="form-label">Age</label><input type="number" id="f_age" class="form-input" required placeholder="e.g. 30"></div>
+          <div class="form-group"><label class="form-label">Blood Type</label><input type="text" id="f_blood" class="form-input" required placeholder="e.g. O"></div>
+          <div class="form-group"><label class="form-label">Horoscope Sign</label><input type="text" id="f_sign" class="form-input" required placeholder="e.g. Taurus"></div>
+          <div class="form-group"><label class="form-label">Guild Role</label><input type="text" id="f_role" class="form-input" required placeholder="e.g. Innkeeper"></div>
+          <div class="form-group"><label class="form-label">Singing Skills</label><input type="text" id="f_skills" class="form-input" required placeholder="e.g. Art, Screamo"></div>
+          
+          <div class="form-group full"><label class="form-label">Fighting Style &amp; Accessory</label><input type="text" id="f_style" class="form-input" required placeholder="e.g. hand-to-hand / earrings"></div>
+          <div class="form-group full"><label class="form-label">Weapon of Choice</label><input type="text" id="f_weapon" class="form-input" required placeholder="e.g. Dagger"></div>
+          <div class="form-group full"><label class="form-label">Personality Traits</label><input type="text" id="f_personality" class="form-input" required placeholder="e.g. Drunk, tired, easy-going"></div>
+          <div class="form-group full"><label class="form-label">Renegades Mark Tattoo Location</label><input type="text" id="f_tattoo" class="form-input" required placeholder="e.g. Mid Forearm"></div>
+
+          <div class="form-group"><label class="form-label">Favorite Food</label><input type="text" id="f_food" class="form-input" required placeholder="e.g. Sweet Bread"></div>
+          <div class="form-group"><label class="form-label">Favorite Flower/Plant</label><input type="text" id="f_flower" class="form-input" required placeholder="e.g. Desert Rose"></div>
+          <div class="form-group"><label class="form-label">Favorite Animal</label><input type="text" id="f_animal" class="form-input" required placeholder="e.g. Black Cat"></div>
+        </div>
+
+        <div style="text-align: center;">
+          <button type="submit" id="btnSubmit" class="btn-submit">REGISTER OPERATIVE</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    [ RENEGADES GUILD HUB © ]<br>
+    "Nobody gets left behind."
+  </footer>
+
+  <!-- SCRIPTING -->
+  <script>
+    // ====================================================
+    // CONFIGURATION: PASTE YOUR GOOGLE SHEET WEB APP URL HERE
+    // ====================================================
+    const GOOGLE_SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL";
+    const SHEET_CSV_URL = "YOUR_GOOGLE_SHEET_PUBLISHED_CSV_URL";
+
+    // ----------------------------------------------------
+    // 1. MOBILE MENU
+    // ----------------------------------------------------
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      navLinks.classList.toggle('open');
+    });
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        navLinks.classList.remove('open');
+      });
+    });
+
+    // ----------------------------------------------------
+    // 2. PARTICLES
+    // ----------------------------------------------------
+    const canvas = document.getElementById('particles-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 1.8 + 0.2; this.speedX = (Math.random() - 0.5) * 0.3; this.speedY = (Math.random() - 0.5) * 0.3;
+        this.opacity = Math.random() * 0.4; this.color = '#ff3300';
+      }
+      update() {
+        this.x += this.speedX; this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+      }
+      draw() {
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color; ctx.globalAlpha = this.opacity; ctx.fill(); ctx.globalAlpha = 1;
+      }
+    }
+    const count = window.innerWidth < 768 ? 30 : 60;
+    for (let i = 0; i < count; i++) particles.push(new Particle());
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // ----------------------------------------------------
+    // 3. MANIFESTO ACCORDION
+    // ----------------------------------------------------
+    function toggleAccordion(header) {
+      const item = header.parentElement;
+      const isActive = item.classList.contains('active');
+      document.querySelectorAll('.manifesto-item').forEach(el => {
+        el.classList.remove('active');
+        el.querySelector('.m-icon').textContent = '[+]';
+      });
+      if (!isActive) {
+        item.classList.add('active');
+        item.querySelector('.m-icon').textContent = '[−]';
+      }
+    }
+
+    // ----------------------------------------------------
+    // 4. STORY CARD BUILDER (TEN STYLE)
+    // ----------------------------------------------------
+    function escapeHtml(str) {
+      return String(str || '').replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
+    }
+
+    function createProfileHTML(m) {
+      const name = m.name || "UNKNOWN";
+      return `
+        <article class="profile-card">
+          <h3 class="profile-name">${escapeHtml(name)}</h3>
+          <p class="profile-bio">
+            <strong>${escapeHtml(name)}</strong> — handle <strong>${escapeHtml(m.smule || "N/A")}</strong> —
+            is a ${escapeHtml(m.age || "??")}-year-old operative from the irradiated sprawl of what was once
+            the <strong>${escapeHtml(m.country || "Unknown lands")}</strong>, blood type
+            <strong>${escapeHtml(m.blood || "Unknown")}</strong> marking them as a survivor in a world
+            that always needs something from everyone else.
+          </p>
+          <p class="profile-bio">
+            Within the guild they act as the <strong>${escapeHtml(m.role || "Operative")}</strong>,
+            utilizing their <strong>${escapeHtml(m.skills || "classified skills")}</strong>.
+            On most nights they come across as <strong>${escapeHtml(m.personality || "unreadable")}</strong>,
+            their signature <strong>${escapeHtml(m.style || "look")}</strong> catching the firelight.
+            But cross them wrong and that warmth dies fast — they close the distance with their
+            <strong>${escapeHtml(m.weapon || "chosen weapon")}</strong> before you can blink.
+            A renegade’s mark wraps their <strong>${escapeHtml(m.tattoo || "skin")}</strong>,
+            a brand they wear with pride.
+          </p>
+          <p class="profile-bio">
+            Born under <strong>${escapeHtml(m.sign || "unknown stars")}</strong>,
+            they are patient as stone, and just as unforgiving when pushed.
+          </p>
+          <div class="fav-grid">
+            <div class="fav-item"><div class="fav-title">Favorite Food</div><div class="fav-box">${escapeHtml(m.food || "—")}</div></div>
+            <div class="fav-item"><div class="fav-title">Favorite Flower</div><div class="fav-box">${escapeHtml(m.flower || "—")}</div></div>
+            <div class="fav-item"><div class="fav-title">Favorite Pet</div><div class="fav-box">${escapeHtml(m.animal || "—")}</div></div>
+          </div>
+        </article>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // 5. ON-PAGE FORM SUBMISSION & LOCAL/SERVER SYNC
+    // ----------------------------------------------------
+    const form = document.getElementById('nativeRegisterForm');
+    
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmit');
+      btn.textContent = "TRANSMITTING DOSSIER...";
+      btn.disabled = true;
+
+      const newRecruit = {
+        name: document.getElementById('f_name').value,
+        smule: document.getElementById('f_smule').value,
+        country: document.getElementById('f_country').value,
+        age: document.getElementById('f_age').value,
+        blood: document.getElementById('f_blood').value,
+        sign: document.getElementById('f_sign').value,
+        role: document.getElementById('f_role').value,
+        skills: document.getElementById('f_skills').value,
+        style: document.getElementById('f_style').value,
+        weapon: document.getElementById('f_weapon').value,
+        personality: document.getElementById('f_personality').value,
+        tattoo: document.getElementById('f_tattoo').value,
+        food: document.getElementById('f_food').value,
+        flower: document.getElementById('f_flower').value,
+        animal: document.getElementById('f_animal').value
+      };
+
+      // Instantly generate card locally for immediate feedback
+      const container = document.getElementById('rosterContainer');
+      const cardHTML = createProfileHTML(newRecruit);
+      container.insertAdjacentHTML('afterbegin', cardHTML);
+
+      // Scroll to database section
+      document.getElementById('database').scrollIntoView({ behavior: 'smooth' });
+
+      // Send data to Google Sheets in background if URL is provided
+      if (GOOGLE_SCRIPT_URL && !GOOGLE_SCRIPT_URL.includes("YOUR_GOOGLE")) {
+        try {
+          await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newRecruit)
+          });
+        } catch(err) {
+          console.error("Cloud sync error:", err);
+        }
+      }
+
+      btn.textContent = "REGISTERED ✓";
+      setTimeout(() => {
+        btn.textContent = "REGISTER OPERATIVE";
+        btn.disabled = false;
+        form.reset();
+      }, 3000);
+    });
+
+    // ----------------------------------------------------
+    // 6. CSV PARSER (FETCH FROM GOOGLE SHEETS)
+    // ----------------------------------------------------
+    function parseCSV(text) {
+      const rows = []; let row = []; let cell = ""; let inQuotes = false;
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i]; const next = text[i + 1];
+        if (char === '"' && inQuotes && next === '"') { cell += '"'; i++; }
+        else if (char === '"') { inQuotes = !inQuotes; }
+        else if (char === ',' && !inQuotes) { row.push(cell.trim()); cell = ""; }
+        else if ((char === '\n' || char === '\r') && !inQuotes) {
+          if (cell.length || row.length) { row.push(cell.trim()); rows.push(row); row = []; cell = ""; }
+        } else { cell += char; }
+      }
+      if (cell.length || row.length) { row.push(cell.trim()); rows.push(row); }
+      return rows.filter(r => r.some(c => c !== ""));
+    }
+
+    function findCol(headers, aliases) {
+      const lower = headers.map(h => (h || "").toLowerCase().trim());
+      for (const alias of aliases) {
+        const idx = lower.findIndex(h => h.includes(alias.toLowerCase()));
+        if (idx !== -1) return idx;
+      }
+      return -1;
+    }
+
+    function val(row, idx) { return idx < 0 ? "" : (row[idx] || "").trim(); }
+
+    async function loadMembers() {
+      const status = document.getElementById("sys-status");
+      const container = document.getElementById("rosterContainer");
+
+      if (!SHEET_CSV_URL || SHEET_CSV_URL.includes("YOUR_GOOGLE")) {
+        status.textContent = "Database offline. Fill out the registration form below to generate a local profile.";
+        status.className = "sys-status";
+        return;
+      }
+
+      try {
+        const url = SHEET_CSV_URL + (SHEET_CSV_URL.includes("?") ? "&" : "?") + "t=" + Date.now();
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) throw new Error("Could not fetch CSV");
+
+        const text = await res.text();
+        const rows = parseCSV(text);
+        if (rows.length < 2) {
+          status.textContent = "No operative files registered yet.";
+          status.className = "sys-status";
+          return;
+        }
+
+        const headers = rows[0];
+        const dataRows = rows.slice(1);
+
+        const cols = {
+          name: findCol(headers, ["name", "nickname"]),
+          smule: findCol(headers, ["smule"]),
+          country: findCol(headers, ["country"]),
+          age: findCol(headers, ["age"]),
+          blood: findCol(headers, ["blood"]),
+          sign: findCol(headers, ["sign", "horoscope"]),
+          role: findCol(headers, ["role"]),
+          skills: findCol(headers, ["skills", "singing"]),
+          weapon: findCol(headers, ["weapon"]),
+          style: findCol(headers, ["style", "accessory"]),
+          personality: findCol(headers, ["personality"]),
+          flower: findCol(headers, ["flower", "plant", "tree"]),
+          food: findCol(headers, ["food"]),
+          animal: findCol(headers, ["animal", "pet"]),
+          tattoo: findCol(headers, ["tattoo", "mark"])
+        };
+
+        let html = ""; let count = 0;
+        for (let i = dataRows.length - 1; i >= 0; i--) {
+          const r = dataRows[i];
+          const member = {
+            name: val(r, cols.name), smule: val(r, cols.smule), country: val(r, cols.country),
+            age: val(r, cols.age), blood: val(r, cols.blood), sign: val(r, cols.sign),
+            role: val(r, cols.role), skills: val(r, cols.skills), weapon: val(r, cols.weapon),
+            style: val(r, cols.style), personality: val(r, cols.personality),
+            flower: val(r, cols.flower), food: val(r, cols.food), animal: val(r, cols.animal),
+            tattoo: val(r, cols.tattoo)
+          };
+          if (!member.name && !member.smule) continue;
+          html += createProfileHTML(member);
+          count++;
+        }
+
+        container.innerHTML = html;
+        status.textContent = count ? `Database Online — ${count} Operative Dossier(s) Loaded.` : "No files found.";
+        status.className = "sys-status";
+      } catch (err) {
+        console.error(err);
+        status.textContent = "Database loading offline. Registrations will render locally.";
+        status.className = "sys-status";
+      }
+    }
+
+    loadMembers();
+  </script>
+</body>
+</html>
