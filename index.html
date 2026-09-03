@@ -659,14 +659,8 @@ document.getElementById('yr').textContent = new Date().getFullYear();
 
 /* ---------- ENDPOINTS ---------- */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzra3KX8W2-nZSyRN7FKlHLOv2biwe2Zdhc-Ik25YQd2aCXiRj0Mrn51BBMVNnIwW70tQ/exec';
-
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR8ekE1phwUTs70v13LzPgtXN5KZ8mbPT74_RAM2rL7YL_cKVBmdPRpABZpdj01ry7r6hoY8uWR8_v5/pub?gid=0&single=true&output=csv';
-
-/* !!! REPLACE "NOTICES_GID" WITH THE GID OF YOUR "Notices" TAB !!!
-   How to find it: open your Sheet, click the "Notices" tab,
-   and look at the URL. The number after "#gid=" is your GID. */
 const NOTICES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR8ekE1phwUTs70v13LzPgtXN5KZ8mbPT74_RAM2rL7YL_cKVBmdPRpABZpdj01ry7r6hoY8uWR8_v5/pub?gid=244965018&single=true&output=csv';
-
 
 /* ---------- PARTICLE BACKGROUND ---------- */
 (function(){
@@ -689,7 +683,6 @@ const NOTICES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR8ekE1
   })();
 })();
 
-
 /* ---------- MOBILE DRAWER ---------- */
 const ham=document.getElementById('hamburger');
 const drawer=document.getElementById('drawer');
@@ -705,12 +698,7 @@ document.querySelectorAll('.drawer-link').forEach(l=>{
   l.addEventListener('click',()=>{if(drawer.classList.contains('open'))toggleDrawer();});
 });
 
-
 /* ---------- FOUNDERS DATA ---------- */
-/* To add profile pictures: paste the direct image URL into the image:'' field.
-   Google Drive format:  https://drive.google.com/thumbnail?id=FILE_ID&sz=w400
-   Postimages format:    https://i.postimg.cc/xxxxx/photo.png                */
-
 const founders=[
 {
   file:'001',name:'NEZUMI',handle:'Nezumiii',
@@ -790,7 +778,6 @@ const founders=[
 }
 ];
 
-
 /* ---------- RANK HELPER ---------- */
 function getRank(cofs){
   if(cofs>=1000)return{icon:'👑',label:'Legend'};
@@ -800,7 +787,6 @@ function getRank(cofs){
   if(cofs>=100) return{icon:'⚡',label:'Runner'};
   return{icon:'🩸',label:'Rookie'};
 }
-
 
 /* ---------- SKILL TRANSLATION ENGINE ---------- */
 function translateSkills(raw){
@@ -817,7 +803,6 @@ function translateSkills(raw){
   return found.length?found.join(', '):raw;
 }
 
-
 /* ---------- AUTO STORY GENERATOR (for members) ---------- */
 function generateStory(d){
   const ts=translateSkills(d.skills);
@@ -825,4 +810,388 @@ function generateStory(d){
   const name=d.name||'UNKNOWN';
   const country=d.country&&d.country!=='—'?d.country:'an undisclosed sector';
   let s=`<p>Operative <strong style="color:var(--white)">${name}</strong> emerged from the signal fog of <em>${country}</em>, carrying nothing but a scarred reputation and a deep-rooted mastery of <em>${ts}</em>.</p>`;
-  s+=`<p>Armed with their signature weapon — the 
+  s+=`<p>Armed with their signature weapon — the <strong style="color:var(--red)">${w}</strong> — they carved a name into the wasteland's memory. Few who cross their path forget the encounter.</p>`;
+  if(d.animal&&d.animal!=='—')
+    s+=`<p>Survivors speak of a presence that follows ${name} like a shadow — something primal, reminiscent of a <em>${d.animal}</em>, watching from behind the static.</p>`;
+  if(d.personality&&d.personality!=='—')
+    s+=`<p>Field reports describe them as <em>${d.personality}</em> — a profile the network has learned not to underestimate.</p>`;
+  s+=`<p>Now embedded within the RENEG▲DES network, ${name} operates under a single directive: <em>"Nobody gets left behind."</em></p>`;
+  return s;
+}
+
+/* ---------- CARD BUILDER ---------- */
+function makeCard(d){
+  const div=document.createElement('div');
+  div.className='cyber-box db-card';
+  const initial=(d.name||'?').charAt(0).toUpperCase();
+  const avatar=d.image
+    ? `<img src="${d.image}" alt="${d.name}" class="card-avatar" onerror="this.outerHTML='<div class=\\'card-avatar\\'>${initial}</div>'">`
+    : `<div class="card-avatar">${initial}</div>`;
+  const handle=d.handle?`<div class="card-handle">@${d.handle}</div>`:'';
+  div.innerHTML=`
+    ${avatar}
+    <div class="card-file">FILE ${d.file}</div>
+    <div class="card-name">${d.name}</div>
+    ${handle}
+    <div class="card-role">${d.role}</div>
+    <div class="card-rank">${d.rankIcon||'🜏'} ${d.rank}${d.cofs!==undefined?' · '+d.cofs+' COFs':''}</div>`;
+  div.addEventListener('click',()=>openModal(d));
+  return div;
+}
+
+/* ---------- DOSSIER MODAL ---------- */
+const modalOverlay=document.getElementById('modal-overlay');
+const modalContent=document.getElementById('modal-content');
+const modalClose=document.getElementById('modal-close');
+
+function row(label,val){
+  if(!val||val==='—'||val==='')return '';
+  return `<div class="m-row"><span class="label">${label}</span><span class="value">${val}</span></div>`;
+}
+
+function openModal(d){
+  const initial=(d.name||'?').charAt(0).toUpperCase();
+  const avatar=d.image
+    ? `<img src="${d.image}" alt="${d.name}" class="m-avatar" onerror="this.outerHTML='<div class=\\'m-avatar\\'>${initial}</div>'">`
+    : `<div class="m-avatar">${initial}</div>`;
+
+  const story=d.story ? d.story : generateStory(d);
+  const cofLine = d.cofs!==undefined ? row('COFs', d.cofs) : row('COFs','∞ Unlimited');
+
+  modalContent.innerHTML=`
+    ${avatar}
+    <div class="m-file">FILE ${d.file}</div>
+    <h2 class="m-name">${d.name}</h2>
+    ${d.handle?`<div class="m-handle">@${d.handle}</div>`:''}
+    <div class="m-role">${d.role}</div>
+    <div class="m-divider"></div>
+    ${row('Rank',(d.rankIcon||'🜏')+' '+d.rank)}
+    ${cofLine}
+    ${row('Country',d.country)}
+    ${row('Age',d.age)}
+    ${row('Blood Type',d.blood)}
+    ${row('Zodiac',d.sign)}
+    ${row('Smule',d.smule)}
+    ${row('Skills',d.skills)}
+    ${row('Style',d.style)}
+    ${row('Weapon',d.weapon)}
+    ${row('Personality',d.personality)}
+    ${row('Tattoo',d.tattoo)}
+    ${row('Food',d.food)}
+    ${row('Flower',d.flower)}
+    ${row('Spirit Animal',d.animal)}
+    <div class="m-divider"></div>
+    <div class="m-story">${story}</div>`;
+
+  modalOverlay.classList.add('active');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){
+  modalOverlay.classList.remove('active');
+  document.body.style.overflow='';
+}
+modalClose.addEventListener('click',closeModal);
+modalOverlay.addEventListener('click',e=>{if(e.target===modalOverlay)closeModal();});
+
+/* ---------- CSV PARSER ---------- */
+function parseCSV(text){
+  const rows=[];let row=[],cur='',inQ=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(inQ){
+      if(ch==='"'){
+        if(text[i+1]==='"'){cur+='"';i++;}
+        else inQ=false;
+      } else cur+=ch;
+    } else {
+      if(ch==='"')inQ=true;
+      else if(ch===','){row.push(cur);cur='';}
+      else if(ch==='\n'){row.push(cur);rows.push(row);row=[];cur='';}
+      else if(ch==='\r'){/* skip */}
+      else cur+=ch;
+    }
+  }
+  if(cur!==''||row.length){row.push(cur);rows.push(row);}
+  return rows.filter(r=>r.some(c=>c.trim()!==''));
+}
+
+/* ---------- RENDER FOUNDERS ---------- */
+(function renderFounders(){
+  const grid=document.getElementById('founders-grid');
+  founders.forEach(f=>grid.appendChild(makeCard(f)));
+})();
+
+/* ---------- LOAD MEMBER DATABASE ---------- */
+async function loadDB(){
+  const grid=document.getElementById('db-grid');
+  const loading=document.getElementById('db-loading');
+  loading.style.display='block';
+  loading.textContent='⟳ Scanning network for operatives…';
+
+  grid.querySelectorAll('.db-card').forEach(c=>c.remove());
+
+  try{
+    const res=await fetch(CSV_URL+'&t='+Date.now());
+    const txt=await res.text();
+    const rows=parseCSV(txt);
+    if(rows.length<2){loading.textContent='No operatives registered yet.';return;}
+
+    const headers=rows[0].map(h=>h.trim().toLowerCase());
+    let fileNum=6, count=0;
+
+    rows.slice(1).forEach(r=>{
+      const o={};
+      headers.forEach((h,i)=>{o[h]=(r[i]||'').trim();});
+      if(o.status && o.status.toLowerCase()==='approved' && o.name){
+        const cofs=parseInt(o.cofs)||0;
+        const rk=getRank(cofs);
+        grid.insertBefore(makeCard({
+          file:String(fileNum).padStart(3,'0'),
+          name:o.name,
+          handle:o.smule?o.smule.replace('@',''):'',
+          role:o.role||'Operative',
+          weapon:o.weapon||'—',
+          rank:rk.label, rankIcon:rk.icon, cofs:cofs,
+          country:o.country, age:o.age, blood:o.blood, sign:o.sign,
+          smule:o.smule, skills:o.skills, style:o.style,
+          personality:o.personality, tattoo:o.tattoo, food:o.food,
+          flower:o.flower, animal:o.animal, image:o.image||''
+        }),loading);
+        fileNum++;count++;
+      }
+    });
+
+    loading.style.display = count===0 ? 'block' : 'none';
+    if(count===0) loading.textContent='No approved operatives yet.';
+
+  }catch(err){
+    loading.textContent='⚠ Network error — could not reach the database.';
+    console.error(err);
+  }
+}
+loadDB();
+
+/* ---------- LOAD GUILD NOTICES ---------- */
+async function loadNotices(){
+  const box=document.getElementById('notices-container');
+  try{
+    const res=await fetch(NOTICES_CSV_URL+'&t='+Date.now());
+    const txt=await res.text();
+    const rows=parseCSV(txt);
+    if(rows.length<2){box.innerHTML='<div class="no-notices">No active broadcasts.</div>';return;}
+
+    const headers=rows[0].map(h=>h.trim().toLowerCase());
+    const now=new Date();
+    const active=[];
+
+    rows.slice(1).forEach(r=>{
+      const o={};
+      headers.forEach((h,i)=>{o[h]=(r[i]||'').trim();});
+      if(!o.title||!o.expires_at)return;
+      const exp=new Date(o.expires_at);
+      if(isNaN(exp)||exp<=now)return;
+      const ms=exp-now;
+      const d=Math.floor(ms/86400000);
+      const h=Math.floor((ms%86400000)/3600000);
+      const m=Math.floor((ms%3600000)/60000);
+      const left = d>0 ? d+'d '+h+'h' : (h>0 ? h+'h '+m+'m' : m+'m');
+      active.push({title:o.title,content:o.content,founder:o.founder||'UNKNOWN',left:left});
+    });
+
+    if(!active.length){box.innerHTML='<div class="no-notices">No active broadcasts.</div>';return;}
+    active.reverse();
+
+    box.innerHTML=active.map(n=>`
+      <div class="notice-card">
+        <div class="n-title">📡 ${n.title}</div>
+        <div class="n-content">${n.content}</div>
+        <div class="n-meta">
+          <span>⏱ Expires in ${n.left}</span>
+          <span class="n-founder">🜏 Prepared by ${n.founder}</span>
+        </div>
+      </div>`).join('');
+
+  }catch(err){
+    box.innerHTML='<div class="no-notices">No active broadcasts.</div>';
+    console.error(err);
+  }
+}
+loadNotices();
+
+/* ---------- REGISTRATION FORM ---------- */
+const regForm=document.getElementById('reg-form');
+const regStatus=document.getElementById('form-status');
+const regBtn=document.getElementById('submit-btn');
+
+regForm.addEventListener('submit',async function(e){
+  e.preventDefault();
+  regBtn.disabled=true;regBtn.textContent='TRANSMITTING…';
+  regStatus.textContent='';regStatus.className='';
+
+  const payload={};
+  new FormData(regForm).forEach((v,k)=>{payload[k]=v;});
+  payload.timestamp=new Date().toISOString();
+  payload.status='pending';
+  payload.cofs=0;
+  payload.action='register';
+
+  try{
+    await fetch(SCRIPT_URL,{
+      method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(payload)
+    });
+    regStatus.textContent='✔ Dossier transmitted. Awaiting Founder approval.';
+    regStatus.className='success';
+    regForm.reset();
+  }catch(err){
+    regStatus.textContent='✖ Transmission failed. Try again later.';
+    regStatus.className='error';
+    console.error(err);
+  }finally{
+    regBtn.disabled=false;regBtn.textContent='TRANSMIT DOSSIER';
+  }
+});
+
+/* ---------- COMMAND MODAL ---------- */
+const missionOverlay=document.getElementById('mission-overlay');
+const missionClose=document.getElementById('mission-close');
+const missionGate=document.getElementById('mission-gate');
+const missionWrap=document.getElementById('mission-form-wrap');
+const missionPw=document.getElementById('mission-pw');
+const unlockBtn=document.getElementById('mission-unlock-btn');
+const pwStatus=document.getElementById('mission-pw-status');
+
+function openCommand(){
+  missionOverlay.classList.add('active');
+  document.body.style.overflow='hidden';
+  missionGate.style.display='block';
+  missionWrap.style.display='none';
+  missionPw.value='';
+  pwStatus.textContent='';
+}
+function closeCommand(){
+  missionOverlay.classList.remove('active');
+  document.body.style.overflow='';
+}
+
+document.getElementById('open-mission-btn').addEventListener('click',e=>{e.preventDefault();openCommand();});
+document.getElementById('open-mission-btn-mobile').addEventListener('click',e=>{
+  e.preventDefault();
+  if(drawer.classList.contains('open'))toggleDrawer();
+  openCommand();
+});
+missionClose.addEventListener('click',closeCommand);
+missionOverlay.addEventListener('click',e=>{if(e.target===missionOverlay)closeCommand();});
+
+unlockBtn.addEventListener('click',()=>{
+  if(missionPw.value.trim()===''){
+    pwStatus.textContent='Access code required.';
+    return;
+  }
+  pwStatus.textContent='';
+  missionGate.style.display='none';
+  missionWrap.style.display='block';
+});
+missionPw.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();unlockBtn.click();}});
+
+/* Tabs */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeModal();closeCommand();}
+});
+
+/* ---------- MISSION FORM SUBMIT ---------- */
+const missionForm=document.getElementById('mission-form');
+const missionStatus=document.getElementById('mission-status');
+const missionBtn=document.getElementById('mission-submit-btn');
+
+missionForm.addEventListener('submit',async function(e){
+  e.preventDefault();
+  missionBtn.disabled=true;missionBtn.textContent='TRANSMITTING…';
+  missionStatus.textContent='';
+
+  const payload={
+    action:'mission',
+    password:missionPw.value.trim(),
+    founder:document.getElementById('m-founder').value,
+    member:document.getElementById('m-member').value.trim(),
+    mission:document.getElementById('m-mission').value.trim(),
+    type:document.getElementById('m-type').value,
+    cofs:document.getElementById('m-cofs').value,
+    notes:document.getElementById('m-notes').value.trim()
+  };
+
+  const names=payload.member.split(',').map(n=>n.trim()).filter(Boolean);
+
+  try{
+    await fetch(SCRIPT_URL,{
+      method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(payload)
+    });
+    missionStatus.style.color='var(--cyan)';
+    missionStatus.textContent='✔ Mission logged. '+payload.cofs+' COFs sent to '+names.length+' operative(s).';
+    missionForm.reset();
+    setTimeout(loadDB,2500);
+  }catch(err){
+    missionStatus.style.color='var(--red)';
+    missionStatus.textContent='✖ Transmission failed.';
+    console.error(err);
+  }finally{
+    missionBtn.disabled=false;missionBtn.textContent='LOG MISSION';
+  }
+});
+
+/* ---------- NOTICE FORM SUBMIT ---------- */
+const noticeForm=document.getElementById('notice-form');
+const noticeStatus=document.getElementById('notice-status');
+const noticeBtn=document.getElementById('notice-submit-btn');
+
+noticeForm.addEventListener('submit',async function(e){
+  e.preventDefault();
+  noticeBtn.disabled=true;noticeBtn.textContent='BROADCASTING…';
+  noticeStatus.textContent='';
+
+  const payload={
+    action:'notice',
+    password:missionPw.value.trim(),
+    founder:document.getElementById('n-founder').value,
+    title:document.getElementById('n-title').value.trim(),
+    content:document.getElementById('n-content').value.trim(),
+    duration_hours:document.getElementById('n-duration').value
+  };
+
+  try{
+    await fetch(SCRIPT_URL,{
+      method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(payload)
+    });
+    noticeStatus.style.color='var(--cyan)';
+    noticeStatus.textContent='✔ Notice broadcast. Live for '+payload.duration_hours+' hours.';
+    noticeForm.reset();
+    document.getElementById('n-duration').value=48;
+    setTimeout(loadNotices,2500);
+  }catch(err){
+    noticeStatus.style.color='var(--red)';
+    noticeStatus.textContent='✖ Broadcast failed.';
+    console.error(err);
+  }finally{
+    noticeBtn.disabled=false;noticeBtn.textContent='BROADCAST NOTICE';
+  }
+});
+
+/* Auto-refresh notices every 5 minutes */
+setInterval(loadNotices,300000);
+</script>
+</body>
+</html>
