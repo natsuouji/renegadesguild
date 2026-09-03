@@ -91,99 +91,75 @@
     .rank-icon { font-size: 1.1rem; margin-right: 6px; }
     .rank-cof { font-family: 'Share Tech Mono', monospace; color: var(--neon-cyan); font-weight: bold; white-space: nowrap; }
 
-    /* FOUNDERS GRID */
-    .database-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 4rem; }
-    .db-card { background: #000; border: 1px solid var(--dark-card-border); position: relative; overflow: hidden; border-radius: 4px; }
-    .db-card:hover { border-color: var(--renegade-red); }
+    /* DATABASE GRID (PREVIEW CARDS) */
+    .database-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; margin-bottom: 4rem; }
+    .db-card { background: #000; border: 1px solid var(--dark-card-border); position: relative; overflow: hidden; border-radius: 4px; cursor: pointer; transition: 0.3s; }
+    .db-card:hover { border-color: var(--renegade-red); transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255, 51, 0, 0.15); }
     .db-header { background: var(--dark-card-border); padding: 0.75rem 1rem; border-bottom: 1px solid var(--renegade-dark); display: flex; justify-content: space-between; align-items: center; }
     .db-file-id { font-size: 0.7rem; color: var(--text-dim); letter-spacing: 2px; }
     .db-status { font-size: 0.7rem; color: #00ff88; letter-spacing: 2px; }
-    .db-body { padding: 1.25rem; }
+    .db-body { padding: 1.25rem; pointer-events: none; } /* prevents text selection when clicking card */
     .db-row { display: flex; justify-content: space-between; margin-bottom: 0.75rem; border-bottom: 1px dashed rgba(255,255,255,0.08); padding-bottom: 0.4rem; gap: 10px; }
     .db-label { font-size: 0.7rem; color: var(--renegade-red); letter-spacing: 1px; flex-shrink: 0; }
     .db-value { font-size: 0.85rem; color: #fff; font-weight: 600; text-transform: uppercase; text-align: right; word-break: break-word; }
     .db-value.cof { color: var(--neon-cyan); }
-    .threat-bar { color: var(--renegade-red); letter-spacing: 1px; font-size: 0.75rem; }
+    .db-rank { color: var(--neon-cyan); letter-spacing: 1px; font-weight: 900; }
+    .db-rank.founder { color: var(--renegade-red); }
 
-    /* AUTO-GENERATED PROFILES (Like the "TEN" Reference) */
-    .roster-grid { display: flex; flex-direction: column; gap: 3rem; max-width: 900px; margin: 0 auto; }
-    .profile-card { background: #111116; border: 1px solid var(--dark-card-border); border-left: 4px solid var(--renegade-red); padding: 2.5rem; position: relative; }
-    .profile-name { font-size: clamp(2rem, 8vw, 3.5rem); font-weight: 900; color: var(--renegade-red); line-height: 1; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 2px; font-family: 'Orbitron', monospace; }
+    /* MODAL FOR DETAILED PROFILE */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px);
+      z-index: 2000; display: none; align-items: center; justify-content: center;
+      padding: 1.5rem; opacity: 0; transition: opacity 0.3s ease;
+    }
+    .modal-overlay.active { display: flex; opacity: 1; }
+    
+    .modal-content {
+      background: #111116; border: 1px solid var(--dark-card-border);
+      border-left: 4px solid var(--renegade-red); padding: 2.5rem; position: relative;
+      max-width: 900px; width: 100%; max-height: 90vh; overflow-y: auto;
+      box-shadow: 0 0 40px rgba(0,0,0,0.8); border-radius: 4px;
+    }
+    .modal-close {
+      position: absolute; top: 1rem; right: 1.5rem; font-size: 2rem; color: var(--text-dim);
+      cursor: pointer; line-height: 1; transition: 0.2s;
+    }
+    .modal-close:hover { color: var(--renegade-red); }
+
+    /* PROFILE INNER STYLES */
+    .profile-header-wrap { display: flex; gap: 2rem; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; }
+    .profile-image-placeholder {
+      width: 150px; height: 150px; background: rgba(255, 51, 0, 0.05);
+      border: 1px dashed var(--renegade-red); display: flex; align-items: center; justify-content: center;
+      color: var(--renegade-red); font-family: 'Share Tech Mono', monospace; font-size: 0.7rem;
+      text-align: center; padding: 1rem; border-radius: 4px; flex-shrink: 0;
+    }
+    .profile-header-text { flex: 1; min-width: 250px; }
+    
+    .profile-name { font-size: clamp(2rem, 8vw, 3.5rem); font-weight: 900; color: var(--renegade-red); line-height: 1; text-transform: uppercase; letter-spacing: 2px; font-family: 'Orbitron', monospace; margin-bottom: 0.5rem; }
+    .profile-file { font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--text-dim); letter-spacing: 2px; display: block; margin-bottom: 1rem; }
     .profile-bio { font-size: 1.05rem; color: var(--text-secondary); line-height: 1.8; margin-bottom: 1.2rem; }
     .profile-bio strong { color: #fff; }
+    
     .fav-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 2rem; }
     .fav-item { display: flex; flex-direction: column; gap: 0.5rem; text-align: center; }
     .fav-title { font-family: 'Orbitron', monospace; font-size: 0.9rem; color: #fff; }
     .fav-box { background: var(--renegade-red); color: #fff; padding: 1rem; font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%); }
 
-    /* NATIVE ON-PAGE REGISTRATION FORM */
-    .form-box {
-      max-width: 850px;
-      margin: 0 auto;
-      background: #000;
-      border: 1px solid var(--renegade-red);
-      padding: 2.5rem 1.5rem;
-      position: relative;
-      border-radius: 4px;
-    }
+    /* ON-PAGE REGISTRATION FORM */
+    .form-box { max-width: 850px; margin: 0 auto; background: #000; border: 1px solid var(--renegade-red); padding: 2.5rem 1.5rem; position: relative; border-radius: 4px; }
     .form-box::before { content:''; position:absolute; top:0; left:0; width:100%; height:4px; background: var(--renegade-red); }
-    
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.2rem;
-      margin-top: 2rem;
-      text-align: left;
-    }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem; margin-top: 2rem; text-align: left; }
     .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
     .form-group.full { grid-column: 1 / -1; }
-    
-    .form-label {
-      font-size: 0.75rem;
-      color: var(--renegade-red);
-      font-family: 'Orbitron', monospace;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-    .form-input {
-      width: 100%;
-      background: rgba(15, 15, 22, 0.9);
-      border: 1px solid var(--dark-card-border);
-      padding: 0.8rem 1rem;
-      color: #fff;
-      font-size: 1rem;
-      font-family: 'Share Tech Mono', monospace;
-      outline: none;
-      transition: 0.3s;
-      border-radius: 2px;
-    }
-    .form-input:focus {
-      border-color: var(--renegade-red);
-      box-shadow: 0 0 10px rgba(255, 51, 0, 0.2);
-    }
-    
-    .btn-submit {
-      width: 100%;
-      max-width: 350px;
-      background: var(--renegade-red);
-      color: #fff;
-      border: none;
-      padding: 1.2rem;
-      font-size: 0.9rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      cursor: pointer;
-      text-transform: uppercase;
-      transition: 0.3s;
-      min-height: 50px;
-      font-family: 'Orbitron', monospace;
-      margin-top: 2rem;
-      clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
-    }
+    .form-label { font-size: 0.75rem; color: var(--renegade-red); font-family: 'Orbitron', monospace; letter-spacing: 1px; text-transform: uppercase; }
+    .form-input { width: 100%; background: rgba(15, 15, 22, 0.9); border: 1px solid var(--dark-card-border); padding: 0.8rem 1rem; color: #fff; font-size: 1rem; font-family: 'Share Tech Mono', monospace; outline: none; transition: 0.3s; border-radius: 2px; }
+    .form-input:focus { border-color: var(--renegade-red); box-shadow: 0 0 10px rgba(255, 51, 0, 0.2); }
+    .btn-submit { width: 100%; max-width: 350px; background: var(--renegade-red); color: #fff; border: none; padding: 1.2rem; font-size: 0.9rem; font-weight: 700; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; transition: 0.3s; min-height: 50px; font-family: 'Orbitron', monospace; margin-top: 2rem; clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px)); }
     .btn-submit:hover { filter: brightness(1.2); box-shadow: 0 0 20px var(--renegade-red-glow); }
     .btn-submit:active { transform: scale(0.98); }
 
-    /* SYSTEM MESSAGES */
     .sys-status { text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 0.9rem; color: var(--text-dim); margin-bottom: 2rem; }
     .sys-status.loading { color: var(--neon-cyan); animation: pulse 1.5s infinite; }
     .sys-status.error { color: #ff4d6d; }
@@ -191,27 +167,17 @@
 
     footer { border-top: 1px solid var(--dark-card-border); padding: 2rem 1.25rem; text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; color: var(--text-dim); }
 
-    /* MOBILE BREAKPOINTS */
     @media (max-width: 820px) {
       .hamburger { display: flex; }
       .nav-links { position: fixed; top: 65px; left: 0; width: 100%; height: calc(100vh - 65px); background: rgba(5, 5, 8, 0.98); backdrop-filter: blur(20px); flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 3rem; gap: 2rem; transform: translateY(-100%); opacity: 0; visibility: hidden; transition: 0.3s ease; }
       .nav-links.open { transform: translateY(0); opacity: 1; visibility: visible; }
-      .nav-links a { font-size: 1.1rem; letter-spacing: 3px; width: 100%; text-align: center; padding: 0.8rem; }
       .rank-table, .rank-table tbody, .rank-table tr, .rank-table td { display: block; width: 100%; }
       .rank-table thead { display: none; }
       .rank-table tr { border-bottom: 1px solid var(--dark-card-border); padding: 1.2rem; }
-      .rank-table tr:last-child { border-bottom: none; }
       .rank-table td { padding: 0.3rem 0; border: none; }
       .rank-table td:nth-child(1) { font-size: 1rem; font-weight: bold; color: #fff; margin-bottom: 0.2rem; }
-      .rank-table td:nth-child(2) { font-size: 0.85rem; margin-bottom: 0.4rem; }
       .rank-table td:nth-child(2)::before { content: 'COFs: '; color: var(--text-dim); }
-      .profile-card { padding: 1.5rem; }
-      .form-grid { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 480px) {
-      .hero-desc { font-size: 0.9rem; padding: 0.8rem 1rem; }
-      .db-row { flex-direction: column; align-items: flex-start; gap: 2px; }
-      .db-value { text-align: left; }
+      .modal-content { padding: 1.5rem; }
     }
   </style>
 </head>
@@ -275,7 +241,7 @@
       <div class="manifesto-item">
         <div class="manifesto-header" onclick="toggleAccordion(this)"><span class="m-num">02</span><span class="m-title">THE FOUNDERS</span><span class="m-icon">[+]</span></div>
         <div class="manifesto-content">
-          <p class="m-text">The five people who established RENEGADES are <strong>Nezumi, Ouji, Mamiki, Ten &amp; Sam</strong>.<br>The Founders are the highest authority within the guild and are responsible for keeping RENEGADES organized, active and true to its original purpose.</p>
+          <p class="m-text">The five people who established RENEGADES are <strong>Nezumi, Ouji, Ten, Mamiki &amp; Sam</strong>.<br>The Founders are the highest authority within the guild and are responsible for keeping RENEGADES organized, active and true to its original purpose.</p>
           <ul class="m-list tech"><li>Unlimited COFs</li><li>Final authority over group decisions</li><li>Ability to create missions &amp; issue rewards</li><li>Ability to invite new members</li><li>Ability to approve and manage events</li><li>Ability to modify guild regulations</li><li>Ability to resolve conflicts and disciplinary matters</li></ul>
           <p class="m-text">The Founders may delegate responsibilities to other members when necessary, but final authority always remains with the Founders.</p>
         </div>
@@ -359,33 +325,39 @@
       <span class="section-tag">// System Registry</span>
       <h2 class="section-title">RENEGADES DATABASE</h2>
       <div class="section-line"></div>
-      <p class="section-desc">Accessing High-Clearance Files &amp; Registered Operatives.</p>
+      <p class="section-desc">Click any operative card to access their full detailed dossier.</p>
     </div>
 
     <!-- HIGH CLEARANCE: FOUNDERS -->
     <h3 class="tech" style="text-align:center; color: var(--renegade-red); margin-bottom: 2rem;">[ CLASSIFIED: FOUNDERS ]</h3>
-    <div class="database-grid tech">
-      <div class="db-card"><div class="db-header"><span class="db-file-id">// FILE 001</span><span class="db-status">ACTIVE</span></div><div class="db-body"><div class="db-row"><span class="db-label">CODENAME</span><span class="db-value">SAM</span></div><div class="db-row"><span class="db-label">ROLE</span><span class="db-value text-red">FOUNDER / BOOKKEEPER</span></div><div class="db-row"><span class="db-label">SPECIALIZATION</span><span class="db-value">Economy &amp; Operations</span></div><div class="db-row"><span class="db-label">WEAPON</span><span class="db-value">The Ledger</span></div><div class="db-row"><span class="db-label">COF BALANCE</span><span class="db-value cof">UNLIMITED</span></div><div class="db-row"><span class="db-label">MISSIONS / COLLABS</span><span class="db-value">CLASSIFIED</span></div><div class="db-row" style="border:none;"><span class="db-label">THREAT LEVEL</span><span class="db-value threat-bar">██████████ [MAX]</span></div></div></div>
-      <div class="db-card"><div class="db-header"><span class="db-file-id">// FILE 002</span><span class="db-status">ACTIVE</span></div><div class="db-body"><div class="db-row"><span class="db-label">CODENAME</span><span class="db-value">NEZUMI</span></div><div class="db-row"><span class="db-label">ROLE</span><span class="db-value text-red">FOUNDER</span></div><div class="db-row"><span class="db-label">SPECIALIZATION</span><span class="db-value">Guild Overseer</span></div><div class="db-row"><span class="db-label">WEAPON</span><span class="db-value">Neural Interface</span></div><div class="db-row"><span class="db-label">COF BALANCE</span><span class="db-value cof">UNLIMITED</span></div><div class="db-row"><span class="db-label">MISSIONS / COLLABS</span><span class="db-value">CLASSIFIED</span></div><div class="db-row" style="border:none;"><span class="db-label">THREAT LEVEL</span><span class="db-value threat-bar">██████████ [MAX]</span></div></div></div>
-      <div class="db-card"><div class="db-header"><span class="db-file-id">// FILE 003</span><span class="db-status">ACTIVE</span></div><div class="db-body"><div class="db-row"><span class="db-label">CODENAME</span><span class="db-value">OUJI</span></div><div class="db-row"><span class="db-label">ROLE</span><span class="db-value text-red">FOUNDER</span></div><div class="db-row"><span class="db-label">SPECIALIZATION</span><span class="db-value">Mission Director</span></div><div class="db-row"><span class="db-label">WEAPON</span><span class="db-value">Tactical Array</span></div><div class="db-row"><span class="db-label">COF BALANCE</span><span class="db-value cof">UNLIMITED</span></div><div class="db-row"><span class="db-label">MISSIONS / COLLABS</span><span class="db-value">CLASSIFIED</span></div><div class="db-row" style="border:none;"><span class="db-label">THREAT LEVEL</span><span class="db-value threat-bar">██████████ [MAX]</span></div></div></div>
-      <div class="db-card"><div class="db-header"><span class="db-file-id">// FILE 004</span><span class="db-status">ACTIVE</span></div><div class="db-body"><div class="db-row"><span class="db-label">CODENAME</span><span class="db-value">MAMIKI</span></div><div class="db-row"><span class="db-label">ROLE</span><span class="db-value text-red">FOUNDER</span></div><div class="db-row"><span class="db-label">SPECIALIZATION</span><span class="db-value">Event Coordinator</span></div><div class="db-row"><span class="db-label">WEAPON</span><span class="db-value">Cyber-Optics</span></div><div class="db-row"><span class="db-label">COF BALANCE</span><span class="db-value cof">UNLIMITED</span></div><div class="db-row"><span class="db-label">MISSIONS / COLLABS</span><span class="db-value">CLASSIFIED</span></div><div class="db-row" style="border:none;"><span class="db-label">THREAT LEVEL</span><span class="db-value threat-bar">██████████ [MAX]</span></div></div></div>
-      <div class="db-card"><div class="db-header"><span class="db-file-id">// FILE 005</span><span class="db-status">ACTIVE</span></div><div class="db-body"><div class="db-row"><span class="db-label">CODENAME</span><span class="db-value">TEN</span></div><div class="db-row"><span class="db-label">ROLE</span><span class="db-value text-red">FOUNDER</span></div><div class="db-row"><span class="db-label">SPECIALIZATION</span><span class="db-value">Internal Security</span></div><div class="db-row"><span class="db-label">WEAPON</span><span class="db-value">Plasma Blade</span></div><div class="db-row"><span class="db-label">COF BALANCE</span><span class="db-value cof">UNLIMITED</span></div><div class="db-row"><span class="db-label">MISSIONS / COLLABS</span><span class="db-value">CLASSIFIED</span></div><div class="db-row" style="border:none;"><span class="db-label">THREAT LEVEL</span><span class="db-value threat-bar">██████████ [MAX]</span></div></div></div>
+    <div class="database-grid tech" id="foundersGrid">
+      <!-- Founders injected via JS -->
     </div>
 
     <!-- DYNAMIC ROSTER -->
     <h3 class="tech" style="text-align:center; color: var(--neon-cyan); margin: 4rem 0 2rem;">[ REGISTERED OPERATIVES ]</h3>
     
     <div id="sys-status" class="sys-status loading">Loading member dossiers...</div>
-    <div id="rosterContainer" class="roster-grid">
-      <!-- Generated Profiles Appear Here -->
+    <div id="rosterGrid" class="database-grid tech">
+      <!-- Registered members injected via JS -->
     </div>
   </section>
+
+  <!-- MODAL FOR DETAILED PROFILE -->
+  <div class="modal-overlay" id="profileModal">
+    <div class="modal-content">
+      <div class="modal-close" onclick="closeModal()">&times;</div>
+      <div id="modalBody">
+        <!-- Profile HTML injected here -->
+      </div>
+    </div>
+  </div>
 
   <!-- ON-PAGE REGISTRATION FORM -->
   <section class="section" id="register" style="border-top: 1px solid var(--dark-card-border); background: rgba(255,0,60,0.02);">
     <div class="form-box">
-      <h2 class="section-title">OPERATIVE REGISTRATION</h2>
-      <p class="section-desc tech" style="margin: 1rem 0 0.5rem;">
+      <h2 class="section-title" style="text-align:center;">OPERATIVE REGISTRATION</h2>
+      <p class="section-desc tech" style="margin: 1rem auto 0.5rem; text-align:center;">
         Complete your dossier to officially register into the RENEGADES database.
       </p>
 
@@ -394,11 +366,11 @@
           <div class="form-group"><label class="form-label">Name / Nickname</label><input type="text" id="f_name" class="form-input" required placeholder="e.g. Ten"></div>
           <div class="form-group"><label class="form-label">Smule ID</label><input type="text" id="f_smule" class="form-input" required placeholder="e.g. 96_10"></div>
           <div class="form-group"><label class="form-label">Country</label><input type="text" id="f_country" class="form-input" required placeholder="e.g. USA"></div>
-          <div class="form-group"><label class="form-label">Age</label><input type="number" id="f_age" class="form-input" required placeholder="e.g. 30"></div>
+          <div class="form-group"><label class="form-label">Age</label><input type="text" id="f_age" class="form-input" required placeholder="e.g. 30"></div>
           <div class="form-group"><label class="form-label">Blood Type</label><input type="text" id="f_blood" class="form-input" required placeholder="e.g. O"></div>
           <div class="form-group"><label class="form-label">Horoscope Sign</label><input type="text" id="f_sign" class="form-input" required placeholder="e.g. Taurus"></div>
           <div class="form-group"><label class="form-label">Guild Role</label><input type="text" id="f_role" class="form-input" required placeholder="e.g. Innkeeper"></div>
-          <div class="form-group"><label class="form-label">Singing Skills</label><input type="text" id="f_skills" class="form-input" required placeholder="e.g. Art, Screamo"></div>
+          <div class="form-group"><label class="form-label">Real Skills (Art, Sing, Mix...)</label><input type="text" id="f_skills" class="form-input" required placeholder="e.g. Art, Screamo"></div>
           
           <div class="form-group full"><label class="form-label">Fighting Style &amp; Accessory</label><input type="text" id="f_style" class="form-input" required placeholder="e.g. hand-to-hand / earrings"></div>
           <div class="form-group full"><label class="form-label">Weapon of Choice</label><input type="text" id="f_weapon" class="form-input" required placeholder="e.g. Dagger"></div>
@@ -422,93 +394,150 @@
     "Nobody gets left behind."
   </footer>
 
-  <!-- SCRIPTING -->
   <script>
     // ====================================================
-    // CONFIGURATION: PASTE YOUR GOOGLE SHEET WEB APP URL HERE
+    // 1. YOUR GOOGLE LINKS
     // ====================================================
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzra3KX8W2-nZSyRN7FKlHLOv2biwe2Zdhc-Ik25YQd2aCXiRj0Mrn51BBMVNnIwW70tQ/exec";
     const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR8ekE1phwUTs70v13LzPgtXN5KZ8mbPT74_RAM2rL7YL_cKVBmdPRpABZpdj01ry7r6hoY8uWR8_v5/pub?gid=0&single=true&output=csv";
 
-    // ----------------------------------------------------
-    // 1. MOBILE MENU
-    // ----------------------------------------------------
+    // ====================================================
+    // 2. HARDCODED FOUNDERS DATA
+    // ====================================================
+    const foundersData = [
+      {
+        fileId: "001", name: "NEZUMI", smule: "CLASSIFIED", country: "CLASSIFIED", age: "CLASSIFIED", blood: "CLASSIFIED", sign: "CLASSIFIED",
+        role: "Guild Overseer", skills: "Management, Tactics", weapon: "Electro Brass Knuckles", style: "close-quarters combat", personality: "calculating and precise",
+        tattoo: "Unknown", food: "CLASSIFIED", flower: "CLASSIFIED", animal: "CLASSIFIED", cof: "UNLIMITED", rank: "Founder", isFounder: true,
+        story: "Nezumi oversees the grand operations of the guild. A ghost in the system, utilizing tactical operation coordination to keep RENEGADES one step ahead of the corps."
+      },
+      {
+        fileId: "002", name: "OUJI", smule: "CLASSIFIED", country: "CLASSIFIED", age: "CLASSIFIED", blood: "CLASSIFIED", sign: "CLASSIFIED",
+        role: "Mission Director", skills: "Combat Strategy", weapon: "Twin Tian Swords", style: "bladed swift strikes", personality: "stoic and sharp",
+        tattoo: "Unknown", food: "CLASSIFIED", flower: "CLASSIFIED", animal: "CLASSIFIED", cof: "UNLIMITED", rank: "Founder", isFounder: true,
+        story: "Ouji directs the guild's strikes. Wielding the Twin Tian Swords, he coordinates specialized tactical support and ensures every operative comes back alive."
+      },
+      {
+        fileId: "003", name: "TEN", smule: "96_10", country: "USA", age: "30", blood: "O", sign: "Taurus",
+        role: "Innkeeper", skills: "Art, Growling/Screamo", weapon: "96 Dagger", style: "hand-to-hand / earrings", personality: "Drunk or Tired",
+        tattoo: "Mid Forearm", food: "Melon Pan", flower: "Spider Lily", animal: "Bird", cof: "UNLIMITED", rank: "Founder", isFounder: true,
+        story: "Ten — handle 96_10 — is a thirty-year-old brawler from the irradiated sprawl of what was once the USA, her blood type O marking her as a universal donor in a world that always needs something from everyone else.<br><br>Within the guild she's the Innkeeper, and on most nights she's the easiest soul in the room laughing, pouring drinks, earrings catching the firelight as she dozes off behind the counter. Easy-going, warm, the kind of calm that makes every wanderer feel welcome. But cross her wrong and that warmth dies fast her cold stare is enough to shake the guildhall walls, and the sleepy bartender closes the distance bare-handed before you can blink. A renegade's mark wraps her mid-forearm, a brand she's too chill to care about until she isn’t.<br><br>Born under Taurus, she's patient as stone, and just as unforgiving when pushed."
+      },
+      {
+        fileId: "004", name: "MAMIKI", smule: "CLASSIFIED", country: "CLASSIFIED", age: "CLASSIFIED", blood: "CLASSIFIED", sign: "CLASSIFIED",
+        role: "Event Coordinator", skills: "Logistics", weapon: "Whisper Longbow", style: "ranged suppression", personality: "energetic and chaotic",
+        tattoo: "Unknown", food: "CLASSIFIED", flower: "CLASSIFIED", animal: "CLASSIFIED", cof: "UNLIMITED", rank: "Founder", isFounder: true,
+        story: "Mamiki coordinates the chaotic events of the wasteland. With the Whisper Longbow, she orchestrates holographic splicing and keeps morale high under heavy fire."
+      },
+      {
+        fileId: "005", name: "SAM", smule: "CLASSIFIED", country: "CLASSIFIED", age: "CLASSIFIED", blood: "CLASSIFIED", sign: "CLASSIFIED",
+        role: "Founder / Bookkeeper", skills: "Economy & Operations", weapon: "Rift Butterfly Knife", style: "stealth maneuvering", personality: "analytical",
+        tattoo: "Unknown", food: "CLASSIFIED", flower: "CLASSIFIED", animal: "CLASSIFIED", cof: "UNLIMITED", rank: "Founder", isFounder: true,
+        story: "Sam holds the Ledger. A master of economy and operations, ensuring the COF flow remains untracked by corporate watchdogs."
+      }
+    ];
+
+    let allMembersData = [];
+
+    // ====================================================
+    // 3. UI & PARTICLES
+    // ====================================================
     const hamburger = document.getElementById('hamburger');
     const navLinks = document.getElementById('navLinks');
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('active');
-      navLinks.classList.toggle('open');
-    });
-    navLinks.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        hamburger.classList.remove('active');
-        navLinks.classList.remove('open');
-      });
-    });
+    hamburger.addEventListener('click', () => { hamburger.classList.toggle('active'); navLinks.classList.toggle('open'); });
+    navLinks.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { hamburger.classList.remove('active'); navLinks.classList.remove('open'); }); });
 
-    // ----------------------------------------------------
-    // 2. PARTICLES
-    // ----------------------------------------------------
     const canvas = document.getElementById('particles-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
     function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
+    resizeCanvas(); window.addEventListener('resize', resizeCanvas);
     class Particle {
       constructor() { this.reset(); }
-      reset() {
-        this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 1.8 + 0.2; this.speedX = (Math.random() - 0.5) * 0.3; this.speedY = (Math.random() - 0.5) * 0.3;
-        this.opacity = Math.random() * 0.4; this.color = '#ff3300';
-      }
-      update() {
-        this.x += this.speedX; this.y += this.speedY;
-        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
-      }
-      draw() {
-        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = this.color; ctx.globalAlpha = this.opacity; ctx.fill(); ctx.globalAlpha = 1;
-      }
+      reset() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 1.8 + 0.2; this.speedX = (Math.random() - 0.5) * 0.3; this.speedY = (Math.random() - 0.5) * 0.3; this.opacity = Math.random() * 0.4; this.color = '#ff3300'; }
+      update() { this.x += this.speedX; this.y += this.speedY; if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset(); }
+      draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = this.color; ctx.globalAlpha = this.opacity; ctx.fill(); ctx.globalAlpha = 1; }
     }
-    const count = window.innerWidth < 768 ? 30 : 60;
-    for (let i = 0; i < count; i++) particles.push(new Particle());
-    function animateParticles() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => { p.update(); p.draw(); });
-      requestAnimationFrame(animateParticles);
-    }
+    const pCount = window.innerWidth < 768 ? 30 : 60;
+    for (let i = 0; i < pCount; i++) particles.push(new Particle());
+    function animateParticles() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animateParticles); }
     animateParticles();
 
-    // ----------------------------------------------------
-    // 3. MANIFESTO ACCORDION
-    // ----------------------------------------------------
     function toggleAccordion(header) {
       const item = header.parentElement;
       const isActive = item.classList.contains('active');
-      document.querySelectorAll('.manifesto-item').forEach(el => {
-        el.classList.remove('active');
-        el.querySelector('.m-icon').textContent = '[+]';
-      });
-      if (!isActive) {
-        item.classList.add('active');
-        item.querySelector('.m-icon').textContent = '[−]';
-      }
+      document.querySelectorAll('.manifesto-item').forEach(el => { el.classList.remove('active'); el.querySelector('.m-icon').textContent = '[+]'; });
+      if (!isActive) { item.classList.add('active'); item.querySelector('.m-icon').textContent = '[−]'; }
     }
 
-    // ----------------------------------------------------
-    // 4. STORY CARD BUILDER (TEN STYLE)
-    // ----------------------------------------------------
-    function escapeHtml(str) {
-      return String(str || '').replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
+    // ====================================================
+    // 4. RANK & SKILL TRANSLATOR (CYBERPUNK LORE)
+    // ====================================================
+    function calculateRank(cofVal) {
+      let cof = parseInt(cofVal);
+      if (isNaN(cof)) cof = 0;
+      if (cof < 100) return "Rookie";
+      if (cof < 400) return "Runner";
+      if (cof < 700) return "Operative";
+      if (cof < 900) return "Specialist";
+      if (cof < 1000) return "Elite";
+      return "Legend";
     }
 
-    function createProfileHTML(m) {
+    function translateSkills(rawSkills) {
+      if (!rawSkills) return "specialized tactical support";
+      let s = String(rawSkills).toLowerCase();
+      let traits = [];
+      if (s.includes('art') || s.includes('draw')) traits.push("neural-optic design and visual augmentation");
+      if (s.includes('mix') || s.includes('audio')) traits.push("frequency manipulation and audio-signal encryption");
+      if (s.includes('sing') || s.includes('vocal') || s.includes('rap') || s.includes('scream') || s.includes('growl')) traits.push("sonic-wave disruption and vocal-frequency projection");
+      if (s.includes('manage') || s.includes('organize')) traits.push("tactical operation coordination");
+      if (s.includes('video') || s.includes('edit') || s.includes('anim')) traits.push("holographic splicing and data-illusion generation");
+      
+      if (traits.length === 0) return `specialized tactical routines [${escapeHtml(rawSkills)}]`;
+      return traits.join(", ");
+    }
+
+    // ====================================================
+    // 5. RENDER FUNCTIONS
+    // ====================================================
+    function escapeHtml(str) { return String(str || '').replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;"); }
+
+    function createPreviewCard(m, index) {
       const name = m.name || "UNKNOWN";
+      const fileId = String(m.fileId).padStart(3, '0');
+      const rankClass = m.isFounder ? "db-rank founder" : "db-rank";
+      
+      // Store index to find it on click
       return `
-        <article class="profile-card">
-          <h3 class="profile-name">${escapeHtml(name)}</h3>
+        <div class="db-card" onclick="openModal(${index})">
+          <div class="db-header">
+            <span class="db-file-id">// FILE ${fileId}</span>
+            <span class="db-status">ACTIVE</span>
+          </div>
+          <div class="db-body">
+            <div class="db-row"><span class="db-label">CODENAME</span><span class="db-value">${escapeHtml(name)}</span></div>
+            <div class="db-row"><span class="db-label">ROLE</span><span class="db-value text-red">${escapeHtml(m.role || "Operative")}</span></div>
+            <div class="db-row"><span class="db-label">SPECIALIZATION</span><span class="db-value">${escapeHtml(m.skills || "Classified")}</span></div>
+            <div class="db-row"><span class="db-label">WEAPON</span><span class="db-value">${escapeHtml(m.weapon || "Unknown")}</span></div>
+            <div class="db-row"><span class="db-label">COF BALANCE</span><span class="db-value cof">${escapeHtml(m.cof || "0")}</span></div>
+            <div class="db-row" style="border:none;"><span class="db-label">RANK</span><span class="${rankClass}">${escapeHtml(m.rank)}</span></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function createDetailedProfile(m) {
+      const name = m.name || "UNKNOWN";
+      const fileId = String(m.fileId).padStart(3, '0');
+      const translatedSkills = translateSkills(m.skills);
+      
+      let storyHTML = "";
+      if (m.story) {
+        storyHTML = `<p class="profile-bio">${m.story}</p>`; // Use pre-written story for founders like TEN
+      } else {
+        // Auto-generate story for regular members
+        storyHTML = `
           <p class="profile-bio">
             <strong>${escapeHtml(name)}</strong> — handle <strong>${escapeHtml(m.smule || "N/A")}</strong> —
             is a ${escapeHtml(m.age || "??")}-year-old operative from the irradiated sprawl of what was once
@@ -518,7 +547,7 @@
           </p>
           <p class="profile-bio">
             Within the guild they act as the <strong>${escapeHtml(m.role || "Operative")}</strong>,
-            utilizing their <strong>${escapeHtml(m.skills || "classified skills")}</strong>.
+            utilizing their <strong>${translatedSkills}</strong>.
             On most nights they come across as <strong>${escapeHtml(m.personality || "unreadable")}</strong>,
             their signature <strong>${escapeHtml(m.style || "look")}</strong> catching the firelight.
             But cross them wrong and that warmth dies fast — they close the distance with their
@@ -530,76 +559,53 @@
             Born under <strong>${escapeHtml(m.sign || "unknown stars")}</strong>,
             they are patient as stone, and just as unforgiving when pushed.
           </p>
-          <div class="fav-grid">
-            <div class="fav-item"><div class="fav-title">Favorite Food</div><div class="fav-box">${escapeHtml(m.food || "—")}</div></div>
-            <div class="fav-item"><div class="fav-title">Favorite Flower</div><div class="fav-box">${escapeHtml(m.flower || "—")}</div></div>
-            <div class="fav-item"><div class="fav-title">Favorite Pet</div><div class="fav-box">${escapeHtml(m.animal || "—")}</div></div>
+        `;
+      }
+
+      return `
+        <div class="profile-header-wrap">
+          <div class="profile-image-placeholder">
+            [ IMAGE DATA CORRUPTED ]<br><br>SIGNAL LOST
           </div>
-        </article>
+          <div class="profile-header-text">
+            <h3 class="profile-name">${escapeHtml(name)}</h3>
+            <span class="profile-file">// FILE ${fileId} — RANK: <span style="color:var(--neon-cyan);">${escapeHtml(m.rank)}</span></span>
+          </div>
+        </div>
+        
+        ${storyHTML}
+
+        <div class="fav-grid">
+          <div class="fav-item"><div class="fav-title">Favorite Food</div><div class="fav-box">${escapeHtml(m.food || "—")}</div></div>
+          <div class="fav-item"><div class="fav-title">Favorite Flower</div><div class="fav-box">${escapeHtml(m.flower || "—")}</div></div>
+          <div class="fav-item"><div class="fav-title">Favorite Pet</div><div class="fav-box">${escapeHtml(m.animal || "—")}</div></div>
+        </div>
       `;
     }
 
-    // ----------------------------------------------------
-    // 5. ON-PAGE FORM SUBMISSION & LOCAL/SERVER SYNC
-    // ----------------------------------------------------
-    const form = document.getElementById('nativeRegisterForm');
+    // Modal Controls
+    const modal = document.getElementById("profileModal");
+    const modalBody = document.getElementById("modalBody");
     
-    form.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btnSubmit');
-      btn.textContent = "TRANSMITTING DOSSIER...";
-      btn.disabled = true;
-
-      const newRecruit = {
-        name: document.getElementById('f_name').value,
-        smule: document.getElementById('f_smule').value,
-        country: document.getElementById('f_country').value,
-        age: document.getElementById('f_age').value,
-        blood: document.getElementById('f_blood').value,
-        sign: document.getElementById('f_sign').value,
-        role: document.getElementById('f_role').value,
-        skills: document.getElementById('f_skills').value,
-        style: document.getElementById('f_style').value,
-        weapon: document.getElementById('f_weapon').value,
-        personality: document.getElementById('f_personality').value,
-        tattoo: document.getElementById('f_tattoo').value,
-        food: document.getElementById('f_food').value,
-        flower: document.getElementById('f_flower').value,
-        animal: document.getElementById('f_animal').value
-      };
-
-      // Instantly generate card locally for immediate feedback
-      const container = document.getElementById('rosterContainer');
-      const cardHTML = createProfileHTML(newRecruit);
-      container.insertAdjacentHTML('afterbegin', cardHTML);
-
-      // Scroll to database section
-      document.getElementById('database').scrollIntoView({ behavior: 'smooth' });
-
-      // Send data to Google Sheets in background if URL is provided
-      if (GOOGLE_SCRIPT_URL && !GOOGLE_SCRIPT_URL.includes("YOUR_GOOGLE")) {
-        try {
-          await fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newRecruit)
-          });
-        } catch(err) {
-          console.error("Cloud sync error:", err);
-        }
-      }
-
-      btn.textContent = "REGISTERED ✓";
-      setTimeout(() => {
-        btn.textContent = "REGISTER OPERATIVE";
-        btn.disabled = false;
-        form.reset();
-      }, 3000);
+    function openModal(index) {
+      const member = allMembersData[index];
+      modalBody.innerHTML = createDetailedProfile(member);
+      modal.classList.add("active");
+      document.body.style.overflow = "hidden"; // prevent background scrolling
+    }
+    
+    function closeModal() {
+      modal.classList.remove("active");
+      document.body.style.overflow = "auto";
+    }
+    
+    // Close modal if clicking outside the box
+    modal.addEventListener("click", function(e) {
+      if (e.target === modal) closeModal();
     });
 
     // ----------------------------------------------------
-    // 6. CSV PARSER (FETCH FROM GOOGLE SHEETS)
+    // 6. CSV PARSER & LOADER
     // ----------------------------------------------------
     function parseCSV(text) {
       const rows = []; let row = []; let cell = ""; let inQuotes = false;
@@ -608,95 +614,152 @@
         if (char === '"' && inQuotes && next === '"') { cell += '"'; i++; }
         else if (char === '"') { inQuotes = !inQuotes; }
         else if (char === ',' && !inQuotes) { row.push(cell.trim()); cell = ""; }
-        else if ((char === '\n' || char === '\r') && !inQuotes) {
-          if (cell.length || row.length) { row.push(cell.trim()); rows.push(row); row = []; cell = ""; }
-        } else { cell += char; }
+        else if ((char === '\n' || char === '\r') && !inQuotes) { if (cell.length || row.length) { row.push(cell.trim()); rows.push(row); row = []; cell = ""; } } 
+        else { cell += char; }
       }
       if (cell.length || row.length) { row.push(cell.trim()); rows.push(row); }
       return rows.filter(r => r.some(c => c !== ""));
     }
-
-    function findCol(headers, aliases) {
-      const lower = headers.map(h => (h || "").toLowerCase().trim());
-      for (const alias of aliases) {
-        const idx = lower.findIndex(h => h.includes(alias.toLowerCase()));
-        if (idx !== -1) return idx;
-      }
-      return -1;
-    }
-
-    function val(row, idx) { return idx < 0 ? "" : (row[idx] || "").trim(); }
+    function findCol(h, a) { const l = h.map(x=>(x||"").toLowerCase().trim()); for(const x of a){ const i = l.findIndex(y=>y.includes(x.toLowerCase())); if(i!==-1) return i; } return -1; }
+    function val(r, i) { return i < 0 ? "" : (r[i] || "").trim(); }
 
     async function loadMembers() {
       const status = document.getElementById("sys-status");
-      const container = document.getElementById("rosterContainer");
+      const fGrid = document.getElementById("foundersGrid");
+      const rGrid = document.getElementById("rosterGrid");
 
-      if (!SHEET_CSV_URL || SHEET_CSV_URL.includes("YOUR_GOOGLE")) {
-        status.textContent = "Database offline. Fill out the registration form below to generate a local profile.";
-        status.className = "sys-status";
-        return;
-      }
+      // Reset master array and push founders
+      allMembersData = [...foundersData];
 
       try {
         const url = SHEET_CSV_URL + (SHEET_CSV_URL.includes("?") ? "&" : "?") + "t=" + Date.now();
         const res = await fetch(url, { cache: "no-store" });
-        if (!res.ok) throw new Error("Could not fetch CSV");
+        if (!res.ok) throw new Error("CSV fetch failed");
 
         const text = await res.text();
         const rows = parseCSV(text);
-        if (rows.length < 2) {
-          status.textContent = "No operative files registered yet.";
-          status.className = "sys-status";
-          return;
-        }
-
-        const headers = rows[0];
-        const dataRows = rows.slice(1);
-
-        const cols = {
-          name: findCol(headers, ["name", "nickname"]),
-          smule: findCol(headers, ["smule"]),
-          country: findCol(headers, ["country"]),
-          age: findCol(headers, ["age"]),
-          blood: findCol(headers, ["blood"]),
-          sign: findCol(headers, ["sign", "horoscope"]),
-          role: findCol(headers, ["role"]),
-          skills: findCol(headers, ["skills", "singing"]),
-          weapon: findCol(headers, ["weapon"]),
-          style: findCol(headers, ["style", "accessory"]),
-          personality: findCol(headers, ["personality"]),
-          flower: findCol(headers, ["flower", "plant", "tree"]),
-          food: findCol(headers, ["food"]),
-          animal: findCol(headers, ["animal", "pet"]),
-          tattoo: findCol(headers, ["tattoo", "mark"])
-        };
-
-        let html = ""; let count = 0;
-        for (let i = dataRows.length - 1; i >= 0; i--) {
-          const r = dataRows[i];
-          const member = {
-            name: val(r, cols.name), smule: val(r, cols.smule), country: val(r, cols.country),
-            age: val(r, cols.age), blood: val(r, cols.blood), sign: val(r, cols.sign),
-            role: val(r, cols.role), skills: val(r, cols.skills), weapon: val(r, cols.weapon),
-            style: val(r, cols.style), personality: val(r, cols.personality),
-            flower: val(r, cols.flower), food: val(r, cols.food), animal: val(r, cols.animal),
-            tattoo: val(r, cols.tattoo)
+        
+        if (rows.length > 1) {
+          const headers = rows[0];
+          const dataRows = rows.slice(1);
+          
+          const cols = {
+            name: findCol(headers, ["name", "nickname"]), smule: findCol(headers, ["smule"]), country: findCol(headers, ["country"]),
+            age: findCol(headers, ["age"]), blood: findCol(headers, ["blood"]), sign: findCol(headers, ["sign", "horoscope"]),
+            role: findCol(headers, ["role"]), skills: findCol(headers, ["skills", "singing"]), style: findCol(headers, ["style", "accessory"]),
+            weapon: findCol(headers, ["weapon"]), personality: findCol(headers, ["personality"]), tattoo: findCol(headers, ["tattoo", "mark"]),
+            food: findCol(headers, ["food"]), flower: findCol(headers, ["flower", "plant"]), animal: findCol(headers, ["animal", "pet"]),
+            cof: findCol(headers, ["cof", "balance", "currency"]), status: findCol(headers, ["status", "approval"])
           };
-          if (!member.name && !member.smule) continue;
-          html += createProfileHTML(member);
-          count++;
-        }
 
-        container.innerHTML = html;
-        status.textContent = count ? `Database Online — ${count} Operative Dossier(s) Loaded.` : "No files found.";
-        status.className = "sys-status";
+          for (let i = 0; i < dataRows.length; i++) {
+            const r = dataRows[i];
+            const memberStatus = val(r, cols.status).toLowerCase();
+            
+            // Show only approved
+            if (cols.status !== -1 && memberStatus && memberStatus !== "approved") continue;
+
+            const name = val(r, cols.name);
+            if (!name) continue;
+
+            const cofValue = val(r, cols.cof) || "0";
+
+            allMembersData.push({
+              fileId: foundersData.length + i + 1, // 006, 007...
+              name: name, smule: val(r, cols.smule), country: val(r, cols.country), age: val(r, cols.age), blood: val(r, cols.blood), sign: val(r, cols.sign),
+              role: val(r, cols.role), skills: val(r, cols.skills), style: val(r, cols.style), weapon: val(r, cols.weapon), personality: val(r, cols.personality),
+              tattoo: val(r, cols.tattoo), food: val(r, cols.food), flower: val(r, cols.flower), animal: val(r, cols.animal),
+              cof: cofValue,
+              rank: calculateRank(cofValue),
+              isFounder: false
+            });
+          }
+        }
       } catch (err) {
         console.error(err);
-        status.textContent = "Database loading offline. Registrations will render locally.";
-        status.className = "sys-status";
+        // We continue anyway so founders still render
       }
+
+      // Render Arrays to DOM
+      fGrid.innerHTML = "";
+      rGrid.innerHTML = "";
+      let activeOperativesCount = 0;
+
+      allMembersData.forEach((m, index) => {
+        if (m.isFounder) {
+          fGrid.innerHTML += createPreviewCard(m, index);
+        } else {
+          rGrid.innerHTML += createPreviewCard(m, index);
+          activeOperativesCount++;
+        }
+      });
+
+      if (activeOperativesCount === 0) {
+        status.textContent = "No approved operatives found.";
+      } else {
+        status.textContent = `Database Online — ${activeOperativesCount} Operative Dossier(s) Loaded.`;
+      }
+      status.className = "sys-status";
     }
 
+    // ----------------------------------------------------
+    // 7. FORM SUBMIT → SEND TO GOOGLE SHEET
+    // ----------------------------------------------------
+    const form = document.getElementById('nativeRegisterForm');
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmit');
+      btn.textContent = "TRANSMITTING DOSSIER...";
+      btn.disabled = true;
+
+      const newRecruit = {
+        name: document.getElementById('f_name').value.trim(),
+        smule: document.getElementById('f_smule').value.trim(),
+        country: document.getElementById('f_country').value.trim(),
+        age: document.getElementById('f_age').value.trim(),
+        blood: document.getElementById('f_blood').value.trim(),
+        sign: document.getElementById('f_sign').value.trim(),
+        role: document.getElementById('f_role').value.trim(),
+        skills: document.getElementById('f_skills').value.trim(),
+        style: document.getElementById('f_style').value.trim(),
+        weapon: document.getElementById('f_weapon').value.trim(),
+        personality: document.getElementById('f_personality').value.trim(),
+        tattoo: document.getElementById('f_tattoo').value.trim(),
+        food: document.getElementById('f_food').value.trim(),
+        flower: document.getElementById('f_flower').value.trim(),
+        animal: document.getElementById('f_animal').value.trim(),
+        status: "pending"
+      };
+
+      try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newRecruit)
+        });
+
+        btn.textContent = "REGISTERED ✓";
+        form.reset();
+
+        setTimeout(() => {
+          loadMembers(); // Refresh the list from google sheets
+          document.getElementById('database').scrollIntoView({ behavior: 'smooth' });
+        }, 1500);
+
+      } catch (err) {
+        console.error(err);
+        alert("Transmission failed. Please check network connection.");
+        btn.textContent = "REGISTER OPERATIVE";
+      }
+
+      setTimeout(() => {
+        btn.textContent = "REGISTER OPERATIVE";
+        btn.disabled = false;
+      }, 2500);
+    });
+
+    // Start
     loadMembers();
   </script>
 </body>
