@@ -117,7 +117,7 @@
   }
   .drawer-overlay.show{display:block}
 
-  @media(max-width:900px){
+  @media(max-width:950px){
     .nav-links{display:none}
     .hamburger{display:flex}
   }
@@ -185,10 +185,60 @@
   .no-notices{font-size:.8rem;color:var(--text);opacity:.35;text-align:center;padding:18px 0}
 
   /* ===== LORE ===== */
-  #lore .lore-text{max-width:750px;margin:0 auto;text-align:center;font-size:.95rem;color:var(--text)}
+  #lore .lore-text{max-width:800px;margin:0 auto;text-align:left;font-size:.95rem;color:var(--text)}
   #lore .lore-text p{margin-bottom:16px}
   #lore .lore-text em{color:var(--cyan)}
   #lore .lore-text strong{color:var(--red)}
+  
+  .lore-chapter {
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .lore-chapter h3 {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+
+  /* ===== GUILD INFO (DROPDOWNS) ===== */
+  #info { padding-top: 20px; }
+  .cyber-dropdown {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    clip-path: polygon(10px 0%, 100% 0%, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0% 100%, 0% 10px);
+    margin-bottom: 16px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    transition: border-color .3s;
+  }
+  .cyber-dropdown:hover { border-color: var(--cyan); }
+  .cyber-dropdown summary {
+    padding: 18px 24px;
+    font-family: var(--font-display);
+    font-size: .9rem;
+    color: var(--cyan);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    letter-spacing: 1px;
+  }
+  .cyber-dropdown summary::-webkit-details-marker { display: none; }
+  .cyber-dropdown summary::after { content: '▼'; color: var(--red); font-size: .8rem; }
+  .cyber-dropdown[open] summary::after { content: '▲'; }
+  .dropdown-content {
+    padding: 0 24px 24px;
+    font-size: .85rem;
+    color: var(--text);
+    border-top: 1px solid var(--card-border);
+    margin-top: 4px;
+    padding-top: 18px;
+  }
+  .dropdown-content p { margin-bottom: 12px; }
+  .dropdown-content strong { color: var(--white); }
 
   /* ===== CARDS ===== */
   .db-grid{
@@ -275,14 +325,21 @@
     transition:color .3s;z-index:5;
   }
   .modal-close:hover{color:var(--white)}
+  
+  /* UPDATED: BIGGER PROFILE PICTURE IN MODAL */
   .m-avatar{
-    width:100px;height:100px;border-radius:50%;
-    border:2px solid var(--red);margin:0 auto 18px;
+    width:150px; /* Increased from 100px */
+    height:150px; /* Increased from 100px */
+    border-radius:50%;
+    border:3px solid var(--red);
+    margin:0 auto 18px;
     background:var(--black);object-fit:cover;overflow:hidden;
     display:flex;align-items:center;justify-content:center;
-    font-family:var(--font-display);color:var(--red);font-size:1.6rem;
+    font-family:var(--font-display);color:var(--red);
+    font-size:2.5rem; /* Bigger initial letter */
   }
   img.m-avatar{display:block}
+  
   .m-file{font-size:.7rem;color:var(--red);letter-spacing:2px;margin-bottom:4px;text-align:center}
   .m-name{font-family:var(--font-display);font-size:1.6rem;color:var(--white);margin-bottom:2px;text-align:center}
   .m-handle{font-size:.78rem;color:var(--text);opacity:.6;text-align:center;margin-bottom:4px}
@@ -324,6 +381,7 @@
     <nav>
       <ul class="nav-links">
         <li><a href="#lore">LORE</a></li>
+        <li><a href="#info">INFO</a></li>
         <li><a href="#founders">FOUNDERS</a></li>
         <li><a href="#database">DATABASE</a></li>
         <li><a href="#ranks">RANKS</a></li>
@@ -341,6 +399,7 @@
 <div class="drawer" id="drawer">
   <ul>
     <li><a href="#lore" class="drawer-link">LORE</a></li>
+    <li><a href="#info" class="drawer-link">INFO</a></li>
     <li><a href="#founders" class="drawer-link">FOUNDERS</a></li>
     <li><a href="#database" class="drawer-link">DATABASE</a></li>
     <li><a href="#ranks" class="drawer-link">RANKS</a></li>
@@ -372,13 +431,61 @@
 <!-- ============ LORE ============ -->
 <section id="lore" class="section">
   <div class="container">
-    <h2 class="section-title">// TRANSMISSION INTERCEPT</h2>
+    <h2 class="section-title">// LORE ARCHIVES</h2>
     <div class="lore-text">
-      <p>The networks fell silent decades ago. What remains is a fractured digital wasteland — abandoned frequencies, dead servers, corrupted archives. Governments dissolved. Corporations burned. <strong>Art was outlawed.</strong></p>
-      <p>But in the static, a signal emerged. A rogue broadcast on a frequency no one was supposed to find. It carried music — raw, unfiltered, <em>alive</em>. Those who followed it found each other.</p>
-      <p>They called themselves <strong>RENEG▲DES</strong>. Singers, artists, architects of sound and vision. Operatives with no allegiance except to the craft. They built a hidden network — a guild forged in fire and frequency — where every voice matters and <em>"Nobody gets left behind."</em></p>
-      <p>Now, from the ashes, they recruit. Not everyone. Only those who are <strong>chosen</strong>. Only those worthy of a <strong>FILE</strong>.</p>
+      
+      <!-- CHAPTER ZERO -->
+      <div class="cyber-box lore-chapter">
+        <h3 style="color:var(--red);">[ CHAPTER ZERO: THE FALL ]</h3>
+        <p>The networks fell silent decades ago. What remains is a fractured digital wasteland — abandoned frequencies, dead servers, corrupted archives.</p>
+        <p>Governments dissolved. Corporations burned. The world was plunged into a new dark age where surviving meant staying hidden. In this bleak expanse, creativity was seen as a dangerous distraction. <strong>Art was outlawed.</strong> Singing was considered a crime against the silence.</p>
+      </div>
+
+      <!-- CHAPTER ONE -->
+      <div class="cyber-box lore-chapter">
+        <h3 style="color:var(--cyan);">[ CHAPTER ONE: THE AWAKENING ]</h3>
+        <p>But in the static, a signal emerged. A rogue broadcast on a frequency no one was supposed to find. It carried music — raw, unfiltered, <em>alive</em>. Those who followed it found each other.</p>
+        <p>They called themselves <strong>RENEG▲DES</strong>. Singers, artists, architects of sound and vision. Operatives with no allegiance except to the craft. They built a hidden network — a guild forged in fire and frequency — where every voice matters and <em>"Nobody gets left behind."</em></p>
+        <p>Now, from the ashes, they recruit. Not everyone. Only those who are <strong>chosen</strong>. Only those worthy of a <strong>FILE</strong>.</p>
+      </div>
+
     </div>
+  </div>
+</section>
+
+<!-- ============ GUILD INFO (DROPDOWNS) ============ -->
+<section id="info" class="section">
+  <div class="container">
+    <h2 class="section-title">// DIRECTIVES</h2>
+    
+    <details class="cyber-dropdown">
+      <summary>DATA_LOG: GUILD RULES</summary>
+      <div class="dropdown-content">
+        <p><strong>01. RESPECT THE FREQUENCY</strong><br>No friendly fire. We protect our own. Disrespecting another operative will result in immediate disconnection.</p>
+        <p><strong>02. NOBODY GETS LEFT BEHIND</strong><br>If a member is struggling with a mission, we help them. We rise together or not at all.</p>
+        <p><strong>03. MAINTAIN YOUR COVER</strong><br>Keep your operations clean and represent the guild well in the wasteland.</p>
+      </div>
+    </details>
+
+    <details class="cyber-dropdown">
+      <summary>DATA_LOG: HOW TO EARN COFS</summary>
+      <div class="dropdown-content">
+        <p>COFs are the currency of our network. You earn them by completing operations:</p>
+        <p><strong>+ Chorus Battles:</strong> Major COF rewards for representing the guild.<br>
+        <strong>+ Collaborations:</strong> Singing, mixing, or drawing for guild projects.<br>
+        <strong>+ Events:</strong> Participating in guild-wide events.</p>
+        <p><em>* COFs are tracked by the Founders and dictate your official Rank.</em></p>
+      </div>
+    </details>
+
+    <details class="cyber-dropdown">
+      <summary>DATA_LOG: RECRUITMENT</summary>
+      <div class="dropdown-content">
+        <p>Recruitment is strictly <strong>invitation-only</strong>.</p>
+        <p>Only the 5 Founders have the authority to share the Enlistment Frequency. If you were sent here without a Founder's approval, your dossier will be rejected.</p>
+      </div>
+    </details>
+
   </div>
 </section>
 
