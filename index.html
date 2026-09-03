@@ -255,6 +255,31 @@
     display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
     gap:20px;
   }
+  
+  /* ===== FOUNDERS LAYOUT: 3 TOP, 2 BOTTOM ===== */
+  #founders-grid{
+    display:flex !important;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:20px;
+  }
+  #founders-grid .db-card{
+    flex:0 1 calc(33.333% - 14px);
+    min-width:240px;
+    max-width:320px;
+  }
+  @media (max-width:900px){
+    #founders-grid .db-card{
+      flex:0 1 calc(50% - 12px);
+      max-width:none;
+    }
+  }
+  @media (max-width:550px){
+    #founders-grid .db-card{
+      flex:1 1 100%;
+      min-width:0;
+    }
+  }
   .db-card{
     cursor:pointer;padding:22px 16px;text-align:center;
     transition:transform .3s,border-color .3s;
@@ -1398,25 +1423,41 @@ document.getElementById('open-mission-btn-mobile').addEventListener('click',e=>{
 missionClose.addEventListener('click',closeCommand);
 missionOverlay.addEventListener('click',e=>{if(e.target===missionOverlay)closeCommand();});
 
-// Change this to match your Founder Password if you change it in Apps Script:
 const COMMAND_PASSWORD = 'RIPCOF2026';
 
-unlockBtn.addEventListener('click',()=>{
-  const enteredPw = missionPw.value.trim();
-  if(!enteredPw){
+unlockBtn.addEventListener('click', function () {
+  const enteredPw = String(missionPw.value || '').trim();
+
+  // Always keep panel locked unless password matches
+  missionGate.style.display = 'block';
+  missionWrap.style.display = 'none';
+
+  if (!enteredPw) {
     pwStatus.textContent = 'Access code required.';
+    pwStatus.style.color = 'var(--red)';
     return;
   }
-  if(enteredPw !== COMMAND_PASSWORD){
+
+  if (enteredPw !== COMMAND_PASSWORD) {
     pwStatus.textContent = '✖ Invalid Access Code.';
+    pwStatus.style.color = 'var(--red)';
+    missionPw.value = '';
+    missionPw.focus();
     return;
   }
+
+  // ONLY correct password reaches here
   pwStatus.textContent = '';
   missionGate.style.display = 'none';
   missionWrap.style.display = 'block';
 });
 
-missionPw.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();unlockBtn.click();}});
+missionPw.addEventListener('keydown', function (e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    unlockBtn.click();
+  }
+});
 
 /* Tabs */
 document.querySelectorAll('.tab-btn').forEach(btn=>{
