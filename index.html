@@ -64,7 +64,7 @@
     box-shadow:0 0 20px rgba(0,240,255,.08);
   }
 
-  /* HEADER */
+  /* ===== HEADER ===== */
   header{
     position:fixed;top:0;left:0;width:100%;z-index:1000;
     background:rgba(5,5,8,.92);backdrop-filter:blur(12px);
@@ -80,9 +80,9 @@
   }
   .logo .tri{color:var(--red)}
 
-  .nav-links{display:flex;gap:28px;list-style:none}
+  .nav-links{display:flex;gap:24px;list-style:none}
   .nav-links a{
-    color:var(--text);text-decoration:none;font-size:.85rem;letter-spacing:1px;
+    color:var(--text);text-decoration:none;font-size:.8rem;letter-spacing:1px;
     text-transform:uppercase;transition:color .3s;position:relative;
   }
   .nav-links a::after{
@@ -117,12 +117,12 @@
   }
   .drawer-overlay.show{display:block}
 
-  @media(max-width:768px){
+  @media(max-width:900px){
     .nav-links{display:none}
     .hamburger{display:flex}
   }
 
-  /* HERO */
+  /* ===== HERO ===== */
   #hero{
     min-height:100vh;display:flex;align-items:center;justify-content:center;
     text-align:center;position:relative;
@@ -153,7 +153,7 @@
   }
   .hero-btn:hover{background:var(--red);color:var(--black)}
 
-  /* GUILD BROADCAST (NOTICES) */
+  /* ===== GUILD BROADCAST ===== */
   #broadcast{padding:40px 0 0;position:relative;z-index:2}
   .broadcast-wrap{max-width:1100px;margin:0 auto;padding:0 20px}
   .broadcast-title{
@@ -176,51 +176,46 @@
     font-family:var(--font-display);font-size:.9rem;color:var(--cyan);
     margin-bottom:6px;
   }
-  .notice-card .n-content{font-size:.85rem;color:var(--text);margin-bottom:8px}
+  .notice-card .n-content{font-size:.85rem;color:var(--text);margin-bottom:8px;white-space:pre-wrap}
   .notice-card .n-meta{
     font-size:.7rem;color:var(--text);opacity:.6;
     display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;
   }
   .notice-card .n-meta .n-founder{color:var(--red)}
-  .no-notices{font-size:.8rem;color:var(--text);opacity:.4;text-align:center;padding:20px 0}
+  .no-notices{font-size:.8rem;color:var(--text);opacity:.35;text-align:center;padding:18px 0}
 
-  /* LORE */
+  /* ===== LORE ===== */
   #lore .lore-text{max-width:750px;margin:0 auto;text-align:center;font-size:.95rem;color:var(--text)}
   #lore .lore-text p{margin-bottom:16px}
   #lore .lore-text em{color:var(--cyan)}
   #lore .lore-text strong{color:var(--red)}
 
-  /* FOUNDERS */
-  .founders-grid{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-    gap:20px;
-  }
-  .founder-card{text-align:center;padding:24px 16px}
-  .founder-card .file-num{font-size:.7rem;color:var(--red);letter-spacing:2px;margin-bottom:6px}
-  .founder-card .name{font-family:var(--font-display);font-size:1.05rem;color:var(--white);margin-bottom:4px}
-  .founder-card .role{font-size:.78rem;color:var(--cyan);margin-bottom:8px}
-  .founder-card .weapon{font-size:.75rem;color:var(--text);opacity:.7}
-
-  /* DATABASE */
+  /* ===== CARDS ===== */
   .db-grid{
     display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
     gap:20px;
   }
   .db-card{
-    cursor:pointer;padding:20px 16px;text-align:center;
+    cursor:pointer;padding:22px 16px;text-align:center;
     transition:transform .3s,border-color .3s;
   }
   .db-card:hover{transform:translateY(-4px);border-color:var(--red)}
-  .db-card .card-file{font-size:.7rem;color:var(--red);letter-spacing:2px;margin-bottom:4px}
-  .db-card .card-name{font-family:var(--font-display);font-size:1rem;color:var(--white);margin-bottom:4px}
-  .db-card .card-role{font-size:.75rem;color:var(--cyan);margin-bottom:6px}
-  .db-card .card-rank{font-size:.72rem;color:var(--text);opacity:.8}
-  .db-loading{text-align:center;color:var(--cyan);font-size:.9rem;padding:40px 0}
-
-  /* RANKS */
-  .ranks-table{
-    width:100%;border-collapse:collapse;max-width:640px;margin:0 auto;
+  .db-card .card-avatar{
+    width:64px;height:64px;border-radius:50%;border:2px solid var(--red);
+    margin:0 auto 12px;background:var(--black);object-fit:cover;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-display);color:var(--red);font-size:1.1rem;
   }
+  img.card-avatar{display:block}
+  .db-card .card-file{font-size:.7rem;color:var(--red);letter-spacing:2px;margin-bottom:4px}
+  .db-card .card-name{font-family:var(--font-display);font-size:1rem;color:var(--white);margin-bottom:2px}
+  .db-card .card-handle{font-size:.68rem;color:var(--text);opacity:.55;margin-bottom:6px}
+  .db-card .card-role{font-size:.75rem;color:var(--cyan);margin-bottom:6px}
+  .db-card .card-rank{font-size:.72rem;color:var(--text);opacity:.85}
+  .db-loading{text-align:center;color:var(--cyan);font-size:.9rem;padding:40px 0;grid-column:1/-1}
+
+  /* ===== RANKS ===== */
+  .ranks-table{width:100%;border-collapse:collapse;max-width:640px;margin:0 auto}
   .ranks-table th,.ranks-table td{
     padding:12px 16px;text-align:left;border-bottom:1px solid var(--card-border);font-size:.85rem;
   }
@@ -229,7 +224,7 @@
   .ranks-table td:nth-child(2){color:var(--white);font-weight:700}
   .ranks-table td:nth-child(3){color:var(--text);opacity:.8}
 
-  /* FORM */
+  /* ===== FORMS ===== */
   #register .form-intro{text-align:center;max-width:560px;margin:0 auto 32px;font-size:.88rem;color:var(--text)}
   .reg-form{max-width:600px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
   .form-group{display:flex;flex-direction:column;gap:4px}
@@ -244,10 +239,11 @@
   .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   @media(max-width:500px){.form-row{grid-template-columns:1fr}}
   .form-group select option{background:var(--card);color:var(--white)}
+  .form-hint{font-size:.7rem;color:var(--text);opacity:.5}
   .submit-btn{
     padding:14px 0;background:var(--red);color:var(--black);
     font-family:var(--font-display);font-size:.85rem;font-weight:700;
-    letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;
+    letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;width:100%;
     clip-path:polygon(10px 0%,100% 0%,100% calc(100% - 10px),calc(100% - 10px) 100%,0% 100%,0% 10px);
     transition:opacity .3s;
   }
@@ -257,17 +253,16 @@
   #form-status.success{color:var(--cyan)}
   #form-status.error{color:var(--red)}
 
-  /* MODAL */
+  /* ===== MODALS ===== */
   .modal-overlay{
     position:fixed;top:0;left:0;width:100%;height:100%;
     background:rgba(5,5,8,.88);backdrop-filter:blur(8px);
-    z-index:2000;display:none;align-items:center;justify-content:center;
-    padding:20px;
+    z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;
   }
   .modal-overlay.active{display:flex}
   .modal{
     background:var(--card);border:1px solid var(--card-border);
-    max-width:560px;width:100%;max-height:85vh;overflow-y:auto;
+    max-width:560px;width:100%;max-height:86vh;overflow-y:auto;
     padding:36px 30px;position:relative;
     clip-path:polygon(var(--corner) 0%,100% 0%,100% calc(100% - var(--corner)),calc(100% - var(--corner)) 100%,0% 100%,0% var(--corner));
   }
@@ -277,55 +272,52 @@
   .modal-close{
     position:absolute;top:14px;right:18px;background:none;border:none;
     color:var(--red);font-size:1.5rem;cursor:pointer;font-family:var(--font-display);
-    transition:color .3s;
+    transition:color .3s;z-index:5;
   }
   .modal-close:hover{color:var(--white)}
-  .modal .m-file{font-size:.7rem;color:var(--red);letter-spacing:2px;margin-bottom:4px}
-  .modal .m-name{font-family:var(--font-display);font-size:1.6rem;color:var(--white);margin-bottom:2px}
-  .modal .m-role{color:var(--cyan);font-size:.85rem;margin-bottom:16px}
-  .modal .m-divider{width:100%;height:1px;background:var(--card-border);margin:16px 0}
-  .modal .m-row{display:flex;justify-content:space-between;margin-bottom:6px;font-size:.82rem}
-  .modal .m-row .label{color:var(--cyan);text-transform:uppercase;letter-spacing:1px;font-size:.7rem}
-  .modal .m-row .value{color:var(--white);text-align:right}
-  .modal .m-story{margin-top:18px;font-size:.85rem;color:var(--text);line-height:1.7}
-  .modal .m-story p{margin-bottom:10px}
-  .modal .m-avatar{
-    width:90px;height:90px;border-radius:50%;
+  .m-avatar{
+    width:100px;height:100px;border-radius:50%;
     border:2px solid var(--red);margin:0 auto 18px;
-    background:var(--black);object-fit:cover;
+    background:var(--black);object-fit:cover;overflow:hidden;
     display:flex;align-items:center;justify-content:center;
-    font-family:var(--font-display);color:var(--red);font-size:1.4rem;
-    overflow:hidden;
+    font-family:var(--font-display);color:var(--red);font-size:1.6rem;
   }
-  .modal img.m-avatar{
-    display:block;
-  }
+  img.m-avatar{display:block}
+  .m-file{font-size:.7rem;color:var(--red);letter-spacing:2px;margin-bottom:4px;text-align:center}
+  .m-name{font-family:var(--font-display);font-size:1.6rem;color:var(--white);margin-bottom:2px;text-align:center}
+  .m-handle{font-size:.78rem;color:var(--text);opacity:.6;text-align:center;margin-bottom:4px}
+  .m-role{color:var(--cyan);font-size:.85rem;margin-bottom:16px;text-align:center}
+  .m-divider{width:100%;height:1px;background:var(--card-border);margin:16px 0}
+  .m-row{display:flex;justify-content:space-between;gap:12px;margin-bottom:6px;font-size:.82rem}
+  .m-row .label{color:var(--cyan);text-transform:uppercase;letter-spacing:1px;font-size:.7rem;white-space:nowrap}
+  .m-row .value{color:var(--white);text-align:right}
+  .m-story{margin-top:18px;font-size:.85rem;color:var(--text);line-height:1.75}
+  .m-story p{margin-bottom:12px}
+  .m-story em{color:var(--cyan)}
 
-  /* FOOTER */
+  /* ===== TABS ===== */
+  .tab-bar{display:flex;gap:0;margin-bottom:20px}
+  .tab-btn{
+    flex:1;padding:11px 0;background:transparent;border:1px solid var(--card-border);
+    color:var(--text);font-family:var(--font-display);font-size:.7rem;
+    letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .3s;
+  }
+  .tab-btn.active{background:var(--red);color:var(--black);border-color:var(--red)}
+  .tab-panel{display:none}
+  .tab-panel.active{display:block}
+
+  /* ===== FOOTER ===== */
   footer{
     text-align:center;padding:30px 20px;border-top:1px solid var(--card-border);
     font-size:.75rem;color:var(--text);opacity:.6;position:relative;z-index:2;
   }
-
-  /* TAB SWITCHER (Mission / Notice) */
-  .tab-bar{display:flex;gap:0;margin-bottom:20px}
-  .tab-btn{
-    flex:1;padding:10px 0;background:transparent;border:1px solid var(--card-border);
-    color:var(--text);font-family:var(--font-display);font-size:.72rem;
-    letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .3s;
-  }
-  .tab-btn:first-child{border-radius:4px 0 0 4px}
-  .tab-btn:last-child{border-radius:0 4px 4px 0}
-  .tab-btn.active{background:var(--red);color:var(--black);border-color:var(--red)}
-  .tab-panel{display:none}
-  .tab-panel.active{display:block}
 </style>
 </head>
 <body>
 
 <canvas id="particles"></canvas>
 
-<!-- HEADER -->
+<!-- ============ HEADER ============ -->
 <header>
   <div class="nav-wrap">
     <a href="#hero" class="logo">RENEG<span class="tri">▲</span>DES</a>
@@ -353,11 +345,11 @@
     <li><a href="#database" class="drawer-link">DATABASE</a></li>
     <li><a href="#ranks" class="drawer-link">RANKS</a></li>
     <li><a href="#register" class="drawer-link">ENLIST</a></li>
-    <li><a href="#" class="drawer-link" id="open-mission-btn-mobile" style="color:var(--red)">COMMAND</a></li>
+    <li><a href="#" id="open-mission-btn-mobile" style="color:var(--red)">COMMAND</a></li>
   </ul>
 </div>
 
-<!-- HERO -->
+<!-- ============ HERO ============ -->
 <section id="hero">
   <div class="hero-content">
     <h1 class="hero-title">RENEG<span class="tri">▲</span>DES</h1>
@@ -367,17 +359,17 @@
   </div>
 </section>
 
-<!-- GUILD BROADCAST (NOTICES) -->
+<!-- ============ GUILD BROADCAST ============ -->
 <section id="broadcast">
   <div class="broadcast-wrap">
     <div class="broadcast-title"><span class="pulse"></span> GUILD BROADCAST</div>
     <div id="notices-container">
-      <div class="no-notices">No active broadcasts.</div>
+      <div class="no-notices">Scanning frequencies…</div>
     </div>
   </div>
 </section>
 
-<!-- LORE -->
+<!-- ============ LORE ============ -->
 <section id="lore" class="section">
   <div class="container">
     <h2 class="section-title">// TRANSMISSION INTERCEPT</h2>
@@ -390,46 +382,15 @@
   </div>
 </section>
 
-<!-- FOUNDERS (Updated Roles) -->
+<!-- ============ FOUNDERS ============ -->
 <section id="founders" class="section">
   <div class="container">
     <h2 class="section-title">// THE FIVE FOUNDERS</h2>
-    <div class="founders-grid">
-      <div class="cyber-box founder-card">
-        <div class="file-num">FILE 001</div>
-        <div class="name">NEZUMI</div>
-        <div class="role">Network Overseer</div>
-        <div class="weapon">⚡ Electro Brass Knuckles</div>
-      </div>
-      <div class="cyber-box founder-card">
-        <div class="file-num">FILE 002</div>
-        <div class="name">OUJI</div>
-        <div class="role">Waste Grid Custodian</div>
-        <div class="weapon">⚔ Twin Tian Swords</div>
-      </div>
-      <div class="cyber-box founder-card">
-        <div class="file-num">FILE 003</div>
-        <div class="name">TEN</div>
-        <div class="role">Safehouse Warden</div>
-        <div class="weapon">🗡 96 Dagger</div>
-      </div>
-      <div class="cyber-box founder-card">
-        <div class="file-num">FILE 004</div>
-        <div class="name">MAMIKI</div>
-        <div class="role">Blood-Code Enchantress</div>
-        <div class="weapon">🏹 Whisper Longbow</div>
-      </div>
-      <div class="cyber-box founder-card">
-        <div class="file-num">FILE 005</div>
-        <div class="name">SAM</div>
-        <div class="role">Data Vault Archivist</div>
-        <div class="weapon">🦋 Rift Butterfly Knife</div>
-      </div>
-    </div>
+    <div class="db-grid" id="founders-grid"></div>
   </div>
 </section>
 
-<!-- DATABASE -->
+<!-- ============ DATABASE ============ -->
 <section id="database" class="section">
   <div class="container">
     <h2 class="section-title">// RENEGADES DATABASE</h2>
@@ -439,7 +400,7 @@
   </div>
 </section>
 
-<!-- RANKS -->
+<!-- ============ RANKS ============ -->
 <section id="ranks" class="section">
   <div class="container">
     <h2 class="section-title">// RANK PROGRESSION</h2>
@@ -458,11 +419,12 @@
   </div>
 </section>
 
-<!-- REGISTRATION -->
+<!-- ============ REGISTRATION ============ -->
 <section id="register" class="section">
   <div class="container">
     <h2 class="section-title">// ENLISTMENT FORM</h2>
     <p class="form-intro">Recruitment is <strong style="color:var(--red)">invitation-only</strong>. If a Founder gave you the signal, fill in your dossier below. All submissions are reviewed before activation.</p>
+
     <form class="reg-form" id="reg-form" autocomplete="off">
       <div class="form-row">
         <div class="form-group">
@@ -474,6 +436,7 @@
           <input type="text" id="f-smule" name="smule" placeholder="@handle">
         </div>
       </div>
+
       <div class="form-row">
         <div class="form-group">
           <label for="f-country">Country *</label>
@@ -484,6 +447,7 @@
           <input type="number" id="f-age" name="age" required min="13" max="99" placeholder="Age">
         </div>
       </div>
+
       <div class="form-row">
         <div class="form-group">
           <label for="f-blood">Blood Type</label>
@@ -505,26 +469,32 @@
           </select>
         </div>
       </div>
+
       <div class="form-group">
         <label for="f-role">Role / Title *</label>
-        <input type="text" id="f-role" name="role" required placeholder="e.g. Singer, Artist, Mixer…">
+        <input type="text" id="f-role" name="role" required placeholder="e.g. Singer, Artist, Mixer, Animator…">
       </div>
+
       <div class="form-group">
         <label for="f-skills">Skills *</label>
         <input type="text" id="f-skills" name="skills" required placeholder="e.g. Singing, Drawing, Video Editing…">
       </div>
+
       <div class="form-group">
         <label for="f-style">Vocal / Art Style</label>
-        <input type="text" id="f-style" name="style" placeholder="e.g. Rock, R&B, Digital Art…">
+        <input type="text" id="f-style" name="style" placeholder="e.g. Rock, R&B, Digital Art, Anime…">
       </div>
+
       <div class="form-group">
         <label for="f-weapon">Signature Weapon *</label>
-        <input type="text" id="f-weapon" name="weapon" required placeholder="Choose your weapon">
+        <input type="text" id="f-weapon" name="weapon" required placeholder="Choose your weapon (be creative!)">
       </div>
+
       <div class="form-group">
         <label for="f-personality">Personality (3 words)</label>
         <input type="text" id="f-personality" name="personality" placeholder="e.g. Calm, Chaotic, Loyal">
       </div>
+
       <div class="form-row">
         <div class="form-group">
           <label for="f-tattoo">Tattoo Idea</label>
@@ -535,6 +505,7 @@
           <input type="text" id="f-food" name="food" placeholder="Fuel of choice">
         </div>
       </div>
+
       <div class="form-row">
         <div class="form-group">
           <label for="f-flower">Favourite Flower</label>
@@ -545,10 +516,13 @@
           <input type="text" id="f-animal" name="animal" placeholder="Your inner beast">
         </div>
       </div>
+
       <div class="form-group">
         <label for="f-image">Profile Picture Link (Optional)</label>
         <input type="url" id="f-image" name="image" placeholder="https://i.postimg.cc/...">
+        <span class="form-hint">Square image, 400×400px or larger. Upload to postimages.org and paste the Direct Link.</span>
       </div>
+
       <button type="submit" class="submit-btn" id="submit-btn">TRANSMIT DOSSIER</button>
       <div id="form-status"></div>
     </form>
@@ -559,22 +533,22 @@
   <p>RENEG<span style="color:var(--red)">▲</span>DES © <span id="yr"></span> — All rights reserved. Nobody gets left behind.</p>
 </footer>
 
-<!-- DOSSIER MODAL -->
+<!-- ============ DOSSIER MODAL ============ -->
 <div class="modal-overlay" id="modal-overlay">
-  <div class="modal cyber-box" id="modal">
+  <div class="modal" id="modal">
     <button class="modal-close" id="modal-close">✕</button>
     <div id="modal-content"></div>
   </div>
 </div>
 
-<!-- COMMAND MODAL (Missions + Notices) -->
+<!-- ============ COMMAND MODAL ============ -->
 <div class="modal-overlay" id="mission-overlay">
-  <div class="modal cyber-box" id="mission-modal" style="max-width:520px">
+  <div class="modal" id="mission-modal" style="max-width:520px">
     <button class="modal-close" id="mission-close">✕</button>
 
     <!-- Password Gate -->
     <div id="mission-gate">
-      <h2 style="font-family:var(--font-display);color:var(--red);font-size:1.1rem;margin-bottom:6px">
+      <h2 style="font-family:var(--font-display);color:var(--red);font-size:1.05rem;margin-bottom:6px">
         ⚠ FOUNDER ACCESS REQUIRED
       </h2>
       <p style="font-size:.82rem;color:var(--text);margin-bottom:18px">
@@ -588,39 +562,40 @@
       <div id="mission-pw-status" style="margin-top:8px;font-size:.8rem;color:var(--red);min-height:16px"></div>
     </div>
 
-    <!-- Command Panel (hidden until unlocked) -->
+    <!-- Command Panel -->
     <div id="mission-form-wrap" style="display:none">
       <div class="tab-bar">
         <button class="tab-btn active" data-tab="tab-mission">📋 Mission Log</button>
         <button class="tab-btn" data-tab="tab-notice">📡 Post Notice</button>
       </div>
 
-      <!-- TAB: Mission Log -->
+      <!-- TAB: MISSION -->
       <div class="tab-panel active" id="tab-mission">
         <p style="font-size:.78rem;color:var(--text);margin-bottom:16px">
-          Log a completed mission. Separate multiple operatives with commas to award COFs to all of them.
+          Log a completed mission. Separate multiple operatives with commas to award COFs to all of them at once.
         </p>
         <form id="mission-form" class="reg-form" style="max-width:100%">
           <div class="form-group">
-            <label for="m-founder">Reporting Founder</label>
-            <select id="m-founder" name="founder" required>
+            <label for="m-founder">Reporting Founder *</label>
+            <select id="m-founder" required>
               <option value="">— Select —</option>
               <option>NEZUMI</option><option>OUJI</option><option>TEN</option>
               <option>MAMIKI</option><option>SAM</option>
             </select>
           </div>
           <div class="form-group">
-            <label for="m-member">Operative Names * (comma-separated)</label>
-            <input type="text" id="m-member" name="member" required placeholder="e.g. KIRA, COCO, AOI">
+            <label for="m-member">Operative Names *</label>
+            <input type="text" id="m-member" required placeholder="e.g. KIRA, COCO, AOI">
+            <span class="form-hint">Separate multiple names with commas. Names must match the database exactly.</span>
           </div>
           <div class="form-group">
             <label for="m-mission">Mission Title *</label>
-            <input type="text" id="m-mission" name="mission" required placeholder="e.g. Chorus Battle Round 3">
+            <input type="text" id="m-mission" required placeholder="e.g. Chorus Battle Round 3">
           </div>
           <div class="form-row">
             <div class="form-group">
               <label for="m-type">Mission Type</label>
-              <select id="m-type" name="type">
+              <select id="m-type">
                 <option>Chorus Battle</option><option>Collab</option>
                 <option>Event</option><option>Solo Project</option>
                 <option>Community</option><option>Other</option>
@@ -628,27 +603,27 @@
             </div>
             <div class="form-group">
               <label for="m-cofs">COFs Per Member *</label>
-              <input type="number" id="m-cofs" name="cofs" required min="1" max="500" placeholder="e.g. 50">
+              <input type="number" id="m-cofs" required min="1" max="500" placeholder="e.g. 50">
             </div>
           </div>
           <div class="form-group">
             <label for="m-notes">Mission Notes</label>
-            <textarea id="m-notes" name="notes" rows="2" placeholder="Optional details…"></textarea>
+            <textarea id="m-notes" rows="2" placeholder="Optional details…"></textarea>
           </div>
           <button type="submit" class="submit-btn" id="mission-submit-btn">LOG MISSION</button>
           <div id="mission-status" style="text-align:center;margin-top:10px;font-size:.82rem;min-height:18px"></div>
         </form>
       </div>
 
-      <!-- TAB: Post Notice -->
+      <!-- TAB: NOTICE -->
       <div class="tab-panel" id="tab-notice">
         <p style="font-size:.78rem;color:var(--text);margin-bottom:16px">
-          Post a guild-wide announcement. It will automatically disappear when the duration expires.
+          Post a guild-wide announcement. It disappears automatically when the duration expires.
         </p>
         <form id="notice-form" class="reg-form" style="max-width:100%">
           <div class="form-group">
-            <label for="n-founder">Prepared By</label>
-            <select id="n-founder" name="founder" required>
+            <label for="n-founder">Prepared By *</label>
+            <select id="n-founder" required>
               <option value="">— Select —</option>
               <option>NEZUMI</option><option>OUJI</option><option>TEN</option>
               <option>MAMIKI</option><option>SAM</option>
@@ -656,15 +631,16 @@
           </div>
           <div class="form-group">
             <label for="n-title">Notice Title *</label>
-            <input type="text" id="n-title" name="title" required placeholder="e.g. Chorus Battle Registration Open">
+            <input type="text" id="n-title" required placeholder="e.g. Chorus Battle Registration Open">
           </div>
           <div class="form-group">
             <label for="n-content">Content / Description *</label>
-            <textarea id="n-content" name="content" rows="4" required placeholder="Write the full announcement here…"></textarea>
+            <textarea id="n-content" rows="4" required placeholder="Write the full announcement here…"></textarea>
           </div>
           <div class="form-group">
             <label for="n-duration">Duration (hours) *</label>
-            <input type="number" id="n-duration" name="duration_hours" required min="1" max="720" value="48" placeholder="e.g. 48">
+            <input type="number" id="n-duration" required min="1" max="720" value="48">
+            <span class="form-hint">24 = 1 day · 48 = 2 days · 168 = 1 week · 720 = 30 days</span>
           </div>
           <button type="submit" class="submit-btn" id="notice-submit-btn">BROADCAST NOTICE</button>
           <div id="notice-status" style="text-align:center;margin-top:10px;font-size:.82rem;min-height:18px"></div>
@@ -675,271 +651,178 @@
 </div>
 
 <script>
-// ---- Year ----
+/* ==========================================================
+   RENEG▲DES GUILD HUB — FRONTEND v3.0
+   ========================================================== */
+
 document.getElementById('yr').textContent = new Date().getFullYear();
 
-// ---- Endpoints ----
+/* ---------- ENDPOINTS ---------- */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzra3KX8W2-nZSyRN7FKlHLOv2biwe2Zdhc-Ik25YQd2aCXiRj0Mrn51BBMVNnIwW70tQ/exec';
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR8ekE1phwUTs70v13LzPgtXN5KZ8mbPT74_RAM2rL7YL_cKVBmdPRpABZpdj01ry7r6hoY8uWR8_v5/pub?gid=0&single=true&output=csv';
-// You'll need to publish the Notices sheet as CSV too. Replace GID below.
-const NOTICES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR8ekE1phwUTs70v13LzPgtXN5KZ8mbPT74_RAM2rL7YL_cKVBmdPRpABZpdj01ry7r6hoY8uWR8_v5/pub?gid=NOTICES_GID&single=true&output=csv';
 
-// ---- Particles ----
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR8ekE1phwUTs70v13LzPgtXN5KZ8mbPT74_RAM2rL7YL_cKVBmdPRpABZpdj01ry7r6hoY8uWR8_v5/pub?gid=0&single=true&output=csv';
+
+/* !!! REPLACE "NOTICES_GID" WITH THE GID OF YOUR "Notices" TAB !!!
+   How to find it: open your Sheet, click the "Notices" tab,
+   and look at the URL. The number after "#gid=" is your GID. */
+const NOTICES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR8ekE1phwUTs70v13LzPgtXN5KZ8mbPT74_RAM2rL7YL_cKVBmdPRpABZpdj01ry7r6hoY8uWR8_v5/pub?gid=244965018&single=true&output=csv';
+
+
+/* ---------- PARTICLE BACKGROUND ---------- */
 (function(){
   const c=document.getElementById('particles'),ctx=c.getContext('2d');
   let w,h,pts=[];
-  function resize(){w=c.width=window.innerWidth;h=c.height=window.innerHeight;pts=[];
-    for(let i=0;i<80;i++) pts.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.5+.5,dx:(Math.random()-.5)*.3,dy:(Math.random()-.5)*.3});}
+  function resize(){
+    w=c.width=window.innerWidth;h=c.height=window.innerHeight;pts=[];
+    for(let i=0;i<80;i++)pts.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.5+.5,dx:(Math.random()-.5)*.3,dy:(Math.random()-.5)*.3});
+  }
   resize();window.addEventListener('resize',resize);
-  (function draw(){ctx.clearRect(0,0,w,h);
-    pts.forEach(p=>{p.x+=p.dx;p.y+=p.dy;if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(0,240,255,.25)';ctx.fill();});
-    requestAnimationFrame(draw);})();
+  (function draw(){
+    ctx.clearRect(0,0,w,h);
+    pts.forEach(p=>{
+      p.x+=p.dx;p.y+=p.dy;
+      if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(0,240,255,.25)';ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  })();
 })();
 
-// ---- Mobile Drawer ----
-const ham=document.getElementById('hamburger'),drawer=document.getElementById('drawer'),overlay=document.getElementById('drawer-overlay');
-function toggleDrawer(){ham.classList.toggle('active');drawer.classList.toggle('open');overlay.classList.toggle('show');}
-ham.addEventListener('click',toggleDrawer);
-overlay.addEventListener('click',toggleDrawer);
-document.querySelectorAll('.drawer-link').forEach(l=>l.addEventListener('click',()=>{if(drawer.classList.contains('open'))toggleDrawer();}));
 
-// ---- Founders Data (Updated Roles) ----
+/* ---------- MOBILE DRAWER ---------- */
+const ham=document.getElementById('hamburger');
+const drawer=document.getElementById('drawer');
+const drawerOverlay=document.getElementById('drawer-overlay');
+function toggleDrawer(){
+  ham.classList.toggle('active');
+  drawer.classList.toggle('open');
+  drawerOverlay.classList.toggle('show');
+}
+ham.addEventListener('click',toggleDrawer);
+drawerOverlay.addEventListener('click',toggleDrawer);
+document.querySelectorAll('.drawer-link').forEach(l=>{
+  l.addEventListener('click',()=>{if(drawer.classList.contains('open'))toggleDrawer();});
+});
+
+
+/* ---------- FOUNDERS DATA ---------- */
+/* To add profile pictures: paste the direct image URL into the image:'' field.
+   Google Drive format:  https://drive.google.com/thumbnail?id=FILE_ID&sz=w400
+   Postimages format:    https://i.postimg.cc/xxxxx/photo.png                */
+
 const founders=[
-  {file:'001',name:'NEZUMI',role:'Network Overseer',weapon:'Electro Brass Knuckles',rank:'Founder',country:'—',blood:'—',sign:'—',skills:'Classified',style:'—',personality:'Classified',tattoo:'—',food:'—',flower:'—',animal:'—',smule:'—',age:'—',image:''},
-  {file:'002',name:'OUJI',role:'Waste Grid Custodian',weapon:'Twin Tian Swords',rank:'Founder',country:'—',blood:'—',sign:'—',skills:'Classified',style:'—',personality:'Classified',tattoo:'—',food:'—',flower:'—',animal:'—',smule:'—',age:'—',image:''},
-  {file:'003',name:'TEN',role:'Safehouse Warden',weapon:'96 Dagger',rank:'Founder',country:'—',blood:'—',sign:'—',skills:'Classified',style:'—',personality:'Classified',tattoo:'—',food:'—',flower:'—',animal:'—',smule:'—',age:'—',image:''},
-  {file:'004',name:'MAMIKI',role:'Blood-Code Enchantress',weapon:'Whisper Longbow',rank:'Founder',country:'—',blood:'—',sign:'—',skills:'Classified',style:'—',personality:'Classified',tattoo:'—',food:'—',flower:'—',animal:'—',smule:'—',age:'—',image:''},
-  {file:'005',name:'SAM',role:'Data Vault Archivist',weapon:'Rift Butterfly Knife',rank:'Founder',country:'—',blood:'—',sign:'—',skills:'Classified',style:'—',personality:'Classified',tattoo:'—',food:'—',flower:'—',animal:'—',smule:'—',age:'—',image:''}
+{
+  file:'001',name:'NEZUMI',handle:'Nezumiii',
+  role:'Network Overseer',weapon:'Electro Brass Knuckles',rank:'Founder',rankIcon:'🜏',
+  country:'Neo-Brazil',age:'31',blood:'O+',sign:'Cancer ♋ (July 13)',
+  smule:'@Nezumiii',
+  skills:'Close-quarters combat, territorial defense',
+  style:'Bruiser / Landlord & Warden',
+  personality:'Blunt, Possessive, Protective',
+  tattoo:'—',food:'Cake',flower:'Hydrangea',animal:'Whale',
+  image:'',
+  story:`<p>Nezu — handle <strong style="color:var(--cyan)">Nezumiii</strong> — is a thirty-one-year-old bruiser out of the neon-choked sprawl of Neo-Brazil, their O+ blood marking them as a universal donor in a city that bleeds people dry.</p>
+<p>Within the guild, they're the <strong style="color:var(--red)">Landlord and Warden</strong> — the one who holds the keys, guards the walls, and makes sure nobody forgets whose ground they're standing on. Blunt, possessive, and fiercely protective, Nezu treats the guild like personal territory: step inside and you're under their shield, threaten it and you're scrap metal.</p>
+<p>No fancy chrome or long-range tech — just reinforced brass knuckles and brutal close-quarters combat that ends arguments before they start.</p>
+<p>Born July 13th under <em>Cancer ♋</em>, they're the perfect armored guardian: hard shell, iron grip, and utterly merciless to anyone who breaches their walls.</p>`
+},
+{
+  file:'002',name:'OUJI',handle:'NatsuOuji',
+  role:'Waste Grid Custodian',weapon:'Twin Tian Swords',rank:'Founder',rankIcon:'🜏',
+  country:'West Jap(v)anese',age:'99',blood:'Ø (Synthetic)',sign:'Orion',
+  smule:'@NatsuOuji',
+  skills:'Archive decoding, faction intelligence',
+  style:'Curator / Shadow Operative',
+  personality:'Sleepy-eyed, Observant, Silent',
+  tattoo:'—',food:'Egg',flower:'Jasmine',animal:'Cat',
+  image:'https://drive.google.com/thumbnail?id=15N-rAv3TIMPqtn-guAbcJ8MqFwYGLxx0&sz=w400',
+  story:`<p>Ouji — handle <strong style="color:var(--cyan)">NatsuOuji</strong> — is a ninety-nine-year-old keeper in the rusted sprawl of West Jap(v)anese, a world where steel towers crumble and new guilds rise from the wreckage. His synthetic blood type Ø lets him outlast what the wasteland takes from everyone else.</p>
+<p>Within the guild he serves as <strong style="color:var(--red)">Curator</strong>, safeguarding old-world archives and decoding forgotten data — but that's only the cover. Beneath it, he moves between factions as a shadow, gathering secrets under the guise of quiet scholarship.</p>
+<p>Sleepy-eyed and slow to speak, he'd rather watch from the corner of a firelit hall than stand at its centre, learning every face and every weakness.</p>
+<p>Born under the sign of <em>Orion</em>, he wears that old defiance like the chronometer on his wrist — saying nothing, explaining less.</p>`
+},
+{
+  file:'003',name:'TEN',handle:'96_10',
+  role:'Safehouse Warden',weapon:'96 Dagger',rank:'Founder',rankIcon:'🜏',
+  country:'Irradiated USA',age:'30',blood:'O',sign:'Taurus ♉',
+  smule:'@96_10',
+  skills:'Bare-handed combat, safehouse hospitality',
+  style:'Brawler / Innkeeper',
+  personality:'Easy-going, Warm, Unforgiving',
+  tattoo:'Renegade mark wrapping mid-forearm',
+  food:'Melon Pan',flower:'Spider Lily',animal:'Bird',
+  image:'',
+  story:`<p>Ten — handle <strong style="color:var(--cyan)">96_10</strong> — is a thirty-year-old brawler from the irradiated sprawl of what was once the USA, her blood type O marking her as a universal donor in a world that always needs something from everyone else.</p>
+<p>Within the guild she's the <strong style="color:var(--red)">Innkeeper</strong>, and on most nights she's the easiest soul in the room — laughing, pouring drinks, earrings catching the firelight as she dozes off behind the counter. Easy-going, warm, the kind of calm that makes every wanderer feel welcome.</p>
+<p>But cross her wrong and that warmth dies fast — her cold stare is enough to shake the guildhall walls, and the sleepy bartender closes the distance bare-handed before you can blink. A renegade's mark wraps her mid-forearm, a brand she's too chill to care about — until she isn't.</p>
+<p>Born under <em>Taurus ♉</em>, she's patient as stone, and just as unforgiving when pushed.</p>`
+},
+{
+  file:'004',name:'MAMIKI',handle:'8maamiki',
+  role:'Blood-Code Enchantress',weapon:'Whisper Longbow',rank:'Founder',rankIcon:'🜏',
+  country:'Drowned Indonesia',age:'220',blood:'A',sign:'Cancer ♋',
+  smule:'@8maamiki',
+  skills:'Long-range precision, ancient counsel',
+  style:'Advisor / Harbinger / Artist',
+  personality:'Quiet, Wise, Relentless',
+  tattoo:'—',food:'Dango',flower:'Wild Rose',animal:'Cat',
+  image:'',
+  story:`<p>Mami — handle <strong style="color:var(--cyan)">8maamiki</strong> — is a two-hundred-and-twenty-year-old archer from the drowned coasts of what was once Indonesia, now just another fractured territory in the wasteland. Half-vampire, she has outlived centuries with unnatural grace, her blood type A kept pure by the very curse running through her veins.</p>
+<p>Within the guild she serves as <strong style="color:var(--red)">Advisor</strong> — the one younger members seek when the wasteland wears them down, her words quiet but heavy with the kind of wisdom only time and hunger can teach.</p>
+<p>She is also a harbinger and artist, a deadly shot who paints with arrows before the enemy even knows they're marked. She fights like a shadow — silent, precise, always one step ahead — driven by a single creed: <em>every arrow loosed is a lesson the next one will remember.</em></p>
+<p>Born under <em>Cancer ♋</em>, she carries the tide in her — patient, relentless, and impossible to pull back.</p>`
+},
+{
+  file:'005',name:'SAM',handle:'moemelonyan',
+  role:'Data Vault Archivist',weapon:'Rift Butterfly Knife',rank:'Founder',rankIcon:'🜏',
+  country:'Rain-soaked UK ruins',age:'25',blood:'Red (Unclassified)',sign:'Virgo ♍ (Aug 25)',
+  smule:'@moemelonyan',
+  skills:'Ledger tracking, contract enforcement',
+  style:'Handler / Bookkeeper',
+  personality:'Aloof, Sharp-tongued, Deeply Loyal',
+  tattoo:'—',food:'Sweets',flower:'Wisteria',animal:'Cat',
+  image:'',
+  story:`<p>Sam — handle <strong style="color:var(--cyan)">moemelonyan</strong> — is a twenty-five-year-old drifter with no fixed coordinates, though their accent ghosts somewhere around the rain-soaked ruins of the old UK. Their blood type is listed as simply "red," which is either a medical anomaly or a flat refusal to be categorized — take your pick.</p>
+<p>Within the guild, Sam is the <strong style="color:var(--red)">Handler and Bookkeeper</strong>, the quiet one tracking every credit, every contract, every debt owed. Don't let the ledger fool you: when the numbers stop adding up, a butterfly knife spins between their fingers with lethal, feline precision.</p>
+<p>Sam fights like a cat — silent, sudden, all claws and no warning. Aloof at first glance, sharp-tongued and seemingly cold, but earn their trust and you'll find a loyalty that runs deeper than most.</p>
+<p>Born August 25th under <em>Virgo ♍</em>, they're meticulous, calculating, and quietly devoted to the few they let past the hiss.</p>`
+}
 ];
 
-// ---- Rank Helper ----
+
+/* ---------- RANK HELPER ---------- */
 function getRank(cofs){
   if(cofs>=1000)return{icon:'👑',label:'Legend'};
-  if(cofs>=900)return{icon:'☠️',label:'Elite'};
-  if(cofs>=700)return{icon:'🎯',label:'Specialist'};
-  if(cofs>=400)return{icon:'🔧',label:'Operative'};
-  if(cofs>=100)return{icon:'⚡',label:'Runner'};
+  if(cofs>=900) return{icon:'☠️',label:'Elite'};
+  if(cofs>=700) return{icon:'🎯',label:'Specialist'};
+  if(cofs>=400) return{icon:'🔧',label:'Operative'};
+  if(cofs>=100) return{icon:'⚡',label:'Runner'};
   return{icon:'🩸',label:'Rookie'};
 }
 
-// ---- Skill Translation ----
+
+/* ---------- SKILL TRANSLATION ENGINE ---------- */
 function translateSkills(raw){
-  if(!raw)return 'Unknown augmentation';
+  if(!raw)return 'unknown augmentation';
   const map=[
-    [/\b(art|draw|illustration|design|paint)\b/i,'neural-optic design and visual augmentation'],
-    [/\b(audio|mix|master|sound\s?design|produc)\b/i,'frequency manipulation and audio-signal encryption'],
-    [/\b(sing|vocal|rap|scream|screamo|voice)\b/i,'sonic-wave disruption and vocal-frequency projection'],
-    [/\b(manage|organiz|coordinat|lead|direct)\b/i,'tactical operation coordination'],
-    [/\b(video|edit|animat|motion|vfx|holograph)\b/i,'holographic splicing and data-illusion generation']
+    [/(art|draw|illustrat|design|paint|sketch)/i,'neural-optic design and visual augmentation'],
+    [/(audio|mix|master|sound|produc)/i,'frequency manipulation and audio-signal encryption'],
+    [/(sing|vocal|rap|scream|voice|choir)/i,'sonic-wave disruption and vocal-frequency projection'],
+    [/(manage|organiz|coordinat|lead|direct|host)/i,'tactical operation coordination'],
+    [/(video|edit|animat|motion|vfx|render)/i,'holographic splicing and data-illusion generation']
   ];
   const found=[];
-  map.forEach(([re,label])=>{if(re.test(raw)&&!found.includes(label))found.push(label);});
+  map.forEach(([re,label])=>{if(re.test(raw)&&found.indexOf(label)===-1)found.push(label);});
   return found.length?found.join(', '):raw;
 }
 
-// ---- Generate Lore Story ----
+
+/* ---------- AUTO STORY GENERATOR (for members) ---------- */
 function generateStory(d){
   const ts=translateSkills(d.skills);
-  const w=d.weapon||'an unregistered sidearm';
+  const w=d.weapon&&d.weapon!=='—'?d.weapon:'an unregistered sidearm';
   const name=d.name||'UNKNOWN';
   const country=d.country&&d.country!=='—'?d.country:'an undisclosed sector';
-  const animal=d.animal&&d.animal!=='—'?d.animal:null;
-  let story=`<p>Operative <strong style="color:var(--white)">${name}</strong> emerged from the signal fog of <em>${country}</em>, carrying nothing but a scarred reputation and a deep-rooted mastery of <em>${ts}</em>.</p>`;
-  story+=`<p>Armed with their signature weapon — the <strong style="color:var(--red)">${w}</strong> — they carved a name into the wasteland's memory.</p>`;
-  if(animal) story+=`<p>Survivors speak of a presence that follows ${name} like a shadow — something primal, reminiscent of a <em>${animal}</em>, watching from behind the static.</p>`;
-  story+=`<p>Now embedded within the RENEG▲DES network, ${name} operates with a single directive: <em>"Nobody gets left behind."</em></p>`;
-  return story;
-}
-
-// ---- Render Card ----
-function makeCard(d){
-  const div=document.createElement('div');
-  div.className='cyber-box db-card';
-  div.innerHTML=`
-    <div class="card-file">FILE ${d.file}</div>
-    <div class="card-name">${d.name}</div>
-    <div class="card-role">${d.role}</div>
-    <div class="card-rank">${d.rankIcon||'🜏'} ${d.rank}</div>`;
-  div.addEventListener('click',()=>openModal(d));
-  return div;
-}
-
-// ---- Dossier Modal ----
-const modalOverlay=document.getElementById('modal-overlay'),modalContent=document.getElementById('modal-content'),modalClose=document.getElementById('modal-close');
-function openModal(d){
-  const initial=(d.name||'?')[0].toUpperCase();
-  const story=d.rank==='Founder'
-    ?`<p>The dossier of a Founder is sealed under maximum encryption. Their origins, augmentations, and mission history remain classified at the highest clearance level.</p><p>What is known: they were among the first five to answer the signal. They built the network from nothing. They are <strong style="color:var(--red)">RENEG▲DES</strong>.</p>`
-    :generateStory(d);
-  const avatarHtml=d.image
-    ?`<img src="${d.image}" alt="${d.name}" class="m-avatar">`
-    :`<div class="m-avatar">${initial}</div>`;
-  modalContent.innerHTML=`
-    ${avatarHtml}
-    <div class="m-file">FILE ${d.file}</div>
-    <h2 class="m-name">${d.name}</h2>
-    <div class="m-role">${d.role}</div>
-    <div class="m-divider"></div>
-    <div class="m-row"><span class="label">Rank</span><span class="value">${d.rankIcon||'🜏'} ${d.rank}</span></div>
-    <div class="m-row"><span class="label">Country</span><span class="value">${d.country||'—'}</span></div>
-    <div class="m-row"><span class="label">Age</span><span class="value">${d.age||'—'}</span></div>
-    <div class="m-row"><span class="label">Blood Type</span><span class="value">${d.blood||'—'}</span></div>
-    <div class="m-row"><span class="label">Zodiac</span><span class="value">${d.sign||'—'}</span></div>
-    <div class="m-row"><span class="label">Smule</span><span class="value">${d.smule||'—'}</span></div>
-    <div class="m-row"><span class="label">Skills</span><span class="value">${d.skills||'—'}</span></div>
-    <div class="m-row"><span class="label">Style</span><span class="value">${d.style||'—'}</span></div>
-    <div class="m-row"><span class="label">Weapon</span><span class="value">${d.weapon||'—'}</span></div>
-    <div class="m-row"><span class="label">Personality</span><span class="value">${d.personality||'—'}</span></div>
-    <div class="m-row"><span class="label">Tattoo</span><span class="value">${d.tattoo||'—'}</span></div>
-    <div class="m-row"><span class="label">Food</span><span class="value">${d.food||'—'}</span></div>
-    <div class="m-row"><span class="label">Flower</span><span class="value">${d.flower||'—'}</span></div>
-    <div class="m-row"><span class="label">Spirit Animal</span><span class="value">${d.animal||'—'}</span></div>
-    <div class="m-divider"></div>
-    <div class="m-story">${story}</div>`;
-  modalOverlay.classList.add('active');
-  document.body.style.overflow='hidden';
-}
-function closeModal(){modalOverlay.classList.remove('active');document.body.style.overflow='';}
-modalClose.addEventListener('click',closeModal);
-modalOverlay.addEventListener('click',e=>{if(e.target===modalOverlay)closeModal();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
-
-// ---- CSV Parser ----
-function parseCSV(text){
-  const lines=[];let cur='',inQ=false;
-  for(let i=0;i<text.length;i++){
-    const ch=text[i];
-    if(ch==='"'){if(inQ&&text[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}
-    else if(ch===','&&!inQ){lines.length===0?lines.push([cur]):lines[lines.length-1].push(cur);cur='';}
-    else if((ch==='\n'||ch==='\r')&&!inQ){
-      if(cur||lines.length){if(lines.length===0)lines.push([cur]);else lines[lines.length-1].push(cur);}
-      cur='';if(ch==='\r'&&text[i+1]==='\n')i++;lines.push([]);
-    }else cur+=ch;
-  }
-  if(cur&&lines.length)lines[lines.length-1].push(cur);
-  return lines.filter(r=>r.length>1||r[0]!=='');
-}
-
-// ---- Load Database ----
-async function loadDB(){
-  const grid=document.getElementById('db-grid'),loading=document.getElementById('db-loading');
-  founders.forEach(f=>{grid.insertBefore(makeCard(f),loading);});
-  try{
-    const res=await fetch(CSV_URL);
-    const txt=await res.text();
-    const rows=parseCSV(txt);
-    if(rows.length<2){loading.textContent='No additional operatives found.';return;}
-    const headers=rows[0].map(h=>h.trim().toLowerCase());
-    const data=rows.slice(1);
-    let fileNum=6;
-    data.forEach(row=>{
-      const obj={};headers.forEach((h,i)=>{obj[h]=(row[i]||'').trim();});
-      if(obj.status&&obj.status.toLowerCase()==='approved'&&obj.name){
-        const cofs=parseInt(obj.cofs)||0;
-        const rk=getRank(cofs);
-        const card={
-          file:String(fileNum).padStart(3,'0'),
-          name:obj.name,role:obj.role||'Operative',weapon:obj.weapon||'—',
-          rank:rk.label,rankIcon:rk.icon,
-          country:obj.country,age:obj.age,blood:obj.blood,sign:obj.sign,
-          smule:obj.smule,skills:obj.skills,style:obj.style,
-          personality:obj.personality,tattoo:obj.tattoo,food:obj.food,
-          flower:obj.flower,animal:obj.animal,image:obj.image||''
-        };
-        grid.insertBefore(makeCard(card),loading);
-        fileNum++;
-      }
-    });
-    loading.style.display='none';
-  }catch(err){
-    loading.textContent='⚠ Network error — could not reach the database.';
-    console.error(err);
-  }
-}
-loadDB();
-
-// ---- Load Notices ----
-async function loadNotices(){
-  const container=document.getElementById('notices-container');
-  try{
-    const res=await fetch(NOTICES_CSV_URL);
-    const txt=await res.text();
-    const rows=parseCSV(txt);
-    if(rows.length<2){container.innerHTML='<div class="no-notices">No active broadcasts.</div>';return;}
-    const headers=rows[0].map(h=>h.trim().toLowerCase());
-    const data=rows.slice(1);
-    const now=new Date();
-    let active=[];
-    data.forEach(row=>{
-      const obj={};headers.forEach((h,i)=>{obj[h]=(row[i]||'').trim();});
-      if(obj.expires_at){
-        const expires=new Date(obj.expires_at);
-        if(expires>now && obj.title){
-          const diffMs=expires-now;
-          const diffH=Math.floor(diffMs/3600000);
-          const diffM=Math.floor((diffMs%3600000)/60000);
-          const timeLeft=diffH>0?diffH+'h '+diffM+'m':diffM+'m';
-          active.push({title:obj.title,content:obj.content,founder:obj.founder,timeLeft});
-        }
-      }
-    });
-    if(active.length===0){
-      container.innerHTML='<div class="no-notices">No active broadcasts.</div>';
-      return;
-    }
-    // Show newest first
-    active.reverse();
-    container.innerHTML=active.map(n=>`
-      <div class="notice-card">
-        <div class="n-title">📡 ${n.title}</div>
-        <div class="n-content">${n.content}</div>
-        <div class="n-meta">
-          <span>⏱ Expires in ${n.timeLeft}</span>
-          <span class="n-founder">🜏 ${n.founder}</span>
-        </div>
-      </div>`).join('');
-  }catch(err){
-    container.innerHTML='<div class="no-notices">No active broadcasts.</div>';
-  }
-}
-loadNotices();
-
-// ---- Registration Form ----
-const form=document.getElementById('reg-form'),statusEl=document.getElementById('form-status'),submitBtn=document.getElementById('submit-btn');
-form.addEventListener('submit',async function(e){
-  e.preventDefault();
-  submitBtn.disabled=true;submitBtn.textContent='TRANSMITTING…';
-  statusEl.textContent='';statusEl.className='';
-  const fd=new FormData(form);
-  const payload={};fd.forEach((v,k)=>{payload[k]=v;});
-  payload.timestamp=new Date().toISOString();
-  payload.status='pending';
-  payload.action='register';
-  try{
-    await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    statusEl.textContent='✔ Dossier transmitted. Awaiting Founder approval.';
-    statusEl.className='success';
-    form.reset();
-  }catch(err){
-    statusEl.textContent='✖ Transmission failed. Try again later.';
-    statusEl.className='error';
-  }finally{
-    submitBtn.disabled=false;submitBtn.textContent='TRANSMIT DOSSIER';
-  }
-});
-
-// ---- Command Modal (Missions + Notices) ----
-const missionOverlay=document.getElementById('mission-overlay');
-const missionClose=document.getElementById('mission-close');
-const missionGate=document.getElementById('mission-gate');
-const missionFormWrap=document.getElementById('mission-form-wrap');
-const missionPw=document.getElementById('mission-pw');
-const missionUnlockBtn=document.getElementById('mission-unlock-btn');
-const missionPwStatus=document.getElementById('mission-pw-status');
-
-function openCommandModal(){
-  missionOverlay.classList.add('active');
-  document.body.style.overflow='hidden';
-  missionGate.style.display='block';
-  mission
+  let s=`<p>Operative <strong style="color:var(--white)">${name}</strong> emerged from the signal fog of <em>${country}</em>, carrying nothing but a scarred reputation and a deep-rooted mastery of <em>${ts}</em>.</p>`;
+  s+=`<p>Armed with their signature weapon — the 
