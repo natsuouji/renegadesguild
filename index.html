@@ -1399,13 +1399,18 @@ missionClose.addEventListener('click',closeCommand);
 missionOverlay.addEventListener('click',e=>{if(e.target===missionOverlay)closeCommand();});
 
 unlockBtn.addEventListener('click',()=>{
-  if(missionPw.value.trim()===''){
-    pwStatus.textContent='Access code required.';
+  const enteredPw = missionPw.value.trim();
+  if(!enteredPw){
+    pwStatus.textContent = 'Access code required.';
     return;
   }
-  pwStatus.textContent='';
-  missionGate.style.display='none';
-  missionWrap.style.display='block';
+  if(enteredPw !== COMMAND_PASSWORD){
+    pwStatus.textContent = '✖ Invalid Access Code.';
+    return;
+  }
+  pwStatus.textContent = '';
+  missionGate.style.display = 'none';
+  missionWrap.style.display = 'block';
 });
 missionPw.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();unlockBtn.click();}});
 
