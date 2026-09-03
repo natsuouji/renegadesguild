@@ -12,7 +12,7 @@
   :root{
     --black:#050508;
     --red:#ff3300;
-    --cyan:#00f0ff;
+    --accent:#ffffff; /* Changed from Cyan to White */
     --card:#0b0b12;
     --card-border:#1a1a2e;
     --text:#c8c8d0;
@@ -45,7 +45,7 @@
   .section{padding:80px 0}
   .section-title{
     font-family:var(--font-display);font-size:clamp(1.4rem,4vw,2rem);
-    color:var(--cyan);text-transform:uppercase;letter-spacing:3px;
+    color:var(--accent);text-transform:uppercase;letter-spacing:3px;
     margin-bottom:40px;text-align:center;position:relative;
   }
   .section-title::after{
@@ -60,8 +60,8 @@
     transition:border-color .3s,box-shadow .3s;
   }
   .cyber-box:hover{
-    border-color:var(--cyan);
-    box-shadow:0 0 20px rgba(0,240,255,.08);
+    border-color:var(--accent);
+    box-shadow:0 0 20px rgba(255,255,255,.08);
   }
 
   /* ===== HEADER ===== */
@@ -87,13 +87,13 @@
   }
   .nav-links a::after{
     content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;
-    background:var(--cyan);transition:width .3s;
+    background:var(--accent);transition:width .3s;
   }
-  .nav-links a:hover{color:var(--cyan)}
+  .nav-links a:hover{color:var(--accent)}
   .nav-links a:hover::after{width:100%}
 
   .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;z-index:1100;background:none;border:none}
-  .hamburger span{display:block;width:26px;height:2px;background:var(--cyan);transition:transform .3s,opacity .3s}
+  .hamburger span{display:block;width:26px;height:2px;background:var(--accent);transition:transform .3s,opacity .3s}
   .hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg)}
   .hamburger.active span:nth-child(2){opacity:0}
   .hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
@@ -110,7 +110,7 @@
     color:var(--text);text-decoration:none;font-size:1rem;letter-spacing:1px;
     text-transform:uppercase;transition:color .3s;
   }
-  .drawer a:hover{color:var(--cyan)}
+  .drawer a:hover{color:var(--accent)}
   .drawer-overlay{
     position:fixed;top:0;left:0;width:100%;height:100%;
     background:rgba(0,0,0,.5);z-index:1040;display:none;
@@ -136,7 +136,7 @@
   }
   .hero-title .tri{color:var(--red)}
   .hero-subtitle{
-    font-size:clamp(.9rem,2.5vw,1.15rem);color:var(--cyan);
+    font-size:clamp(.9rem,2.5vw,1.15rem);color:var(--accent);
     margin-top:16px;letter-spacing:4px;text-transform:uppercase;
   }
   .hero-motto{
@@ -173,7 +173,7 @@
     clip-path:polygon(8px 0%,100% 0%,100% calc(100% - 8px),calc(100% - 8px) 100%,0% 100%,0% 8px);
   }
   .notice-card .n-title{
-    font-family:var(--font-display);font-size:.9rem;color:var(--cyan);
+    font-family:var(--font-display);font-size:.9rem;color:var(--accent);
     margin-bottom:6px;
   }
   .notice-card .n-content{font-size:.85rem;color:var(--text);margin-bottom:8px;white-space:pre-wrap}
@@ -187,7 +187,7 @@
   /* ===== LORE ===== */
   #lore .lore-text{max-width:800px;margin:0 auto;text-align:left;font-size:.95rem;color:var(--text)}
   #lore .lore-text p{margin-bottom:16px}
-  #lore .lore-text em{color:var(--cyan)}
+  #lore .lore-text em{color:var(--accent)}
   #lore .lore-text strong{color:var(--red)}
   
   .lore-chapter {
@@ -203,6 +203,13 @@
 
   /* ===== GUILD INFO (DROPDOWNS) ===== */
   #info { padding-top: 20px; }
+  .info-intro {
+    max-width: 800px;
+    margin: 0 auto 30px auto;
+    text-align: left;
+    font-size: .95rem;
+    color: var(--text);
+  }
   .cyber-dropdown {
     background: var(--card);
     border: 1px solid var(--card-border);
@@ -213,12 +220,12 @@
     margin-right: auto;
     transition: border-color .3s;
   }
-  .cyber-dropdown:hover { border-color: var(--cyan); }
+  .cyber-dropdown:hover { border-color: var(--accent); }
   .cyber-dropdown summary {
     padding: 18px 24px;
     font-family: var(--font-display);
     font-size: .9rem;
-    color: var(--cyan);
+    color: var(--accent);
     cursor: pointer;
     list-style: none;
     display: flex;
@@ -236,9 +243,12 @@
     border-top: 1px solid var(--card-border);
     margin-top: 4px;
     padding-top: 18px;
+    line-height: 1.7;
   }
   .dropdown-content p { margin-bottom: 12px; }
+  .dropdown-content ul { margin-left: 20px; margin-bottom: 12px; }
   .dropdown-content strong { color: var(--white); }
+  .dropdown-content h4 { color: var(--red); margin-top: 16px; margin-bottom: 8px; font-family: var(--font-display); letter-spacing: 1px; font-size: .9rem; }
 
   /* ===== CARDS ===== */
   .db-grid{
@@ -251,7 +261,7 @@
   }
   .db-card:hover{transform:translateY(-4px);border-color:var(--red)}
   .db-card .card-avatar{
-    width:64px;height:64px;border-radius:50%;border:2px solid var(--red);
+    width:100px;height:100px;border-radius:50%;border:2px solid var(--red);
     margin:0 auto 12px;background:var(--black);object-fit:cover;overflow:hidden;
     display:flex;align-items:center;justify-content:center;
     font-family:var(--font-display);color:var(--red);font-size:1.1rem;
@@ -260,16 +270,16 @@
   .db-card .card-file{font-size:.7rem;color:var(--red);letter-spacing:2px;margin-bottom:4px}
   .db-card .card-name{font-family:var(--font-display);font-size:1rem;color:var(--white);margin-bottom:2px}
   .db-card .card-handle{font-size:.68rem;color:var(--text);opacity:.55;margin-bottom:6px}
-  .db-card .card-role{font-size:.75rem;color:var(--cyan);margin-bottom:6px}
+  .db-card .card-role{font-size:.75rem;color:var(--accent);margin-bottom:6px}
   .db-card .card-rank{font-size:.72rem;color:var(--text);opacity:.85}
-  .db-loading{text-align:center;color:var(--cyan);font-size:.9rem;padding:40px 0;grid-column:1/-1}
+  .db-loading{text-align:center;color:var(--accent);font-size:.9rem;padding:40px 0;grid-column:1/-1}
 
   /* ===== RANKS ===== */
   .ranks-table{width:100%;border-collapse:collapse;max-width:640px;margin:0 auto}
   .ranks-table th,.ranks-table td{
     padding:12px 16px;text-align:left;border-bottom:1px solid var(--card-border);font-size:.85rem;
   }
-  .ranks-table th{color:var(--cyan);font-family:var(--font-display);font-size:.75rem;letter-spacing:1px}
+  .ranks-table th{color:var(--accent);font-family:var(--font-display);font-size:.75rem;letter-spacing:1px}
   .ranks-table td:first-child{font-size:1.1rem}
   .ranks-table td:nth-child(2){color:var(--white);font-weight:700}
   .ranks-table td:nth-child(3){color:var(--text);opacity:.8}
@@ -278,13 +288,13 @@
   #register .form-intro{text-align:center;max-width:560px;margin:0 auto 32px;font-size:.88rem;color:var(--text)}
   .reg-form{max-width:600px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
   .form-group{display:flex;flex-direction:column;gap:4px}
-  .form-group label{font-size:.75rem;color:var(--cyan);letter-spacing:1px;text-transform:uppercase}
+  .form-group label{font-size:.75rem;color:var(--accent);letter-spacing:1px;text-transform:uppercase}
   .form-group input,.form-group select,.form-group textarea{
     background:var(--card);border:1px solid var(--card-border);color:var(--white);
     padding:10px 14px;font-family:var(--font-mono);font-size:.88rem;
     outline:none;transition:border-color .3s;
   }
-  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--cyan)}
+  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent)}
   .form-group textarea{resize:vertical;min-height:70px}
   .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   @media(max-width:500px){.form-row{grid-template-columns:1fr}}
@@ -300,7 +310,7 @@
   .submit-btn:hover{opacity:.85}
   .submit-btn:disabled{opacity:.5;cursor:not-allowed}
   #form-status{text-align:center;margin-top:12px;font-size:.85rem;min-height:20px}
-  #form-status.success{color:var(--cyan)}
+  #form-status.success{color:var(--accent)}
   #form-status.error{color:var(--red)}
 
   /* ===== MODALS ===== */
@@ -326,31 +336,30 @@
   }
   .modal-close:hover{color:var(--white)}
   
-  /* UPDATED: BIGGER PROFILE PICTURE IN MODAL */
   .m-avatar{
-    width:150px; /* Increased from 100px */
-    height:150px; /* Increased from 100px */
+    width:250px;
+    height:250px;
     border-radius:50%;
     border:3px solid var(--red);
     margin:0 auto 18px;
     background:var(--black);object-fit:cover;overflow:hidden;
     display:flex;align-items:center;justify-content:center;
     font-family:var(--font-display);color:var(--red);
-    font-size:2.5rem; /* Bigger initial letter */
+    font-size:2.5rem;
   }
   img.m-avatar{display:block}
   
   .m-file{font-size:.7rem;color:var(--red);letter-spacing:2px;margin-bottom:4px;text-align:center}
   .m-name{font-family:var(--font-display);font-size:1.6rem;color:var(--white);margin-bottom:2px;text-align:center}
   .m-handle{font-size:.78rem;color:var(--text);opacity:.6;text-align:center;margin-bottom:4px}
-  .m-role{color:var(--cyan);font-size:.85rem;margin-bottom:16px;text-align:center}
+  .m-role{color:var(--accent);font-size:.85rem;margin-bottom:16px;text-align:center}
   .m-divider{width:100%;height:1px;background:var(--card-border);margin:16px 0}
   .m-row{display:flex;justify-content:space-between;gap:12px;margin-bottom:6px;font-size:.82rem}
-  .m-row .label{color:var(--cyan);text-transform:uppercase;letter-spacing:1px;font-size:.7rem;white-space:nowrap}
+  .m-row .label{color:var(--accent);text-transform:uppercase;letter-spacing:1px;font-size:.7rem;white-space:nowrap}
   .m-row .value{color:var(--white);text-align:right}
   .m-story{margin-top:18px;font-size:.85rem;color:var(--text);line-height:1.75}
   .m-story p{margin-bottom:12px}
-  .m-story em{color:var(--cyan)}
+  .m-story em{color:var(--accent)}
 
   /* ===== TABS ===== */
   .tab-bar{display:flex;gap:0;margin-bottom:20px}
@@ -381,7 +390,7 @@
     <nav>
       <ul class="nav-links">
         <li><a href="#lore">LORE</a></li>
-        <li><a href="#info">INFO</a></li>
+        <li><a href="#info">DIRECTIVES</a></li>
         <li><a href="#founders">FOUNDERS</a></li>
         <li><a href="#database">DATABASE</a></li>
         <li><a href="#ranks">RANKS</a></li>
@@ -399,7 +408,7 @@
 <div class="drawer" id="drawer">
   <ul>
     <li><a href="#lore" class="drawer-link">LORE</a></li>
-    <li><a href="#info" class="drawer-link">INFO</a></li>
+    <li><a href="#info" class="drawer-link">DIRECTIVES</a></li>
     <li><a href="#founders" class="drawer-link">FOUNDERS</a></li>
     <li><a href="#database" class="drawer-link">DATABASE</a></li>
     <li><a href="#ranks" class="drawer-link">RANKS</a></li>
@@ -443,7 +452,7 @@
 
       <!-- CHAPTER ONE -->
       <div class="cyber-box lore-chapter">
-        <h3 style="color:var(--cyan);">[ CHAPTER ONE: THE AWAKENING ]</h3>
+        <h3 style="color:var(--accent);">[ CHAPTER ONE: THE AWAKENING ]</h3>
         <p>But in the static, a signal emerged. A rogue broadcast on a frequency no one was supposed to find. It carried music — raw, unfiltered, <em>alive</em>. Those who followed it found each other.</p>
         <p>They called themselves <strong>RENEG▲DES</strong>. Singers, artists, architects of sound and vision. Operatives with no allegiance except to the craft. They built a hidden network — a guild forged in fire and frequency — where every voice matters and <em>"Nobody gets left behind."</em></p>
         <p>Now, from the ashes, they recruit. Not everyone. Only those who are <strong>chosen</strong>. Only those worthy of a <strong>FILE</strong>.</p>
@@ -453,36 +462,232 @@
   </div>
 </section>
 
-<!-- ============ GUILD INFO (DROPDOWNS) ============ -->
+<!-- ============ GUILD INFO (DIRECTIVES) ============ -->
 <section id="info" class="section">
   <div class="container">
     <h2 class="section-title">// DIRECTIVES</h2>
     
+    <div class="info-intro">
+      <p>Welcome to RENEGADES.<br>
+      You have already crossed the first threshold.<br>
+      You found the door.<br>
+      You accepted the invitation.<br>
+      Now you need to understand what you've joined.</p>
+    </div>
+
+    <!-- 01 WHAT IS RENEGADES -->
     <details class="cyber-dropdown">
-      <summary>DATA_LOG: GUILD RULES</summary>
+      <summary>01 — WHAT IS RENEGADES?</summary>
       <div class="dropdown-content">
-        <p><strong>01. RESPECT THE FREQUENCY</strong><br>No friendly fire. We protect our own. Disrespecting another operative will result in immediate disconnection.</p>
-        <p><strong>02. NOBODY GETS LEFT BEHIND</strong><br>If a member is struggling with a mission, we help them. We rise together or not at all.</p>
-        <p><strong>03. MAINTAIN YOUR COVER</strong><br>Keep your operations clean and represent the guild well in the wasteland.</p>
+        <p>RENEGADES is not a competition.<br>
+        It is not a hierarchy built around popularity, talent or activity.<br>
+        It is a guild.<br>
+        A place for people to create, collaborate, compete, cause trouble and, most importantly, have fun together.</p>
+        <p>Members can participate in missions, events and collaborations while earning COFs, the guild's internal currency. Every member has their own role, reputation and progression within the guild. The more you participate and contribute, the more COFs you earn — and the further you can rise within RENEGADES.</p>
+        <p>There are rules. There are missions. There are rewards.</p>
+        <p>But above everything else, there is one principle:<br>
+        <strong>Nobody gets left behind.</strong></p>
       </div>
     </details>
 
+    <!-- 02 THE FOUNDERS -->
     <details class="cyber-dropdown">
-      <summary>DATA_LOG: HOW TO EARN COFS</summary>
+      <summary>02 — THE FOUNDERS</summary>
       <div class="dropdown-content">
-        <p>COFs are the currency of our network. You earn them by completing operations:</p>
-        <p><strong>+ Chorus Battles:</strong> Major COF rewards for representing the guild.<br>
-        <strong>+ Collaborations:</strong> Singing, mixing, or drawing for guild projects.<br>
-        <strong>+ Events:</strong> Participating in guild-wide events.</p>
-        <p><em>* COFs are tracked by the Founders and dictate your official Rank.</em></p>
+        <p>The five people who established RENEGADES are Nezumi,Ouji, Mamiki, Ten & Sam.</p>
+        <p>The Founders are the highest authority within the guild and are responsible for keeping RENEGADES organized, active and true to its original purpose. They have:</p>
+        <ul>
+          <li>Unlimited COFs</li>
+          <li>Final authority over group decisions</li>
+          <li>Ability to create missions</li>
+          <li>Ability to issue rewards</li>
+          <li>Ability to invite new members</li>
+          <li>Ability to approve and manage events</li>
+          <li>Ability to modify guild regulations</li>
+          <li>Ability to resolve conflicts and disciplinary matters</li>
+        </ul>
+        <p>The Founders may delegate responsibilities to other members when necessary, but final authority always remains with the Founders.</p>
+        <p><em>[ Refer to the <a href="#founders" style="color:var(--accent);text-decoration:underline;">Character DATABASE</a> below ]</em></p>
       </div>
     </details>
 
+    <!-- 03 JOINING RENEGADES -->
     <details class="cyber-dropdown">
-      <summary>DATA_LOG: RECRUITMENT</summary>
+      <summary>03 — JOINING RENEGADES</summary>
       <div class="dropdown-content">
-        <p>Recruitment is strictly <strong>invitation-only</strong>.</p>
-        <p>Only the 5 Founders have the authority to share the Enlistment Frequency. If you were sent here without a Founder's approval, your dossier will be rejected.</p>
+        <p>RENEGADES follows an <strong>Invitation-only</strong> system, only the 5 founders have the ability of recruiting new members.</p>
+        <p>Once accepting the invitation, the recruiter must add all information required in the RENEGADES DATABASE.</p>
+        <p>Every new member starts at the lowest available rank and can progress through the guild by participating in missions, events and collaborations.</p>
+        <p>Members will eventually have an individual ranking within RENEGADES. Promotions will be primarily based on the amount of COFs earned, alongside activity and contribution to the guild.</p>
+      </div>
+    </details>
+
+    <!-- 04 COFS CURRENCY -->
+    <details class="cyber-dropdown">
+      <summary>04 — THE RENEGADE’S BANK - COFs CURRENCY</summary>
+      <div class="dropdown-content">
+        <p>COFs are the official currency of RENEGADES.<br>
+        COFs represent a member's activity and contribution to the guild. They can be earned through missions, events, collaborations and other activities approved by the Founders.</p>
+        
+        <h4>COFs can be earned by:</h4>
+        <ul>
+          <li>Completing missions</li>
+          <li>Participating in events</li>
+          <li>Winning or placing in competitions</li>
+          <li>Organizing approved events</li>
+          <li>Helping with guild projects</li>
+          <li>Creating scripts, covers, artwork or other creative material</li>
+          <li>Managing collaborations</li>
+          <li>Performing tasks assigned by the Founders</li>
+          <li>Receiving special rewards or bonuses</li>
+        </ul>
+
+        <h4>COFs can be spent on:</h4>
+        <ul>
+          <li>Joining collaborations</li>
+          <li>Special guild activities</li>
+          <li>Exclusive rewards</li>
+          <li>Event-related benefits</li>
+        </ul>
+
+        <p>The Bookkeeper Sam will be responsible for maintaining the official COF balance and may introduce new ways to earn or spend COFs.</p>
+        <p><em>COFs have no real-world monetary value and cannot be exchanged for actual money.</em></p>
+      </div>
+    </details>
+
+    <!-- 05 MISSIONS -->
+    <details class="cyber-dropdown">
+      <summary>05 — MISSIONS</summary>
+      <div class="dropdown-content">
+        <p>Missions are tasks created to encourage members to participate, contribute and keep the guild active.</p>
+        <p>Missions can involve almost anything related to RENEGADES and its activities, including:</p>
+        <ul>
+          <li>Writing a script</li>
+          <li>Creating cover art</li>
+          <li>Managing a collaboration</li>
+          <li>Joining Chorus Battles</li>
+          <li>Managing the server</li>
+          <li>Organizing documents</li>
+          <li>Creating promotional material</li>
+          <li>Participating in special guild activities</li>
+        </ul>
+        <p>Every mission must clearly state:</p>
+        <ul>
+          <li>Mission objective</li>
+          <li>Requirements</li>
+          <li>Deadline</li>
+          <li>COF reward</li>
+          <li>Any additional rules or restrictions</li>
+        </ul>
+        <p>Mission rewards are determined by the person creating the mission and require Founder approval.</p>
+      </div>
+    </details>
+
+    <!-- 06 EVENTS -->
+    <details class="cyber-dropdown">
+      <summary>06 — EVENTS</summary>
+      <div class="dropdown-content">
+        <p>Events are special activities organized within RENEGADES. They can be either internal or external.</p>
+        <p>Events may include:</p>
+        <ul>
+          <li>Chorus Battles</li>
+          <li>Internal Battles</li>
+          <li>Daily missions</li>
+          <li>Seasonal activities</li>
+          <li>Themed events</li>
+        </ul>
+        <p>Events must last a minimum of 3 days and a maximum of 30 days.</p>
+        <p>All members are allowed to propose, create and manage events, provided that the event is approved by the Founders before being officially announced.</p>
+        <p>The event organizer is responsible for:</p>
+        <ul>
+          <li>Preparing the event</li>
+          <li>Explaining the rules</li>
+          <li>Managing participants</li>
+          <li>Keeping track of results</li>
+          <li>Distributing approved COF rewards</li>
+          <li>Reporting the final results to the Founders</li>
+        </ul>
+        <p>Founders may modify, pause or cancel an event if necessary.</p>
+      </div>
+    </details>
+
+    <!-- 07 COLLABORATIONS -->
+    <details class="cyber-dropdown">
+      <summary>07 — COLLABORATION SYSTEM</summary>
+      <div class="dropdown-content">
+        <p>Collaborations are one of the main activities within RENEGADES.</p>
+        <p>Members may create collaborations with other members by proposing a project and establishing its requirements before production begins. Depending on the type and scale of the collaboration, participating members may be required to pay a specific amount of COFs.</p>
+        <p>The collaboration creator must clearly state:</p>
+        <ul>
+          <li>The project concept</li>
+          <li>Number of participants</li>
+          <li>Deadline</li>
+          <li>Any additional requirements</li>
+        </ul>
+        <p>COF costs must be approved by the Founders before the collaboration officially begins.</p>
+        <p>Members who participate in a collaboration must fulfill their assigned role and respect the established deadline. Failure to complete an agreed role without a valid reason may result in the loss of the paid COFs and/or additional consequences.</p>
+      </div>
+    </details>
+
+    <!-- 08 RANKING & PROMOTIONS -->
+    <details class="cyber-dropdown">
+      <summary>08 — RANKING & PROMOTIONS</summary>
+      <div class="dropdown-content">
+        <p>Every RENEGADES member has a rank within the guild.<br>
+        Ranks represent a member's progression, contribution and activity within RENEGADES.</p>
+        <p>Promotions are primarily determined by the amount of COFs accumulated, but the Founders may also consider: Activity, Reliability, Participation in events, Contribution to guild projects, Collaboration with other members, Leadership, and Overall conduct.</p>
+        <p>Accumulating COFs does not automatically guarantee a promotion if a member's behavior or activity does not meet the expectations of their rank. The Founders are responsible for confirming promotions and may create, remove or adjust ranks when necessary. A member's rank may also be reduced if they become inactive or repeatedly violate guild regulations.</p>
+        
+        <table class="ranks-table" style="margin-top:20px; margin-bottom:20px;">
+          <thead><tr><th>Rank</th><th>COFs</th><th>Privileges</th></tr></thead>
+          <tbody>
+            <tr><td style="white-space:nowrap">🩸 Rookie</td><td>0–99</td><td>Join basic missions & events</td></tr>
+            <tr><td style="white-space:nowrap">⚡ Runner</td><td>100–399</td><td>Access to more missions + create small missions</td></tr>
+            <tr><td style="white-space:nowrap">🔧 Operative</td><td>400–699</td><td>Create missions + organize basic collabs</td></tr>
+            <tr><td style="white-space:nowrap">🎯 Specialist</td><td>700–899</td><td>Manage larger collabs/events</td></tr>
+            <tr><td style="white-space:nowrap">☠️ Elite</td><td>900–1000</td><td>Special missions + leadership responsibilities</td></tr>
+            <tr><td style="white-space:nowrap">👑 Legend</td><td>1000+</td><td>Prestige privileges + special Founder-approved responsibilities</td></tr>
+            <tr><td style="white-space:nowrap">🜏 Founder</td><td>Unlimited</td><td>Full guild authority</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <!-- 09 GUILD RULES -->
+    <details class="cyber-dropdown">
+      <summary>09 — GUILD RULES</summary>
+      <div class="dropdown-content">
+        <p>Every member is expected to respect the following rules:</p>
+        <ul>
+          <li><strong>CONFIDENTIALITY:</strong> Private discussions, internal decisions and personal information shared within RENEGADES should remain within the guild unless permission is given to share them.</li>
+          <li><strong>NO DRAMA:</strong> Personal disagreements should not be turned into public guild conflicts.</li>
+        </ul>
+        <p>If a problem cannot be resolved privately, members should contact a Founder.</p>
+      </div>
+    </details>
+
+    <!-- 10 CODE OF CONDUCT -->
+    <details class="cyber-dropdown">
+      <summary>10 — CODE OF CONDUCT</summary>
+      <div class="dropdown-content">
+        <h4>INACTIVITY</h4>
+        <p><strong>RENEGADES IS A HOBBY, NOT A JOB.</strong><br>
+        Missions, events, COFS and rankings exist to give the group something fun to interact with. Nobody is expected to be constantly active. Nobody is expected to participate in every event. Nobody loses their place because real life got busy.</p>
+        <p>The system exists to reward participation — not punish absence. Members are allowed to take breaks when needed. However, if someone expects to be inactive for an extended period, they should inform a Founder whenever possible.</p>
+        
+        <h4>LEAVING RENEGADES</h4>
+        <p>Members are free to leave RENEGADES at any time. Leaving the guild is not considered an offense and members do not need to justify their decision.</p>
+        <p>However, upon leaving:</p>
+        <ul>
+          <li>Membership privileges are removed</li>
+          <li>Unused COFs are forfeited</li>
+          <li>Active RENEGADES roles may be reassigned</li>
+          <li>Ongoing responsibilities should be completed or transferred whenever possible</li>
+        </ul>
+        <p>Returning to RENEGADES is possible, but requires a new invitation from a Founder.</p>
+
+        <h4>FOUNDER AUTHORITY</h4>
+        <p>The Founders reserve the right to intervene in situations not explicitly covered by these rules. If a situation clearly goes against the spirit of RENEGADES, the Founders may take appropriate action even if the exact situation is not specifically listed in the regulations.</p>
       </div>
     </details>
 
@@ -775,6 +980,7 @@ const NOTICES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR8ekE1
   let w,h,pts=[];
   function resize(){
     w=c.width=window.innerWidth;h=c.height=window.innerHeight;pts=[];
+    /* Changed particle color to white overlay */
     for(let i=0;i<80;i++)pts.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.5+.5,dx:(Math.random()-.5)*.3,dy:(Math.random()-.5)*.3});
   }
   resize();window.addEventListener('resize',resize);
@@ -784,7 +990,8 @@ const NOTICES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR8ekE1
       p.x+=p.dx;p.y+=p.dy;
       if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;
       ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle='rgba(0,240,255,.25)';ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.15)'; /* Changed to White */
+      ctx.fill();
     });
     requestAnimationFrame(draw);
   })();
@@ -816,8 +1023,8 @@ const founders=[
   style:'Bruiser / Landlord & Warden',
   personality:'Blunt, Possessive, Protective',
   tattoo:'—',food:'Cake',flower:'Hydrangea',animal:'Whale',
-  image:'',
-  story:`<p>Nezu — handle <strong style="color:var(--cyan)">Nezumiii</strong> — is a thirty-one-year-old bruiser out of the neon-choked sprawl of Neo-Brazil, their O+ blood marking them as a universal donor in a city that bleeds people dry.</p>
+  image:'https://drive.google.com/thumbnail?id=1yMOBwLpdW5NISYAh-qxyiu5eJ5ils-Ld&sz=w400',
+  story:`<p>Nezu — handle <strong style="color:var(--accent)">Nezumiii</strong> — is a thirty-one-year-old bruiser out of the neon-choked sprawl of Neo-Brazil, their O+ blood marking them as a universal donor in a city that bleeds people dry.</p>
 <p>Within the guild, they're the <strong style="color:var(--red)">Landlord and Warden</strong> — the one who holds the keys, guards the walls, and makes sure nobody forgets whose ground they're standing on. Blunt, possessive, and fiercely protective, Nezu treats the guild like personal territory: step inside and you're under their shield, threaten it and you're scrap metal.</p>
 <p>No fancy chrome or long-range tech — just reinforced brass knuckles and brutal close-quarters combat that ends arguments before they start.</p>
 <p>Born July 13th under <em>Cancer ♋</em>, they're the perfect armored guardian: hard shell, iron grip, and utterly merciless to anyone who breaches their walls.</p>`
@@ -832,7 +1039,7 @@ const founders=[
   personality:'Sleepy-eyed, Observant, Silent',
   tattoo:'—',food:'Egg',flower:'Jasmine',animal:'Cat',
   image:'https://drive.google.com/thumbnail?id=15N-rAv3TIMPqtn-guAbcJ8MqFwYGLxx0&sz=w400',
-  story:`<p>Ouji — handle <strong style="color:var(--cyan)">NatsuOuji</strong> — is a ninety-nine-year-old keeper in the rusted sprawl of West Jap(v)anese, a world where steel towers crumble and new guilds rise from the wreckage. His synthetic blood type Ø lets him outlast what the wasteland takes from everyone else.</p>
+  story:`<p>Ouji — handle <strong style="color:var(--accent)">NatsuOuji</strong> — is a ninety-nine-year-old keeper in the rusted sprawl of West Jap(v)anese, a world where steel towers crumble and new guilds rise from the wreckage. His synthetic blood type Ø lets him outlast what the wasteland takes from everyone else.</p>
 <p>Within the guild he serves as <strong style="color:var(--red)">Curator</strong>, safeguarding old-world archives and decoding forgotten data — but that's only the cover. Beneath it, he moves between factions as a shadow, gathering secrets under the guise of quiet scholarship.</p>
 <p>Sleepy-eyed and slow to speak, he'd rather watch from the corner of a firelit hall than stand at its centre, learning every face and every weakness.</p>
 <p>Born under the sign of <em>Orion</em>, he wears that old defiance like the chronometer on his wrist — saying nothing, explaining less.</p>`
@@ -847,8 +1054,8 @@ const founders=[
   personality:'Easy-going, Warm, Unforgiving',
   tattoo:'Renegade mark wrapping mid-forearm',
   food:'Melon Pan',flower:'Spider Lily',animal:'Bird',
-  image:'',
-  story:`<p>Ten — handle <strong style="color:var(--cyan)">96_10</strong> — is a thirty-year-old brawler from the irradiated sprawl of what was once the USA, her blood type O marking her as a universal donor in a world that always needs something from everyone else.</p>
+  image:'https://drive.google.com/thumbnail?id=1d0KwmAZmsLYzdY8fzKzZTlh5yK12FKAQ&sz=w400',
+  story:`<p>Ten — handle <strong style="color:var(--accent)">96_10</strong> — is a thirty-year-old brawler from the irradiated sprawl of what was once the USA, her blood type O marking her as a universal donor in a world that always needs something from everyone else.</p>
 <p>Within the guild she's the <strong style="color:var(--red)">Innkeeper</strong>, and on most nights she's the easiest soul in the room — laughing, pouring drinks, earrings catching the firelight as she dozes off behind the counter. Easy-going, warm, the kind of calm that makes every wanderer feel welcome.</p>
 <p>But cross her wrong and that warmth dies fast — her cold stare is enough to shake the guildhall walls, and the sleepy bartender closes the distance bare-handed before you can blink. A renegade's mark wraps her mid-forearm, a brand she's too chill to care about — until she isn't.</p>
 <p>Born under <em>Taurus ♉</em>, she's patient as stone, and just as unforgiving when pushed.</p>`
@@ -862,8 +1069,8 @@ const founders=[
   style:'Advisor / Harbinger / Artist',
   personality:'Quiet, Wise, Relentless',
   tattoo:'—',food:'Dango',flower:'Wild Rose',animal:'Cat',
-  image:'',
-  story:`<p>Mami — handle <strong style="color:var(--cyan)">8maamiki</strong> — is a two-hundred-and-twenty-year-old archer from the drowned coasts of what was once Indonesia, now just another fractured territory in the wasteland. Half-vampire, she has outlived centuries with unnatural grace, her blood type A kept pure by the very curse running through her veins.</p>
+  image:'https://drive.google.com/thumbnail?id=1Jt-J928dMFBmrAXyTb8QnEn-rdSZEHBU&sz=w400',
+  story:`<p>Mami — handle <strong style="color:var(--accent)">8maamiki</strong> — is a two-hundred-and-twenty-year-old archer from the drowned coasts of what was once Indonesia, now just another fractured territory in the wasteland. Half-vampire, she has outlived centuries with unnatural grace, her blood type A kept pure by the very curse running through her veins.</p>
 <p>Within the guild she serves as <strong style="color:var(--red)">Advisor</strong> — the one younger members seek when the wasteland wears them down, her words quiet but heavy with the kind of wisdom only time and hunger can teach.</p>
 <p>She is also a harbinger and artist, a deadly shot who paints with arrows before the enemy even knows they're marked. She fights like a shadow — silent, precise, always one step ahead — driven by a single creed: <em>every arrow loosed is a lesson the next one will remember.</em></p>
 <p>Born under <em>Cancer ♋</em>, she carries the tide in her — patient, relentless, and impossible to pull back.</p>`
@@ -877,8 +1084,8 @@ const founders=[
   style:'Handler / Bookkeeper',
   personality:'Aloof, Sharp-tongued, Deeply Loyal',
   tattoo:'—',food:'Sweets',flower:'Wisteria',animal:'Cat',
-  image:'',
-  story:`<p>Sam — handle <strong style="color:var(--cyan)">moemelonyan</strong> — is a twenty-five-year-old drifter with no fixed coordinates, though their accent ghosts somewhere around the rain-soaked ruins of the old UK. Their blood type is listed as simply "red," which is either a medical anomaly or a flat refusal to be categorized — take your pick.</p>
+  image:'https://drive.google.com/thumbnail?id=17rgDhgK4t9hOWBBKEmKw7N32hk2IkA_3&sz=w400',
+  story:`<p>Sam — handle <strong style="color:var(--accent)">moemelonyan</strong> — is a twenty-five-year-old drifter with no fixed coordinates, though their accent ghosts somewhere around the rain-soaked ruins of the old UK. Their blood type is listed as simply "red," which is either a medical anomaly or a flat refusal to be categorized — take your pick.</p>
 <p>Within the guild, Sam is the <strong style="color:var(--red)">Handler and Bookkeeper</strong>, the quiet one tracking every credit, every contract, every debt owed. Don't let the ledger fool you: when the numbers stop adding up, a butterfly knife spins between their fingers with lethal, feline precision.</p>
 <p>Sam fights like a cat — silent, sudden, all claws and no warning. Aloof at first glance, sharp-tongued and seemingly cold, but earn their trust and you'll find a loyalty that runs deeper than most.</p>
 <p>Born August 25th under <em>Virgo ♍</em>, they're meticulous, calculating, and quietly devoted to the few they let past the hiss.</p>`
@@ -1245,7 +1452,7 @@ missionForm.addEventListener('submit',async function(e){
       headers:{'Content-Type':'text/plain;charset=utf-8'},
       body:JSON.stringify(payload)
     });
-    missionStatus.style.color='var(--cyan)';
+    missionStatus.style.color='var(--accent)';
     missionStatus.textContent='✔ Mission logged. '+payload.cofs+' COFs sent to '+names.length+' operative(s).';
     missionForm.reset();
     setTimeout(loadDB,2500);
@@ -1283,7 +1490,7 @@ noticeForm.addEventListener('submit',async function(e){
       headers:{'Content-Type':'text/plain;charset=utf-8'},
       body:JSON.stringify(payload)
     });
-    noticeStatus.style.color='var(--cyan)';
+    noticeStatus.style.color='var(--accent)';
     noticeStatus.textContent='✔ Notice broadcast. Live for '+payload.duration_hours+' hours.';
     noticeForm.reset();
     document.getElementById('n-duration').value=48;
