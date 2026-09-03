@@ -1398,6 +1398,9 @@ document.getElementById('open-mission-btn-mobile').addEventListener('click',e=>{
 missionClose.addEventListener('click',closeCommand);
 missionOverlay.addEventListener('click',e=>{if(e.target===missionOverlay)closeCommand();});
 
+// Change this to match your Founder Password if you change it in Apps Script:
+const COMMAND_PASSWORD = 'RIPCOF2026';
+
 unlockBtn.addEventListener('click',()=>{
   const enteredPw = missionPw.value.trim();
   if(!enteredPw){
@@ -1412,6 +1415,7 @@ unlockBtn.addEventListener('click',()=>{
   missionGate.style.display = 'none';
   missionWrap.style.display = 'block';
 });
+
 missionPw.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();unlockBtn.click();}});
 
 /* Tabs */
