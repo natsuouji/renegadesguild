@@ -1326,9 +1326,14 @@ async function loadNotices(){
     rows.slice(1).forEach(r=>{
       const o={};
       headers.forEach((h,i)=>{o[h]=(r[i]||'').trim();});
-      if(!o.title||!o.expires_at)return;
-      const exp=new Date(o.expires_at);
-      if(isNaN(exp)||exp<=now)return;
+      
+      // Look for expires_at OR expired_at
+      const expiry = o.expires_at || o.expired_at;
+      if(!o.title || !expiry) return;
+
+      const exp=new Date(expiry);
+      if(isNaN(exp) || exp<=now) return;
+
       const ms=exp-now;
       const d=Math.floor(ms/86400000);
       const h=Math.floor((ms%86400000)/3600000);
