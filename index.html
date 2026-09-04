@@ -12,7 +12,7 @@
   :root{
     --black:#050508;
     --red:#ff3300;
-    --accent:#ffffff; /* Changed from Cyan to White */
+    --accent:#ffffff;
     --card:#0b0b12;
     --card-border:#1a1a2e;
     --text:#c8c8d0;
@@ -201,7 +201,7 @@
     margin-bottom: 12px;
   }
 
-  /* ===== GUILD INFO (DROPDOWNS) ===== */
+  /* ===== GUILD INFO ===== */
   #info { padding-top: 20px; }
   .info-intro {
     max-width: 800px;
@@ -250,43 +250,38 @@
   .dropdown-content strong { color: var(--white); }
   .dropdown-content h4 { color: var(--red); margin-top: 16px; margin-bottom: 8px; font-family: var(--font-display); letter-spacing: 1px; font-size: .9rem; }
 
-  /* ===== CARDS ===== */
+  /* ===== CARDS & FOUNDERS GRID ===== */
   .db-grid{
     display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
     gap:20px;
   }
-  
-  /* ===== FOUNDERS LAYOUT: 3 TOP, 2 BOTTOM ===== */
-  #founders-grid{
-    display:flex !important;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:20px;
+
+  /* FOUNDERS 3-TOP / 2-BOTTOM CENTERING */
+  #founders-grid {
+    display: flex !important;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
   }
-  #founders-grid .db-card{
-    flex:0 1 calc(33.333% - 14px);
-    min-width:240px;
-    max-width:320px;
+  #founders-grid .db-card {
+    flex: 0 1 calc(33.333% - 14px);
+    min-width: 240px;
+    max-width: 320px;
   }
-  @media (max-width:900px){
-    #founders-grid .db-card{
-      flex:0 1 calc(50% - 12px);
-      max-width:none;
-    }
+  @media (max-width: 900px) {
+    #founders-grid .db-card { flex: 0 1 calc(50% - 12px); max-width: none; }
   }
-  @media (max-width:550px){
-    #founders-grid .db-card{
-      flex:1 1 100%;
-      min-width:0;
-    }
+  @media (max-width: 550px) {
+    #founders-grid .db-card { flex: 1 1 100%; min-width: 0; }
   }
+
   .db-card{
     cursor:pointer;padding:22px 16px;text-align:center;
     transition:transform .3s,border-color .3s;
   }
   .db-card:hover{transform:translateY(-4px);border-color:var(--red)}
   .db-card .card-avatar{
-    width:100px;height:100px;border-radius:50%;border:2px solid var(--red);
+    width:64px;height:64px;border-radius:50%;border:2px solid var(--red);
     margin:0 auto 12px;background:var(--black);object-fit:cover;overflow:hidden;
     display:flex;align-items:center;justify-content:center;
     font-family:var(--font-display);color:var(--red);font-size:1.1rem;
@@ -362,15 +357,11 @@
   .modal-close:hover{color:var(--white)}
   
   .m-avatar{
-    width:250px;
-    height:250px;
-    border-radius:50%;
-    border:3px solid var(--red);
-    margin:0 auto 18px;
+    width:150px;height:150px;border-radius:50%;
+    border:3px solid var(--red);margin:0 auto 18px;
     background:var(--black);object-fit:cover;overflow:hidden;
     display:flex;align-items:center;justify-content:center;
-    font-family:var(--font-display);color:var(--red);
-    font-size:2.5rem;
+    font-family:var(--font-display);color:var(--red);font-size:2.5rem;
   }
   img.m-avatar{display:block}
   
@@ -386,7 +377,7 @@
   .m-story p{margin-bottom:12px}
   .m-story em{color:var(--accent)}
 
-  /* ===== TABS ===== */
+  /* ===== TABS & MANAGE ITEMS ===== */
   .tab-bar{display:flex;gap:0;margin-bottom:20px}
   .tab-btn{
     flex:1;padding:11px 0;background:transparent;border:1px solid var(--card-border);
@@ -396,6 +387,21 @@
   .tab-btn.active{background:var(--red);color:var(--black);border-color:var(--red)}
   .tab-panel{display:none}
   .tab-panel.active{display:block}
+
+  .manage-item{
+    background:var(--card);border:1px solid var(--card-border);
+    padding:12px 14px;text-align:left;
+  }
+  .manage-item .mi-title{font-family:var(--font-display);color:var(--accent);font-size:.8rem;margin-bottom:4px}
+  .manage-item .mi-content{font-size:.75rem;color:var(--text);margin-bottom:8px;opacity:.85}
+  .manage-item .mi-actions{display:flex;gap:8px}
+  .manage-item .mi-actions button{
+    flex:1;padding:8px 0;font-family:var(--font-display);font-size:.65rem;
+    letter-spacing:1px;text-transform:uppercase;cursor:pointer;border:1px solid var(--card-border);
+    background:transparent;color:var(--text);
+  }
+  .manage-item .mi-actions .btn-edit{border-color:var(--accent);color:var(--accent)}
+  .manage-item .mi-actions .btn-del{border-color:var(--red);color:var(--red)}
 
   /* ===== FOOTER ===== */
   footer{
@@ -487,7 +493,7 @@
   </div>
 </section>
 
-<!-- ============ GUILD INFO (DIRECTIVES) ============ -->
+<!-- ============ GUILD INFO ============ -->
 <section id="info" class="section">
   <div class="container">
     <h2 class="section-title">// DIRECTIVES</h2>
@@ -500,7 +506,6 @@
       Now you need to understand what you've joined.</p>
     </div>
 
-    <!-- 01 WHAT IS RENEGADES -->
     <details class="cyber-dropdown">
       <summary>01 — WHAT IS RENEGADES?</summary>
       <div class="dropdown-content">
@@ -515,11 +520,10 @@
       </div>
     </details>
 
-    <!-- 02 THE FOUNDERS -->
     <details class="cyber-dropdown">
       <summary>02 — THE FOUNDERS</summary>
       <div class="dropdown-content">
-        <p>The five people who established RENEGADES are Nezumi,Ouji, Mamiki, Ten & Sam.</p>
+        <p>The five people who established RENEGADES are Nezumi, Putra, Mamiki, Ten & Sam.</p>
         <p>The Founders are the highest authority within the guild and are responsible for keeping RENEGADES organized, active and true to its original purpose. They have:</p>
         <ul>
           <li>Unlimited COFs</li>
@@ -536,7 +540,6 @@
       </div>
     </details>
 
-    <!-- 03 JOINING RENEGADES -->
     <details class="cyber-dropdown">
       <summary>03 — JOINING RENEGADES</summary>
       <div class="dropdown-content">
@@ -547,7 +550,6 @@
       </div>
     </details>
 
-    <!-- 04 COFS CURRENCY -->
     <details class="cyber-dropdown">
       <summary>04 — THE RENEGADE’S BANK - COFs CURRENCY</summary>
       <div class="dropdown-content">
@@ -580,7 +582,6 @@
       </div>
     </details>
 
-    <!-- 05 MISSIONS -->
     <details class="cyber-dropdown">
       <summary>05 — MISSIONS</summary>
       <div class="dropdown-content">
@@ -608,7 +609,6 @@
       </div>
     </details>
 
-    <!-- 06 EVENTS -->
     <details class="cyber-dropdown">
       <summary>06 — EVENTS</summary>
       <div class="dropdown-content">
@@ -636,7 +636,6 @@
       </div>
     </details>
 
-    <!-- 07 COLLABORATIONS -->
     <details class="cyber-dropdown">
       <summary>07 — COLLABORATION SYSTEM</summary>
       <div class="dropdown-content">
@@ -654,7 +653,6 @@
       </div>
     </details>
 
-    <!-- 08 RANKING & PROMOTIONS -->
     <details class="cyber-dropdown">
       <summary>08 — RANKING & PROMOTIONS</summary>
       <div class="dropdown-content">
@@ -678,7 +676,6 @@
       </div>
     </details>
 
-    <!-- 09 GUILD RULES -->
     <details class="cyber-dropdown">
       <summary>09 — GUILD RULES</summary>
       <div class="dropdown-content">
@@ -691,7 +688,6 @@
       </div>
     </details>
 
-    <!-- 10 CODE OF CONDUCT -->
     <details class="cyber-dropdown">
       <summary>10 — CODE OF CONDUCT</summary>
       <div class="dropdown-content">
@@ -762,107 +758,122 @@
     <h2 class="section-title">// ENLISTMENT FORM</h2>
     <p class="form-intro">Recruitment is <strong style="color:var(--red)">invitation-only</strong>. If a Founder gave you the signal, fill in your dossier below. All submissions are reviewed before activation.</p>
 
-    <form class="reg-form" id="reg-form" autocomplete="off">
-      <div class="form-row">
-        <div class="form-group">
-          <label for="f-name">Operative Name *</label>
-          <input type="text" id="f-name" name="name" required placeholder="Your alias">
-        </div>
-        <div class="form-group">
-          <label for="f-smule">Smule Username</label>
-          <input type="text" id="f-smule" name="smule" placeholder="@handle">
-        </div>
-      </div>
+   <form class="reg-form" id="reg-form" autocomplete="off">
+  
+  <!-- ROW 1: NAME + SMULE -->
+  <div class="form-row">
+    <div class="form-group">
+      <label for="f-name">Operative Name *</label>
+      <input type="text" id="f-name" name="name" required placeholder="Your guild alias">
+    </div>
+    <div class="form-group">
+      <label for="f-smule">Smule Username *</label>
+      <input type="text" id="f-smule" name="smule" required placeholder="@handle">
+    </div>
+  </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="f-country">Country *</label>
-          <input type="text" id="f-country" name="country" required placeholder="Where you broadcast from">
-        </div>
-        <div class="form-group">
-          <label for="f-age">Age *</label>
-          <input type="number" id="f-age" name="age" required min="13" max="99" placeholder="Age">
-        </div>
-      </div>
+  <!-- ROW 2: COUNTRY + AGE -->
+  <div class="form-row">
+    <div class="form-group">
+      <label for="f-country">Country *</label>
+      <input type="text" id="f-country" name="country" required placeholder="Where you broadcast from">
+    </div>
+    <div class="form-group">
+      <label for="f-age">Age *</label>
+      <input type="number" id="f-age" name="age" required min="13" max="250" placeholder="Age">
+    </div>
+  </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="f-blood">Blood Type</label>
-          <select id="f-blood" name="blood">
-            <option value="">— Select —</option>
-            <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
-            <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
-            <option>Unknown</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="f-sign">Zodiac Sign</label>
-          <select id="f-sign" name="sign">
-            <option value="">— Select —</option>
-            <option>Aries</option><option>Taurus</option><option>Gemini</option>
-            <option>Cancer</option><option>Leo</option><option>Virgo</option>
-            <option>Libra</option><option>Scorpio</option><option>Sagittarius</option>
-            <option>Capricorn</option><option>Aquarius</option><option>Pisces</option>
-          </select>
-        </div>
-      </div>
+  <!-- ROW 3: BLOOD + ZODIAC -->
+  <div class="form-row">
+    <div class="form-group">
+      <label for="f-blood">Blood Type</label>
+      <select id="f-blood" name="blood">
+        <option value="">— Select —</option>
+        <option>A+</option><option>A-</option>
+        <option>B+</option><option>B-</option>
+        <option>AB+</option><option>AB-</option>
+        <option>O+</option><option>O-</option>
+        <option>Unknown</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="f-sign">Zodiac Sign</label>
+      <select id="f-sign" name="sign">
+        <option value="">— Select —</option>
+        <option>Aries</option><option>Taurus</option><option>Gemini</option>
+        <option>Cancer</option><option>Leo</option><option>Virgo</option>
+        <option>Libra</option><option>Scorpio</option><option>Sagittarius</option>
+        <option>Capricorn</option><option>Aquarius</option><option>Pisces</option>
+      </select>
+    </div>
+  </div>
 
-      <div class="form-group">
-        <label for="f-role">Role / Title *</label>
-        <input type="text" id="f-role" name="role" required placeholder="e.g. Singer, Artist, Mixer, Animator…">
-      </div>
+  <!-- ROLE -->
+  <div class="form-group">
+    <label for="f-role">Role / Title *</label>
+    <input type="text" id="f-role" name="role" required placeholder="e.g. Singer, Artist, Mixer, Animator…">
+  </div>
 
-      <div class="form-group">
-        <label for="f-skills">Skills *</label>
-        <input type="text" id="f-skills" name="skills" required placeholder="e.g. Singing, Drawing, Video Editing…">
-      </div>
+  <!-- SKILLS -->
+  <div class="form-group">
+    <label for="f-skills">Skills *</label>
+    <input type="text" id="f-skills" name="skills" required placeholder="e.g. Singing, Drawing, Video Editing…">
+  </div>
 
-      <div class="form-group">
-        <label for="f-style">Vocal / Art Style</label>
-        <input type="text" id="f-style" name="style" placeholder="e.g. Rock, R&B, Digital Art, Anime…">
-      </div>
+  <!-- STYLE -->
+  <div class="form-group">
+    <label for="f-style">Vocal / Art Style</label>
+    <input type="text" id="f-style" name="style" placeholder="e.g. Rock, R&B, Digital Art, Anime…">
+  </div>
 
-      <div class="form-group">
-        <label for="f-weapon">Signature Weapon *</label>
-        <input type="text" id="f-weapon" name="weapon" required placeholder="Choose your weapon (be creative!)">
-      </div>
+  <!-- WEAPON -->
+  <div class="form-group">
+    <label for="f-weapon">Signature Weapon *</label>
+    <input type="text" id="f-weapon" name="weapon" required placeholder="Choose your weapon (be creative!)">
+  </div>
 
-      <div class="form-group">
-        <label for="f-personality">Personality (3 words)</label>
-        <input type="text" id="f-personality" name="personality" placeholder="e.g. Calm, Chaotic, Loyal">
-      </div>
+  <!-- PERSONALITY -->
+  <div class="form-group">
+    <label for="f-personality">Personality (3 words)</label>
+    <input type="text" id="f-personality" name="personality" placeholder="e.g. Calm, Chaotic, Loyal">
+  </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="f-tattoo">Tattoo Idea</label>
-          <input type="text" id="f-tattoo" name="tattoo" placeholder="Something that represents you">
-        </div>
-        <div class="form-group">
-          <label for="f-food">Favourite Food</label>
-          <input type="text" id="f-food" name="food" placeholder="Fuel of choice">
-        </div>
-      </div>
+  <!-- TATTOO PLACEMENT -->
+  <div class="form-group">
+    <label for="f-tattoo">Renegade Tattoo Placement</label>
+    <input type="text" id="f-tattoo" name="tattoo" placeholder="e.g. Left forearm, Nape, Ribcage, Behind ear…">
+    <span class="form-hint">Where on your body the RENEGADE mark is inked.</span>
+  </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="f-flower">Favourite Flower</label>
-          <input type="text" id="f-flower" name="flower" placeholder="Even renegades like flowers">
-        </div>
-        <div class="form-group">
-          <label for="f-animal">Spirit Animal</label>
-          <input type="text" id="f-animal" name="animal" placeholder="Your inner beast">
-        </div>
-      </div>
+  <!-- ROW: FOOD + FLOWER -->
+  <div class="form-row">
+    <div class="form-group">
+      <label for="f-food">Favourite Food</label>
+      <input type="text" id="f-food" name="food" placeholder="Fuel of choice">
+    </div>
+    <div class="form-group">
+      <label for="f-flower">Favourite Flower</label>
+      <input type="text" id="f-flower" name="flower" placeholder="Even renegades like flowers">
+    </div>
+  </div>
 
-      <div class="form-group">
-        <label for="f-image">Profile Picture Link (Optional)</label>
-        <input type="url" id="f-image" name="image" placeholder="https://i.postimg.cc/...">
-        <span class="form-hint">Square image, 400×400px or larger. Upload to postimages.org and paste the Direct Link.</span>
-      </div>
+  <!-- SPIRIT ANIMAL -->
+  <div class="form-group">
+    <label for="f-animal">Spirit Animal</label>
+    <input type="text" id="f-animal" name="animal" placeholder="Your inner beast">
+  </div>
 
-      <button type="submit" class="submit-btn" id="submit-btn">TRANSMIT DOSSIER</button>
-      <div id="form-status"></div>
-    </form>
+  <!-- PROFILE PICTURE LINK -->
+  <div class="form-group">
+    <label for="f-image">Profile Picture Link (Optional)</label>
+    <input type="url" id="f-image" name="image" placeholder="https://i.postimg.cc/... or https://drive.google.com/...">
+    <span class="form-hint">Square image (400×400px or larger). Upload to postimages.org or Google Drive and paste the Direct Link.</span>
+  </div>
+
+  <button type="submit" class="submit-btn" id="submit-btn">TRANSMIT DOSSIER</button>
+  <div id="form-status"></div>
+</form>
   </div>
 </section>
 
@@ -904,6 +915,7 @@
       <div class="tab-bar">
         <button class="tab-btn active" data-tab="tab-mission">📋 Mission Log</button>
         <button class="tab-btn" data-tab="tab-notice">📡 Post Notice</button>
+        <button class="tab-btn" data-tab="tab-manage">✎ Manage</button>
       </div>
 
       <!-- TAB: MISSION -->
@@ -983,13 +995,58 @@
           <div id="notice-status" style="text-align:center;margin-top:10px;font-size:.82rem;min-height:18px"></div>
         </form>
       </div>
+
+      <!-- TAB: MANAGE NOTICES -->
+      <div class="tab-panel" id="tab-manage">
+        <p style="font-size:.78rem;color:var(--text);margin-bottom:12px">
+          Edit or delete guild broadcasts.
+        </p>
+        <div id="manage-notices-list" style="display:flex;flex-direction:column;gap:10px;max-height:50vh;overflow-y:auto">
+          <div class="no-notices">Loading notices…</div>
+        </div>
+
+        <!-- Inline Edit Form -->
+        <div id="notice-edit-wrap" style="display:none;margin-top:16px;border-top:1px solid var(--card-border);padding-top:16px">
+          <h3 style="font-family:var(--font-display);color:var(--accent);font-size:.85rem;margin-bottom:12px">EDIT NOTICE</h3>
+          <form id="notice-edit-form" class="reg-form" style="max-width:100%">
+            <input type="hidden" id="ne-original-ts" value="">
+            <div class="form-group">
+              <label for="ne-founder">Prepared By *</label>
+              <select id="ne-founder" required>
+                <option value="">— Select —</option>
+                <option>NEZUMI</option><option>OUJI</option><option>TEN</option>
+                <option>MAMIKI</option><option>SAM</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="ne-title">Title *</label>
+              <input type="text" id="ne-title" required>
+            </div>
+            <div class="form-group">
+              <label for="ne-content">Content *</label>
+              <textarea id="ne-content" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="ne-duration">New duration (hours) *</label>
+              <input type="number" id="ne-duration" required min="1" max="720" value="48">
+              <span class="form-hint">Saving resets the countdown timer.</span>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button type="submit" class="submit-btn" id="ne-save-btn" style="flex:1">SAVE CHANGES</button>
+              <button type="button" class="submit-btn" id="ne-cancel-btn" style="flex:1;background:transparent;color:var(--text);border:1px solid var(--card-border);clip-path:none">CANCEL</button>
+            </div>
+            <div id="ne-status" style="text-align:center;margin-top:10px;font-size:.82rem;min-height:18px"></div>
+          </form>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 
 <script>
 /* ==========================================================
-   RENEG▲DES GUILD HUB — FRONTEND v3.0
+   RENEG▲DES GUILD HUB — FRONTEND v3.2
    ========================================================== */
 
 document.getElementById('yr').textContent = new Date().getFullYear();
@@ -1005,7 +1062,6 @@ const NOTICES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR8ekE1
   let w,h,pts=[];
   function resize(){
     w=c.width=window.innerWidth;h=c.height=window.innerHeight;pts=[];
-    /* Changed particle color to white overlay */
     for(let i=0;i<80;i++)pts.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.5+.5,dx:(Math.random()-.5)*.3,dy:(Math.random()-.5)*.3});
   }
   resize();window.addEventListener('resize',resize);
@@ -1015,7 +1071,7 @@ const NOTICES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR8ekE1
       p.x+=p.dx;p.y+=p.dy;
       if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;
       ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle='rgba(255,255,255,.15)'; /* Changed to White */
+      ctx.fillStyle='rgba(255,255,255,.15)';
       ctx.fill();
     });
     requestAnimationFrame(draw);
@@ -1047,8 +1103,8 @@ const founders=[
   skills:'Close-quarters combat, territorial defense',
   style:'Bruiser / Landlord & Warden',
   personality:'Blunt, Possessive, Protective',
-  tattoo:'—',food:'Cake',flower:'Hydrangea',animal:'Whale',
-  image:'https://drive.google.com/thumbnail?id=1yMOBwLpdW5NISYAh-qxyiu5eJ5ils-Ld&sz=w400',
+  tattoo:'left side of the neck',food:'Cake',flower:'Hydrangea',animal:'Whale',
+  image:'',
   story:`<p>Nezu — handle <strong style="color:var(--accent)">Nezumiii</strong> — is a thirty-one-year-old bruiser out of the neon-choked sprawl of Neo-Brazil, their O+ blood marking them as a universal donor in a city that bleeds people dry.</p>
 <p>Within the guild, they're the <strong style="color:var(--red)">Landlord and Warden</strong> — the one who holds the keys, guards the walls, and makes sure nobody forgets whose ground they're standing on. Blunt, possessive, and fiercely protective, Nezu treats the guild like personal territory: step inside and you're under their shield, threaten it and you're scrap metal.</p>
 <p>No fancy chrome or long-range tech — just reinforced brass knuckles and brutal close-quarters combat that ends arguments before they start.</p>
@@ -1062,7 +1118,7 @@ const founders=[
   skills:'Archive decoding, faction intelligence',
   style:'Curator / Shadow Operative',
   personality:'Sleepy-eyed, Observant, Silent',
-  tattoo:'—',food:'Egg',flower:'Jasmine',animal:'Cat',
+  tattoo:'top of left hand',food:'Egg',flower:'Jasmine',animal:'Cat',
   image:'https://drive.google.com/thumbnail?id=15N-rAv3TIMPqtn-guAbcJ8MqFwYGLxx0&sz=w400',
   story:`<p>Ouji — handle <strong style="color:var(--accent)">NatsuOuji</strong> — is a ninety-nine-year-old keeper in the rusted sprawl of West Jap(v)anese, a world where steel towers crumble and new guilds rise from the wreckage. His synthetic blood type Ø lets him outlast what the wasteland takes from everyone else.</p>
 <p>Within the guild he serves as <strong style="color:var(--red)">Curator</strong>, safeguarding old-world archives and decoding forgotten data — but that's only the cover. Beneath it, he moves between factions as a shadow, gathering secrets under the guise of quiet scholarship.</p>
@@ -1077,9 +1133,9 @@ const founders=[
   skills:'Bare-handed combat, safehouse hospitality',
   style:'Brawler / Innkeeper',
   personality:'Easy-going, Warm, Unforgiving',
-  tattoo:'Renegade mark wrapping mid-forearm',
+  tattoo:'Mid-forearm (wrap)',
   food:'Melon Pan',flower:'Spider Lily',animal:'Bird',
-  image:'https://drive.google.com/thumbnail?id=1d0KwmAZmsLYzdY8fzKzZTlh5yK12FKAQ&sz=w400',
+  image:'',
   story:`<p>Ten — handle <strong style="color:var(--accent)">96_10</strong> — is a thirty-year-old brawler from the irradiated sprawl of what was once the USA, her blood type O marking her as a universal donor in a world that always needs something from everyone else.</p>
 <p>Within the guild she's the <strong style="color:var(--red)">Innkeeper</strong>, and on most nights she's the easiest soul in the room — laughing, pouring drinks, earrings catching the firelight as she dozes off behind the counter. Easy-going, warm, the kind of calm that makes every wanderer feel welcome.</p>
 <p>But cross her wrong and that warmth dies fast — her cold stare is enough to shake the guildhall walls, and the sleepy bartender closes the distance bare-handed before you can blink. A renegade's mark wraps her mid-forearm, a brand she's too chill to care about — until she isn't.</p>
@@ -1093,8 +1149,8 @@ const founders=[
   skills:'Long-range precision, ancient counsel',
   style:'Advisor / Harbinger / Artist',
   personality:'Quiet, Wise, Relentless',
-  tattoo:'—',food:'Dango',flower:'Wild Rose',animal:'Cat',
-  image:'https://drive.google.com/thumbnail?id=1Jt-J928dMFBmrAXyTb8QnEn-rdSZEHBU&sz=w400',
+  tattoo:'left ankle',food:'Dango',flower:'Wild Rose',animal:'Cat',
+  image:'',
   story:`<p>Mami — handle <strong style="color:var(--accent)">8maamiki</strong> — is a two-hundred-and-twenty-year-old archer from the drowned coasts of what was once Indonesia, now just another fractured territory in the wasteland. Half-vampire, she has outlived centuries with unnatural grace, her blood type A kept pure by the very curse running through her veins.</p>
 <p>Within the guild she serves as <strong style="color:var(--red)">Advisor</strong> — the one younger members seek when the wasteland wears them down, her words quiet but heavy with the kind of wisdom only time and hunger can teach.</p>
 <p>She is also a harbinger and artist, a deadly shot who paints with arrows before the enemy even knows they're marked. She fights like a shadow — silent, precise, always one step ahead — driven by a single creed: <em>every arrow loosed is a lesson the next one will remember.</em></p>
@@ -1108,8 +1164,8 @@ const founders=[
   skills:'Ledger tracking, contract enforcement',
   style:'Handler / Bookkeeper',
   personality:'Aloof, Sharp-tongued, Deeply Loyal',
-  tattoo:'—',food:'Sweets',flower:'Wisteria',animal:'Cat',
-  image:'https://drive.google.com/thumbnail?id=17rgDhgK4t9hOWBBKEmKw7N32hk2IkA_3&sz=w400',
+  tattoo:'inside left cat ear',food:'Sweets',flower:'Wisteria',animal:'Cat',
+  image:'',
   story:`<p>Sam — handle <strong style="color:var(--accent)">moemelonyan</strong> — is a twenty-five-year-old drifter with no fixed coordinates, though their accent ghosts somewhere around the rain-soaked ruins of the old UK. Their blood type is listed as simply "red," which is either a medical anomaly or a flat refusal to be categorized — take your pick.</p>
 <p>Within the guild, Sam is the <strong style="color:var(--red)">Handler and Bookkeeper</strong>, the quiet one tracking every credit, every contract, every debt owed. Don't let the ledger fool you: when the numbers stop adding up, a butterfly knife spins between their fingers with lethal, feline precision.</p>
 <p>Sam fights like a cat — silent, sudden, all claws and no warning. Aloof at first glance, sharp-tongued and seemingly cold, but earn their trust and you'll find a loyalty that runs deeper than most.</p>
@@ -1215,7 +1271,7 @@ function openModal(d){
     ${row('Style',d.style)}
     ${row('Weapon',d.weapon)}
     ${row('Personality',d.personality)}
-    ${row('Tattoo',d.tattoo)}
+    ${row('Tattoo Placement',d.tattoo)}
     ${row('Food',d.food)}
     ${row('Flower',d.flower)}
     ${row('Spirit Animal',d.animal)}
@@ -1230,7 +1286,6 @@ function closeModal(){
   document.body.style.overflow='';
 }
 modalClose.addEventListener('click',closeModal);
-modalOverlay.addEventListener('click',e=>{if(e.target===modalOverlay)closeModal();});
 
 /* ---------- CSV PARSER ---------- */
 function parseCSV(text){
@@ -1326,8 +1381,6 @@ async function loadNotices(){
     rows.slice(1).forEach(r=>{
       const o={};
       headers.forEach((h,i)=>{o[h]=(r[i]||'').trim();});
-      
-      // Look for expires_at OR expired_at
       const expiry = o.expires_at || o.expired_at;
       if(!o.title || !expiry) return;
 
@@ -1397,7 +1450,9 @@ regForm.addEventListener('submit',async function(e){
   }
 });
 
-/* ---------- COMMAND MODAL ---------- */
+/* ---------- COMMAND MODAL LOCK & LOGIC ---------- */
+const COMMAND_PASSWORD = 'RIPCOF2026'; // Fixed access code check
+
 const missionOverlay=document.getElementById('mission-overlay');
 const missionClose=document.getElementById('mission-close');
 const missionGate=document.getElementById('mission-gate');
@@ -1414,6 +1469,7 @@ function openCommand(){
   missionPw.value='';
   pwStatus.textContent='';
 }
+
 function closeCommand(){
   missionOverlay.classList.remove('active');
   document.body.style.overflow='';
@@ -1425,17 +1481,13 @@ document.getElementById('open-mission-btn-mobile').addEventListener('click',e=>{
   if(drawer.classList.contains('open'))toggleDrawer();
   openCommand();
 });
+
+// CLOSE ONLY WHEN CLICKING THE 'X' BUTTON
 missionClose.addEventListener('click',closeCommand);
-missionOverlay.addEventListener('click',e=>{if(e.target===missionOverlay)closeCommand();});
 
-const COMMAND_PASSWORD = 'RIPCOF2026';
-
+// UNLOCK GATE
 unlockBtn.addEventListener('click', function () {
   const enteredPw = String(missionPw.value || '').trim();
-
-  // Always keep panel locked unless password matches
-  missionGate.style.display = 'block';
-  missionWrap.style.display = 'none';
 
   if (!enteredPw) {
     pwStatus.textContent = 'Access code required.';
@@ -1451,7 +1503,6 @@ unlockBtn.addEventListener('click', function () {
     return;
   }
 
-  // ONLY correct password reaches here
   pwStatus.textContent = '';
   missionGate.style.display = 'none';
   missionWrap.style.display = 'block';
@@ -1471,11 +1522,8 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(btn.dataset.tab).classList.add('active');
+    if(btn.dataset.tab === 'tab-manage') loadManageNotices();
   });
-});
-
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){closeModal();closeCommand();}
 });
 
 /* ---------- MISSION FORM SUBMIT ---------- */
@@ -1556,6 +1604,159 @@ noticeForm.addEventListener('submit',async function(e){
     console.error(err);
   }finally{
     noticeBtn.disabled=false;noticeBtn.textContent='BROADCAST NOTICE';
+  }
+});
+
+/* ---------- MANAGE NOTICES (EDIT / DELETE) ---------- */
+const manageList = document.getElementById('manage-notices-list');
+const editWrap = document.getElementById('notice-edit-wrap');
+const editForm = document.getElementById('notice-edit-form');
+const neStatus = document.getElementById('ne-status');
+
+async function loadManageNotices(){
+  if(!manageList) return;
+  manageList.innerHTML = '<div class="no-notices">Loading notices…</div>';
+  editWrap.style.display = 'none';
+
+  try{
+    const res = await fetch(NOTICES_CSV_URL + '&t=' + Date.now());
+    const txt = await res.text();
+    const rows = parseCSV(txt);
+    if(rows.length < 2){
+      manageList.innerHTML = '<div class="no-notices">No notices in database.</div>';
+      return;
+    }
+    const headers = rows[0].map(h => h.trim().toLowerCase());
+    const now = new Date();
+    const items = [];
+
+    rows.slice(1).forEach(r => {
+      const o = {};
+      headers.forEach((h,i) => { o[h] = (r[i] || '').trim(); });
+      const expiry = o.expires_at || o.expired_at || '';
+      const exp = expiry ? new Date(expiry) : null;
+      const active = exp && !isNaN(exp) && exp > now;
+      items.push({
+        timestamp: o.timestamp || '',
+        title: o.title || '(untitled)',
+        content: o.content || '',
+        founder: o.founder || '',
+        duration_hours: o.duration_hours || '48',
+        expiry: expiry,
+        active: !!active
+      });
+    });
+
+    if(!items.length){
+      manageList.innerHTML = '<div class="no-notices">No notices found.</div>';
+      return;
+    }
+
+    items.reverse();
+    manageList.innerHTML = items.map((n, idx) => `
+      <div class="manage-item" data-idx="${idx}">
+        <div class="mi-title">${n.active ? '🟢' : '⚫'} ${n.title}</div>
+        <div class="mi-content">${n.content.substring(0,120)}${n.content.length>120?'…':''}</div>
+        <div style="font-size:.65rem;opacity:.5;margin-bottom:8px">🜏 ${n.founder} · ${n.active ? 'Active' : 'Expired'}</div>
+        <div class="mi-actions">
+          <button type="button" class="btn-edit" data-ts="${encodeURIComponent(n.timestamp)}">Edit</button>
+          <button type="button" class="btn-del" data-ts="${encodeURIComponent(n.timestamp)}">Delete</button>
+        </div>
+      </div>
+    `).join('');
+
+    window.__noticeItems = items;
+
+    manageList.querySelectorAll('.btn-edit').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const ts = decodeURIComponent(btn.getAttribute('data-ts'));
+        const n = (window.__noticeItems || []).find(x => x.timestamp === ts);
+        if(!n) return;
+        document.getElementById('ne-original-ts').value = n.timestamp;
+        document.getElementById('ne-title').value = n.title;
+        document.getElementById('ne-content').value = n.content;
+        document.getElementById('ne-founder').value = n.founder;
+        document.getElementById('ne-duration').value = n.duration_hours || 48;
+        neStatus.textContent = '';
+        editWrap.style.display = 'block';
+        editWrap.scrollIntoView({behavior:'smooth', block:'nearest'});
+      });
+    });
+
+    manageList.querySelectorAll('.btn-del').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const ts = decodeURIComponent(btn.getAttribute('data-ts'));
+        if(!confirm('Delete this notice permanently?')) return;
+        btn.disabled = true;
+        try{
+          await fetch(SCRIPT_URL, {
+            method:'POST', mode:'no-cors',
+            headers:{'Content-Type':'text/plain;charset=utf-8'},
+            body: JSON.stringify({
+              action: 'notice_delete',
+              password: missionPw.value.trim(),
+              original_timestamp: ts
+            })
+          });
+          setTimeout(() => {
+            loadManageNotices();
+            loadNotices();
+          }, 1500);
+        }catch(err){
+          alert('Delete failed.');
+          btn.disabled = false;
+        }
+      });
+    });
+
+  }catch(err){
+    manageList.innerHTML = '<div class="no-notices">Could not load notices.</div>';
+    console.error(err);
+  }
+}
+
+document.getElementById('ne-cancel-btn').addEventListener('click', () => {
+  editWrap.style.display = 'none';
+  editForm.reset();
+});
+
+editForm.addEventListener('submit', async function(e){
+  e.preventDefault();
+  const saveBtn = document.getElementById('ne-save-btn');
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'SAVING…';
+  neStatus.textContent = '';
+
+  const payload = {
+    action: 'notice_edit',
+    password: missionPw.value.trim(),
+    original_timestamp: document.getElementById('ne-original-ts').value,
+    founder: document.getElementById('ne-founder').value,
+    title: document.getElementById('ne-title').value.trim(),
+    content: document.getElementById('ne-content').value.trim(),
+    duration_hours: document.getElementById('ne-duration').value
+  };
+
+  try{
+    await fetch(SCRIPT_URL, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(payload)
+    });
+    neStatus.style.color = 'var(--accent)';
+    neStatus.textContent = '✔ Notice updated.';
+    editWrap.style.display = 'none';
+    editForm.reset();
+    setTimeout(() => {
+      loadManageNotices();
+      loadNotices();
+    }, 1500);
+  }catch(err){
+    neStatus.style.color = 'var(--red)';
+    neStatus.textContent = '✖ Update failed.';
+  }finally{
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'SAVE CHANGES';
   }
 });
 
