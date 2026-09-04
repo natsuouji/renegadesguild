@@ -201,6 +201,41 @@
     margin-bottom: 12px;
   }
 
+  /* HAINE'S LETTER BOX */
+  .haine-note {
+    background: #110d0d;
+    border: 2px solid var(--red);
+    clip-path: polygon(12px 0%, 100% 0%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0% 12px);
+    padding: 24px;
+    margin: 28px auto;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(255, 51, 0, 0.15);
+    position: relative;
+  }
+  .note-seal {
+    font-size: 2rem;
+    color: var(--red);
+    margin-bottom: 8px;
+  }
+  .note-msg {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--white);
+    letter-spacing: 1px;
+    margin-bottom: 14px !important;
+  }
+  .note-msg strong {
+    color: var(--red) !important;
+  }
+  .note-address {
+    font-size: .82rem;
+    color: var(--accent);
+    border-top: 1px dashed var(--card-border);
+    padding-top: 10px;
+    letter-spacing: 1px;
+  }
+
   /* ===== GUILD INFO ===== */
   #info { padding-top: 20px; }
   .info-intro {
@@ -476,15 +511,68 @@
       
       <!-- CHAPTER ZERO -->
       <div class="cyber-box lore-chapter">
-        <h3 style="color:var(--red);">[ CHAPTER ZERO: THE FALL ]</h3>
-        <p>The networks fell silent decades ago. What remains is a fractured digital wasteland — abandoned frequencies, dead servers, corrupted archives.</p>
-        <p>Governments dissolved. Corporations burned. The world was plunged into a new dark age where surviving meant staying hidden. In this bleak expanse, creativity was seen as a dangerous distraction. <strong>Art was outlawed.</strong> Singing was considered a crime against the silence.</p>
+        <h3 style="color:var(--red);">[ CHAPTER ZERO: THE FOUNDING SIGNAL ]</h3>
+        
+        <p>In the middle of the busy market in the slums of the dark and cloudy <strong>Cyrclend City</strong>, I was sitting on the floor, trying to cover the bleeding wound on my stomach.</p>
+        
+        <p>I was used to being treated as invisible, but when you're dying, it carries a heavier weight. Everyone was busy bargaining for weapons, crystals, and clothes. Me, on the other hand, didn't know what hurt more: the bleeding wound on my stomach, which had gotten even worse after being beaten up by the guards who caught me trying to steal some pastries, or the starvation that was making me see double.</p>
+        
+        <p>After all my friends were killed during our last attempt at a heist, I was the only one who managed to escape. I walked for kilometers through the swamps to reach the downtown market of Cyrclend, only to finally realize it hadn't been worth the effort.</p>
+        
+        <p style="text-align:center; color:var(--red); font-weight:bold; letter-spacing:2px; margin:20px 0;">
+          NO FAMILY. NO COMRADES. NO FOOD. NO HOPE.
+        </p>
+
+        <p>When I was about to pass out and meet my miserable end, I noticed a pair of eyes on me. Across the street, there was a boy.</p>
+        
+        <p>A skinny one, probably in his early twenties. White hair, shaved short on the sides. Dark skin, with even darker circles under his eyes. He wore an all-black outfit and a red circle pendant with a curious design around his neck. I could tell he had grown up in the outskirts of Cyrclend City.</p>
+        
+        <p>He showed no expression, but his eyes told a different story. His red and green pupils seemed like they could pierce a laser straight through my head. I couldn't tell if he was looking down on me or if he was Death himself, coming to reap whatever was left of my soul.</p>
+        
+        <p>I had no pride left to ask what he was staring at, so I ignored him and looked down at the floor again while another gang fight broke out in the market. <em>I fainted.</em></p>
+        
+        <p>I don't know how long I was out, but I woke up when a merchant threw a bucket of cold water on me. Apparently, I was making his business look bad.</p>
+        
+        <p>My lips were dry from dehydration. My body was too heavy to move. My stomach had shrunk from not eating for days. The blood loss wasn't doing me any favors either. Somehow, I managed to get up, completely drenched.</p>
+        
+        <p>Then I heard a metallic sound against the floor. Something had fallen from my pocket. It was a key and an envelope. The key was rusty, and the envelope was crumpled.</p>
+
+        <!-- HAINE'S LETTER -->
+        <div class="haine-note">
+          <div class="note-seal">⭕</div>
+          <p class="note-msg">"I will give you purpose.<br><strong>Find me.</strong>"</p>
+          <div class="note-address">
+            Address: Frend Street, 67X — Outskirts of Cyrclend City.
+          </div>
+        </div>
+
+        <p>At the end of the message, there was a red circle that looked exactly like the boy's pendant.</p>
+        
+        <p><em>"Purpose,"</em> he says...</p>
+        
+        <p>I've got nothing to lose. That is, if I can survive these injuries. The bucket of cold water had worked as a pretty good painkiller. I couldn't feel much anymore. The winters in Cyrclend were always severe.</p>
+        
+        <p>With the last bit of energy I had left, I made my way to the address the boy had written. The outskirts were like a labyrinth, filled with underground passages and hidden connections. After wandering around for what felt like hours, I finally found a tunnel that led to a very dark, very long corridor.</p>
+        
+        <p>I noticed the red circle from the envelope drawn as graffiti on the wall I had just passed. <em>Must be this way,</em> I thought.</p>
+        
+        <p>After I don't know how long, I reached a dead end. There was a wooden door with the word <strong>"RENEGADES"</strong> written above it. The same circle was drawn around the keyhole.</p>
+        
+        <p>I could hear noise coming from the other side of the door. <em>"If he brought me here just to steal my organs and sell them, at least I was worth something in the end."</em> That is, if there was still anything worth using...</p>
+        
+        <p>I used the key to open the door.</p>
+        
+        <p>The moment I saw what was on the other side, I knew the boy had been right. Later on, I found out his name was <strong style="color:var(--cyan)">Haine</strong>.</p>
+        
+        <p style="font-size:1.05rem; color:var(--white); font-weight:bold; margin-top:20px;">
+          And my encounter with him that day changed my life. <span style="color:var(--red);">Forever.</span>
+        </p>
       </div>
 
       <!-- CHAPTER ONE -->
       <div class="cyber-box lore-chapter">
         <h3 style="color:var(--accent);">[ CHAPTER ONE: THE AWAKENING ]</h3>
-        <p>But in the static, a signal emerged. A rogue broadcast on a frequency no one was supposed to find. It carried music — raw, unfiltered, <em>alive</em>. Those who followed it found each other.</p>
+        <p>Decades after the fall, a rogue broadcast emerged from those same underground passages on a frequency no one was supposed to find. It carried music — raw, unfiltered, <em>alive</em>. Those who followed it found each other.</p>
         <p>They called themselves <strong>RENEG▲DES</strong>. Singers, artists, architects of sound and vision. Operatives with no allegiance except to the craft. They built a hidden network — a guild forged in fire and frequency — where every voice matters and <em>"Nobody gets left behind."</em></p>
         <p>Now, from the ashes, they recruit. Not everyone. Only those who are <strong>chosen</strong>. Only those worthy of a <strong>FILE</strong>.</p>
       </div>
