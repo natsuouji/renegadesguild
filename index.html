@@ -787,15 +787,36 @@
         <table class="ranks-table" style="margin-top:20px; margin-bottom:20px;">
           <thead><tr><th>Rank</th><th>COFs</th><th>Privileges</th></tr></thead>
           <tbody>
-            <tr><td style="white-space:nowrap">🩸 Rookie</td><td>0–99</td><td>Join basic missions & events</td></tr>
-            <tr><td style="white-space:nowrap">⚡ Runner</td><td>100–399</td><td>Access to more missions + create small missions</td></tr>
-            <tr><td style="white-space:nowrap">🔧 Operative</td><td>400–699</td><td>Create missions + organize basic collabs</td></tr>
-            <tr><td style="white-space:nowrap">🎯 Specialist</td><td>700–899</td><td>Manage larger collabs/events</td></tr>
-            <tr><td style="white-space:nowrap">☠️ Elite</td><td>900–1000</td><td>Special missions + leadership responsibilities</td></tr>
-            <tr><td style="white-space:nowrap">👑 Legend</td><td>1000+</td><td>Prestige privileges + special Founder-approved responsibilities</td></tr>
+            <tr><td style="white-space:nowrap">🩸 Rookie</td><td>0–29</td><td>Join basic missions & events</td></tr>
+            <tr><td style="white-space:nowrap">⚡ Runner</td><td>30–59</td><td>Access to more missions + create small missions</td></tr>
+            <tr><td style="white-space:nowrap">☠️ Elite</td><td>60–99</td><td>Special missions + leadership responsibilities</td></tr>
+            <tr><td style="white-space:nowrap">👑 Legend</td><td>100+</td><td>Prestige privileges + special Founder-approved responsibilities</td></tr>
             <tr><td style="white-space:nowrap">🜏 Founder</td><td>Unlimited</td><td>Full guild authority</td></tr>
           </tbody>
         </table>
+        <p>Rookie</p>
+        <ul>
+          <li>Can participate in collabs.</li>
+          <li>Can't host them.</li>
+        </ul>
+        <p>Runner</p>
+        <ul>
+          <li>Can host a collab.</li>
+          <li>Costs 5 COFs per invited member.</li>
+          <li>Finish on time → COFs spent are returned.</li>
+          <li>Quality bonus → +10 or +20 COFs.</li>
+        </ul>
+        <p>Elite</p>
+        <ul>
+          <li>Can host anything. </li>
+          <li>Costs 20 COFs flat fee, regardless of participant count.</li>
+          <li>Finish → 20 COFs returned + 10–20 COFs quality bonus.</li>
+        </ul>
+        <p>Legend</p>
+        <ul>
+          <li>No starting cost.</li>
+          <li>If they repeatedly miss deadlines, they lose COFs and can eventually drop a rank.</li>
+        </ul>
       </div>
     </details>
 
@@ -863,12 +884,10 @@
     <table class="ranks-table">
       <thead><tr><th>Icon</th><th>Rank</th><th>COFs Required</th></tr></thead>
       <tbody>
-        <tr><td>🩸</td><td>Rookie</td><td>0 – 99</td></tr>
-        <tr><td>⚡</td><td>Runner</td><td>100 – 399</td></tr>
-        <tr><td>🔧</td><td>Operative</td><td>400 – 699</td></tr>
-        <tr><td>🎯</td><td>Specialist</td><td>700 – 899</td></tr>
-        <tr><td>☠️</td><td>Elite</td><td>900 – 1000</td></tr>
-        <tr><td>👑</td><td>Legend</td><td>1000+</td></tr>
+        <tr><td>🩸</td><td>Rookie</td><td>0 – 29</td></tr>
+        <tr><td>⚡</td><td>Runner</td><td>30 – 59</td></tr>
+        <tr><td>🔧</td><td>Operative</td><td>60 – 699</td></tr>
+        <tr><td>👑</td><td>Legend</td><td>100+</td></tr>
         <tr><td>🜏</td><td>Founder</td><td>∞ (Fixed)</td></tr>
       </tbody>
     </table>
@@ -1300,8 +1319,6 @@ const founders=[
 function getRank(cofs){
   if(cofs>=1000)return{icon:'👑',label:'Legend'};
   if(cofs>=900) return{icon:'☠️',label:'Elite'};
-  if(cofs>=700) return{icon:'🎯',label:'Specialist'};
-  if(cofs>=400) return{icon:'🔧',label:'Operative'};
   if(cofs>=100) return{icon:'⚡',label:'Runner'};
   return{icon:'🩸',label:'Rookie'};
 }
