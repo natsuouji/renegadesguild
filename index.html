@@ -1081,9 +1081,7 @@
     <input class="music-volume" id="music-volume" type="range" min="0" max="100" value="30" aria-label="Music volume" />
   </div>
   <div class="music-player-shell">
-    <audio id="music-audio" preload="auto" autoplay playsinline loop>
-      <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" />
-    </audio>
+    <div id="yt-player"></div>
   </div>
 </div>
 
@@ -1965,7 +1963,8 @@ editForm.addEventListener('submit', async function(e){
 });
 
 /* ---------- MUSIC WIDGET ---------- */
-const musicAudio = document.getElementById('music-audio');
+let musicPlayer = null;
+let musicReady = false;
 const musicToggleBtn = document.getElementById('music-toggle');
 const musicVolumeInput = document.getElementById('music-volume');
 
@@ -1975,35 +1974,75 @@ function setMusicButtonState(isPlaying) {
 
 function applyMusicVolume(value) {
   const volume = Math.max(0, Math.min(100, Number(value) || 30));
-  if (musicAudio) {
-    musicAudio.volume = volume / 100;
+  if (musicPlayer && typeof musicPlayer.setVolume === 'function') {
+    musicPlayer.setVolume(volume);
   }
   musicVolumeInput.value = String(volume);
 }
 
 function initMusicWidget() {
-  if (!musicAudio) return;
+  if (window.YT && window.YT.Player) {
+    createMusicPlayer();
+    return;
+  }
 
-  musicAudio.volume = 0.3;
-  musicAudio.muted = false;
-  musicAudio.load();
+  const tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(tag);
 
-  musicAudio.play().catch(() => {
-    setMusicButtonState(false);
+  window.onYouTubeIframeAPIReady = createMusicPlayer;
+}
+
+function createMusicPlayer() {
+  if (musicPlayer) return;
+
+  musicPlayer = new YT.Player('yt-player', {
+    width: '0',
+    height: '0',
+    videoId: 'WKzQeRjLv3Y',
+    playerVars: {
+      autoplay: 1,
+      controls: 0,
+      rel: 0,
+      playsinline: 1,
+      modestbranding: 1,
+      enablejsapi: 1,
+      origin: 'https://www.youtube.com'
+    },
+    events: {
+      onReady: function (event) {
+        musicReady = true;
+        event.target.setVolume(30);
+        event.target.unMute();
+        setMusicButtonState(true);
+      },
+      onStateChange: function (event) {
+        const state = event.data;
+        if (state === YT.PlayerState.PLAYING) {
+          setMusicButtonState(true);
+        } else if (state === YT.PlayerState.PAUSED || state === YT.PlayerState.ENDED) {
+          setMusicButtonState(false);
+        }
+      }
+    }
   });
-
-  setMusicButtonState(!musicAudio.paused);
 }
 
 musicToggleBtn.addEventListener('click', function () {
-  if (!musicAudio) return;
+  if (!musicPlayer) {
+    initMusicWidget();
+    return;
+  }
 
-  if (musicAudio.paused) {
-    musicAudio.play().catch(() => {});
-    setMusicButtonState(true);
-  } else {
-    musicAudio.pause();
+  if (!musicReady) return;
+
+  const state = musicPlayer.getPlayerState();
+  if (state === YT.PlayerState.PLAYING) {
+    musicPlayer.pauseVideo();
     setMusicButtonState(false);
+  } else {
+    musicPlayer.playVideo();
+    setMusicButtonState(true);
   }
 });
 
