@@ -2015,6 +2015,14 @@ function createMusicPlayer() {
         event.target.setVolume(30);
         event.target.unMute();
         setMusicButtonState(true);
+
+        try {
+          if (event.target.playVideo) {
+            event.target.playVideo();
+          }
+        } catch (err) {
+          console.log('Autoplay blocked until interaction:', err);
+        }
       },
       onStateChange: function (event) {
         const state = event.data;
@@ -2026,6 +2034,20 @@ function createMusicPlayer() {
       }
     }
   });
+}
+
+function ensureMusicPlaying() {
+  if (!musicPlayer || !musicReady) return;
+
+  try {
+    const state = musicPlayer.getPlayerState();
+    if (state !== YT.PlayerState.PLAYING) {
+      musicPlayer.playVideo();
+      setMusicButtonState(true);
+    }
+  } catch (err) {
+    console.log('Player not ready for autoplay retry:', err);
+  }
 }
 
 musicToggleBtn.addEventListener('click', function () {
@@ -2045,6 +2067,9 @@ musicToggleBtn.addEventListener('click', function () {
     setMusicButtonState(true);
   }
 });
+
+window.addEventListener('pointerdown', ensureMusicPlaying, { once: true });
+window.addEventListener('touchstart', ensureMusicPlaying, { once: true });
 
 musicVolumeInput.addEventListener('input', function () {
   applyMusicVolume(this.value);
