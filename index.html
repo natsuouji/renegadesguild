@@ -481,6 +481,46 @@
   .manage-item .mi-actions .btn-edit{border-color:var(--accent);color:var(--accent)}
   .manage-item .mi-actions .btn-del{border-color:var(--red);color:var(--red)}
 
+  /* ===== MUSIC WIDGET ===== */
+  .music-widget{
+    position:fixed;right:20px;bottom:20px;z-index:1200;
+    width:min(300px,calc(100vw - 24px));
+    background:rgba(11,11,18,.94);border:1px solid rgba(255,51,0,.5);
+    box-shadow:0 0 24px rgba(255,51,0,.18);
+    backdrop-filter:blur(12px);
+    padding:14px 14px 12px;border-radius:12px;
+  }
+  .music-header{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    margin-bottom:8px;
+  }
+  .music-label{
+    font-family:var(--font-display);font-size:.66rem;letter-spacing:2px;
+    color:var(--red);text-transform:uppercase;
+  }
+  .music-toggle{
+    border:1px solid var(--red);background:transparent;color:var(--white);
+    font-family:var(--font-display);font-size:.62rem;letter-spacing:1px;
+    padding:6px 10px;cursor:pointer;text-transform:uppercase;
+  }
+  .music-track{
+    color:var(--white);font-size:.82rem;font-weight:700;
+    margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .music-volume-wrap{
+    display:flex;align-items:center;gap:8px;
+  }
+  .music-volume-wrap span{
+    color:var(--text);font-size:.68rem;letter-spacing:1px;text-transform:uppercase;
+  }
+  .music-volume{
+    width:100%;accent-color:var(--red);
+  }
+  .music-player-shell{position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none}
+  @media (max-width:600px){
+    .music-widget{right:12px;bottom:12px}
+  }
+
   /* ===== FOOTER ===== */
   footer{
     text-align:center;padding:30px 20px;border-top:1px solid var(--card-border);
@@ -1022,6 +1062,21 @@
 <footer>
   <p>RENEG<span style="color:var(--red)">▲</span>DES © <span id="yr"></span> — All rights reserved. Nobody gets left behind.</p>
 </footer>
+
+<div class="music-widget" id="music-widget">
+  <div class="music-header">
+    <span class="music-label">Now Playing</span>
+    <button class="music-toggle" id="music-toggle" type="button">Play</button>
+  </div>
+  <div class="music-track">Outro: Liberty — ATEEZ</div>
+  <div class="music-volume-wrap">
+    <span>Vol</span>
+    <input class="music-volume" id="music-volume" type="range" min="0" max="100" value="30" aria-label="Music volume" />
+  </div>
+  <div class="music-player-shell">
+    <div id="yt-player"></div>
+  </div>
+</div>
 
 <!-- ============ DOSSIER MODAL ============ -->
 <div class="modal-overlay" id="modal-overlay">
@@ -1899,6 +1954,92 @@ editForm.addEventListener('submit', async function(e){
     saveBtn.textContent = 'SAVE CHANGES';
   }
 });
+
+/* ---------- MUSIC WIDGET ---------- */
+let musicPlayer = null;
+let musicReady = false;
+const musicToggleBtn = document.getElementById('music-toggle');
+const musicVolumeInput = document.getElementById('music-volume');
+
+function setMusicButtonState(isPlaying) {
+  musicToggleBtn.textContent = isPlaying ? 'Pause' : 'Play';
+}
+
+function applyMusicVolume(value) {
+  const volume = Math.max(0, Math.min(100, Number(value) || 30));
+  if (musicPlayer && typeof musicPlayer.setVolume === 'function') {
+    musicPlayer.setVolume(volume);
+  }
+  musicVolumeInput.value = String(volume);
+}
+
+function onMusicPlayerReady(player) {
+  musicReady = true;
+  player.unMute();
+  applyMusicVolume(musicVolumeInput.value);
+  setMusicButtonState(false);
+}
+
+function initMusicWidget() {
+  const tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(tag);
+
+  window.onYouTubeIframeAPIReady = function () {
+    musicPlayer = new YT.Player('yt-player', {
+      width: '0',
+      height: '0',
+      videoId: 'WKzQeRjLv3Y',
+      playerVars: {
+        autoplay: 0,
+        controls: 0,
+        rel: 0,
+        playsinline: 1,
+        modestbranding: 1,
+        enablejsapi: 1,
+        origin: 'https://www.youtube.com'
+      },
+      events: {
+        onReady: function (event) {
+          onMusicPlayerReady(event.target);
+        },
+        onStateChange: function (event) {
+          const state = event.data;
+          if (state === YT.PlayerState.PLAYING) {
+            setMusicButtonState(true);
+          } else if (state === YT.PlayerState.PAUSED || state === YT.PlayerState.ENDED) {
+            setMusicButtonState(false);
+          }
+        }
+      }
+    });
+  };
+}
+
+musicToggleBtn.addEventListener('click', function () {
+  if (!musicPlayer) {
+    initMusicWidget();
+    return;
+  }
+
+  if (!musicReady) return;
+
+  const state = musicPlayer.getPlayerState();
+  if (state === YT.PlayerState.PLAYING) {
+    musicPlayer.pauseVideo();
+    setMusicButtonState(false);
+  } else {
+    musicPlayer.playVideo();
+    setMusicButtonState(true);
+  }
+});
+
+musicVolumeInput.addEventListener('input', function () {
+  applyMusicVolume(this.value);
+});
+
+applyMusicVolume(30);
+initMusicWidget();
 
 /* Auto-refresh notices every 5 minutes */
 setInterval(loadNotices,300000);
