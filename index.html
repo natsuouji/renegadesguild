@@ -125,14 +125,25 @@
   /* ===== HERO ===== */
   #hero{
     min-height:100vh;display:flex;align-items:center;justify-content:center;
-    text-align:center;position:relative;
+    text-align:center;position:relative;isolation:isolate;overflow:hidden;
   }
-  .hero-content{position:relative;z-index:2}
+  .hero-art{
+    position:absolute;inset:0;width:100%;height:100%;
+    object-fit:cover;object-position:center 48%;z-index:-1;
+  }
+  #hero::before{
+    content:'';position:absolute;inset:0;z-index:0;
+    background:
+      linear-gradient(90deg,rgba(5,5,8,.58),rgba(5,5,8,.35) 50%,rgba(5,5,8,.58)),
+      linear-gradient(0deg,var(--black),rgba(5,5,8,.18) 38%,rgba(5,5,8,.36)),
+      linear-gradient(135deg,rgba(255,51,0,.12),transparent 55%);
+  }
+  .hero-content{position:relative;z-index:1}
   .hero-title{
     font-family:var(--font-display);font-weight:900;
     font-size:clamp(2.2rem,7vw,4.5rem);color:var(--white);
     letter-spacing:6px;text-transform:uppercase;
-    text-shadow:0 0 30px rgba(255,51,0,.3);
+    text-shadow:0 0 30px rgba(255,51,0,.3),0 3px 22px rgba(0,0,0,.9);
   }
   .hero-title .tri{color:var(--red)}
   .hero-subtitle{
@@ -141,7 +152,7 @@
   }
   .hero-motto{
     margin-top:28px;font-size:1rem;color:var(--text);
-    font-style:italic;opacity:.8;
+    font-style:italic;opacity:.9;text-shadow:0 2px 12px rgba(0,0,0,.95);
   }
   .hero-btn{
     display:inline-block;margin-top:36px;padding:14px 38px;
@@ -152,6 +163,9 @@
     transition:background .3s,color .3s;
   }
   .hero-btn:hover{background:var(--red);color:var(--black)}
+  @media(max-width:600px){
+    .hero-art{object-position:68% center}
+  }
 
   /* ===== GUILD BROADCAST ===== */
   #broadcast{padding:40px 0 0;position:relative;z-index:2}
@@ -584,6 +598,7 @@
 
 <!-- ============ HERO ============ -->
 <section id="hero">
+  <img class="hero-art" src="images/renegadez.webp" alt="The Renegades gathered beneath the neon lights of their city">
   <div class="hero-content">
     <h1 class="hero-title">RENEG<span class="tri">▲</span>DES</h1>
     <p class="hero-subtitle">Invitation-Only Creative Guild</p>
@@ -1334,7 +1349,7 @@ const founders=[
   style:'Bruiser / Landlord & Warden',
   personality:'Blunt, Possessive, Protective',
   tattoo:'left side of the neck',food:'Cake',flower:'Hydrangea',animal:'Whale',
-  image:'https://drive.google.com/thumbnail?id=1yMOBwLpdW5NISYAh-qxyiu5eJ5ils-Ld&sz=w400',
+  image:'images/founder-nezumi.jpg',
   story:`<p>Nezu — handle <strong style="color:var(--accent)">Nezumiii</strong> — is a thirty-one-year-old bruiser out of the neon-choked sprawl of Neo-Brazil, their O+ blood marking them as a universal donor in a city that bleeds people dry.</p>
 <p>Within the guild, they're the <strong style="color:var(--red)">Landlord and Warden</strong> — the one who holds the keys, guards the walls, and makes sure nobody forgets whose ground they're standing on. Blunt, possessive, and fiercely protective, Nezu treats the guild like personal territory: step inside and you're under their shield, threaten it and you're scrap metal.</p>
 <p>No fancy chrome or long-range tech — just reinforced brass knuckles and brutal close-quarters combat that ends arguments before they start.</p>
@@ -1349,7 +1364,7 @@ const founders=[
   style:'Curator / Shadow Operative',
   personality:'Sleepy-eyed, Observant, Silent',
   tattoo:'top of left hand',food:'Egg',flower:'Jasmine',animal:'Cat',
-  image:'https://drive.google.com/thumbnail?id=15N-rAv3TIMPqtn-guAbcJ8MqFwYGLxx0&sz=w400',
+  image:'images/founder-ouji.jpg',
   story:`<p>Ouji — handle <strong style="color:var(--accent)">NatsuOuji</strong> — is a ninety-nine-year-old keeper in the rusted sprawl of West Jap(v)anese, a world where steel towers crumble and new guilds rise from the wreckage. His synthetic blood type Ø lets him outlast what the wasteland takes from everyone else.</p>
 <p>Within the guild he serves as <strong style="color:var(--red)">Curator</strong>, safeguarding old-world archives and decoding forgotten data — but that's only the cover. Beneath it, he moves between factions as a shadow, gathering secrets under the guise of quiet scholarship.</p>
 <p>Sleepy-eyed and slow to speak, he'd rather watch from the corner of a firelit hall than stand at its centre, learning every face and every weakness.</p>
@@ -1365,7 +1380,7 @@ const founders=[
   personality:'Easy-going, Warm, Unforgiving',
   tattoo:'Mid-forearm (wrap)',
   food:'Melon Pan',flower:'Spider Lily',animal:'Bird',
-  image:'https://drive.google.com/thumbnail?id=1d0KwmAZmsLYzdY8fzKzZTlh5yK12FKAQ&sz=w400',
+  image:'images/founder-ten.jpg',
   story:`<p>Ten — handle <strong style="color:var(--accent)">96_10</strong> — is a thirty-year-old brawler from the irradiated sprawl of what was once the USA, her blood type O marking her as a universal donor in a world that always needs something from everyone else.</p>
 <p>Within the guild she's the <strong style="color:var(--red)">Innkeeper</strong>, and on most nights she's the easiest soul in the room — laughing, pouring drinks, earrings catching the firelight as she dozes off behind the counter. Easy-going, warm, the kind of calm that makes every wanderer feel welcome.</p>
 <p>But cross her wrong and that warmth dies fast — her cold stare is enough to shake the guildhall walls, and the sleepy bartender closes the distance bare-handed before you can blink. A renegade's mark wraps her mid-forearm, a brand she's too chill to care about — until she isn't.</p>
@@ -1380,7 +1395,7 @@ const founders=[
   style:'Advisor / Harbinger / Artist',
   personality:'Quiet, Wise, Relentless',
   tattoo:'left ankle',food:'Dango',flower:'Wild Rose',animal:'Cat',
-  image:'https://drive.google.com/thumbnail?id=1Jt-J928dMFBmrAXyTb8QnEn-rdSZEHBU&sz=w400',
+  image:'images/founder-mamiki.jpg',
   story:`<p>Mami — handle <strong style="color:var(--accent)">8maamiki</strong> — is a two-hundred-and-twenty-year-old archer from the drowned coasts of what was once Indonesia, now just another fractured territory in the wasteland. Half-vampire, she has outlived centuries with unnatural grace, her blood type A kept pure by the very curse running through her veins.</p>
 <p>Within the guild she serves as <strong style="color:var(--red)">Advisor</strong> — the one younger members seek when the wasteland wears them down, her words quiet but heavy with the kind of wisdom only time and hunger can teach.</p>
 <p>She is also a harbinger and artist, a deadly shot who paints with arrows before the enemy even knows they're marked. She fights like a shadow — silent, precise, always one step ahead — driven by a single creed: <em>every arrow loosed is a lesson the next one will remember.</em></p>
@@ -1395,7 +1410,7 @@ const founders=[
   style:'Handler / Bookkeeper',
   personality:'Aloof, Sharp-tongued, Deeply Loyal',
   tattoo:'inside left cat ear',food:'Sweets',flower:'Wisteria',animal:'Cat',
-  image:'https://drive.google.com/thumbnail?id=17rgDhgK4t9hOWBBKEmKw7N32hk2IkA_3&sz=w400',
+  image:'images/founder-sam.jpg',
   story:`<p>Sam — handle <strong style="color:var(--accent)">moemelonyan</strong> — is a twenty-five-year-old drifter with no fixed coordinates, though their accent ghosts somewhere around the rain-soaked ruins of the old UK. Their blood type is listed as simply "red," which is either a medical anomaly or a flat refusal to be categorized — take your pick.</p>
 <p>Within the guild, Sam is the <strong style="color:var(--red)">Handler and Bookkeeper</strong>, the quiet one tracking every credit, every contract, every debt owed. Don't let the ledger fool you: when the numbers stop adding up, a butterfly knife spins between their fingers with lethal, feline precision.</p>
 <p>Sam fights like a cat — silent, sudden, all claws and no warning. Aloof at first glance, sharp-tongued and seemingly cold, but earn their trust and you'll find a loyalty that runs deeper than most.</p>
