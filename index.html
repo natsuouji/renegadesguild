@@ -480,6 +480,15 @@
   }
   .manage-item .mi-actions .btn-edit{border-color:var(--accent);color:var(--accent)}
   .manage-item .mi-actions .btn-del{border-color:var(--red);color:var(--red)}
+  .application-filters{display:flex;gap:6px;margin-bottom:12px}
+  .application-filter{
+    flex:1;padding:8px 4px;background:transparent;border:1px solid var(--card-border);
+    color:var(--text);font-family:var(--font-display);font-size:.62rem;
+    letter-spacing:.5px;text-transform:uppercase;cursor:pointer;
+  }
+  .application-filter.active{border-color:var(--accent);color:var(--accent)}
+  .application-status{font-size:.65rem;letter-spacing:1px;text-transform:uppercase;opacity:.65;margin-bottom:8px}
+  .manage-item .mi-actions .btn-reject{border-color:var(--red);color:var(--red)}
 
   /* ===== MUSIC WIDGET ===== */
   .music-widget{
@@ -1119,6 +1128,7 @@
       <div class="tab-bar">
         <button class="tab-btn active" data-tab="tab-mission">📋 Mission Log</button>
         <button class="tab-btn" data-tab="tab-notice">📡 Post Notice</button>
+        <button class="tab-btn" data-tab="tab-applications">🧾 Applications</button>
         <button class="tab-btn" data-tab="tab-manage">✎ Manage</button>
       </div>
 
@@ -1198,6 +1208,22 @@
           <button type="submit" class="submit-btn" id="notice-submit-btn">BROADCAST NOTICE</button>
           <div id="notice-status" style="text-align:center;margin-top:10px;font-size:.82rem;min-height:18px"></div>
         </form>
+      </div>
+
+      <!-- TAB: APPLICATIONS -->
+      <div class="tab-panel" id="tab-applications">
+        <p style="font-size:.78rem;color:var(--text);margin-bottom:16px">
+          Review applications, approve applicants into the roster, or reject their dossiers.
+        </p>
+        <div class="application-filters" id="application-filters" role="group" aria-label="Filter applications by status">
+          <button type="button" class="application-filter active" data-status-filter="pending">Pending</button>
+          <button type="button" class="application-filter" data-status-filter="approved">Approved</button>
+          <button type="button" class="application-filter" data-status-filter="rejected">Rejected</button>
+          <button type="button" class="application-filter" data-status-filter="all">All</button>
+        </div>
+        <div id="applications-list" style="display:flex;flex-direction:column;gap:10px;max-height:50vh;overflow-y:auto">
+          <div class="no-notices">Loading applications…</div>
+        </div>
       </div>
 
       <!-- TAB: MANAGE NOTICES -->
@@ -1617,6 +1643,159 @@ async function loadNotices(){
 }
 loadNotices();
 
+/* ---------- APPLICATION REVIEW ---------- */
+const applicationsList=document.getElementById('applications-list');
+const applicationFilters=document.getElementById('application-filters');
+let applicationItems=[];
+let applicationFilter='pending';
+
+function renderApplications(){
+  const visible=applicationItems.filter(app=>applicationFilter==='all'||app.status===applicationFilter);
+  applicationsList.replaceChildren();
+
+  if(!visible.length){
+    const empty=document.createElement('div');
+    empty.className='no-notices';
+    empty.textContent=applicationItems.length ? 'No '+applicationFilter+' applications.' : 'No applicant dossiers found.';
+    applicationsList.appendChild(empty);
+    return;
+  }
+
+  visible.forEach(app=>{
+    const card=document.createElement('div');
+    card.className='manage-item';
+
+    const title=document.createElement('div');
+    title.className='mi-title';
+    title.textContent=app.name||'Unnamed Applicant';
+    card.appendChild(title);
+
+    const status=document.createElement('div');
+    status.className='application-status';
+    status.textContent=app.status;
+    card.appendChild(status);
+
+    const details=document.createElement('div');
+    details.className='mi-content';
+    details.textContent=(app.role||'Unassigned role')+' · '+(app.skills||'No skills listed');
+    card.appendChild(details);
+
+    const contact=document.createElement('div');
+    contact.className='mi-content';
+    contact.textContent=app.email||app.ig||app.smule||'No contact listed';
+    card.appendChild(contact);
+
+    if(app.status==='pending'){
+      const actions=document.createElement('div');
+      actions.className='mi-actions';
+
+      const approveButton=document.createElement('button');
+      approveButton.type='button';
+      approveButton.className='btn-edit';
+      approveButton.textContent='Approve';
+      approveButton.addEventListener('click',()=>updateApplicationStatus(app,'approved',approveButton));
+      actions.appendChild(approveButton);
+
+      const rejectButton=document.createElement('button');
+      rejectButton.type='button';
+      rejectButton.className='btn-reject';
+      rejectButton.textContent='Reject';
+      rejectButton.addEventListener('click',()=>updateApplicationStatus(app,'rejected',rejectButton));
+      actions.appendChild(rejectButton);
+
+      card.appendChild(actions);
+    }
+
+    applicationsList.appendChild(card);
+  });
+}
+
+applicationFilters.querySelectorAll('[data-status-filter]').forEach(button=>{
+  button.addEventListener('click',()=>{
+    applicationFilter=button.dataset.statusFilter;
+    applicationFilters.querySelectorAll('[data-status-filter]').forEach(filterButton=>{
+      filterButton.classList.toggle('active',filterButton===button);
+    });
+    renderApplications();
+  });
+});
+
+async function updateApplicationStatus(app,status,button){
+  button.disabled=true;
+  button.textContent=status==='approved'?'APPROVING…':'REJECTING…';
+
+  const payload={
+    action:status==='approved'?'approve_application':'reject_application',
+    password:missionPw.value.trim(),
+    ...app,
+    status,
+    name:app.name||'',
+    timestamp:app.timestamp||'',
+    row_index:app.row_index
+  };
+
+  try{
+    await fetch(SCRIPT_URL,{
+      method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(payload)
+    });
+    app.status=status;
+    renderApplications();
+    const notice=document.createElement('div');
+    notice.className='no-notices';
+    notice.textContent='Status update request sent. The endpoint uses no-cors, so its response cannot confirm whether the sheet was updated.';
+    applicationsList.prepend(notice);
+    setTimeout(()=>{
+      loadApplications();
+      if(status==='approved') loadDB();
+    },1500);
+  }catch(err){
+    button.disabled=false;
+    button.textContent=status==='approved'?'Approve':'Reject';
+    console.error(err);
+    const notice=document.createElement('div');
+    notice.className='no-notices';
+    notice.textContent='Could not send status update. Please try again.';
+    applicationsList.prepend(notice);
+  }
+}
+
+async function loadApplications(){
+  if(!applicationsList) return;
+  applicationsList.innerHTML='<div class="no-notices">Loading applications…</div>';
+
+  try{
+    const res=await fetch(CSV_URL+'&t='+Date.now());
+    const txt=await res.text();
+    const rows=parseCSV(txt);
+    if(rows.length<2){applicationsList.innerHTML='<div class="no-notices">No applicant dossiers found.</div>';return;}
+
+    const headers=rows[0].map(h=>h.trim().toLowerCase());
+    const apps=[];
+
+    rows.slice(1).forEach((r,rowIndex)=>{
+      const o={};
+      headers.forEach((h,i)=>{o[h]=(r[i]||'').trim();});
+      if(!o.name && !o.role && !o.skills) return;
+      const status=(o.status||'pending').trim().toLowerCase();
+      apps.push({ ...o, row_index: rowIndex + 2, status });
+    });
+
+    apps.reverse();
+    applicationItems=apps;
+    renderApplications();
+
+  }catch(err){
+    applicationsList.textContent='';
+    const error=document.createElement('div');
+    error.className='no-notices';
+    error.textContent='Could not load applications.';
+    applicationsList.appendChild(error);
+    console.error(err);
+  }
+}
+
 /* ---------- REGISTRATION FORM ---------- */
 const regForm=document.getElementById('reg-form');
 const regStatus=document.getElementById('form-status');
@@ -1725,6 +1904,7 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     btn.classList.add('active');
     document.getElementById(btn.dataset.tab).classList.add('active');
     if(btn.dataset.tab === 'tab-manage') loadManageNotices();
+    if(btn.dataset.tab === 'tab-applications') loadApplications();
   });
 });
 
