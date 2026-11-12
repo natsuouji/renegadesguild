@@ -479,6 +479,26 @@
   .tab-btn.active{background:var(--red);color:var(--black);border-color:var(--red)}
   .tab-panel{display:none}
   .tab-panel.active{display:block}
+  .founder-image-current{
+    display:flex;align-items:center;gap:14px;margin:12px 0 18px;
+    padding:12px;border:1px solid var(--card-border);background:var(--black);
+  }
+  .founder-image-current img{
+    width:76px;height:76px;border:2px solid var(--red);border-radius:50%;
+    background:var(--card);object-fit:cover;flex:none;
+  }
+  .founder-crop-canvas{
+    display:block;width:min(100%,320px);height:auto;aspect-ratio:1;
+    margin:12px auto;border:1px solid var(--red);background:var(--black);
+    cursor:move;touch-action:none;
+  }
+  .founder-crop-tools{display:flex;align-items:center;gap:10px}
+  .founder-crop-tools input{flex:1;accent-color:var(--red)}
+  @media(max-width:600px){
+    #mission-modal .tab-bar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+    #mission-modal .tab-btn{font-size:.55rem;letter-spacing:0;padding:9px 2px;min-height:42px}
+    .founder-image-current{gap:10px}
+  }
 
   .manage-item{
     background:var(--card);border:1px solid var(--card-border);
@@ -1145,6 +1165,7 @@
         <button class="tab-btn" data-tab="tab-notice">📡 Post Notice</button>
         <button class="tab-btn" data-tab="tab-applications">🧾 Applications</button>
         <button class="tab-btn" data-tab="tab-manage">✎ Manage</button>
+        <button class="tab-btn" data-tab="tab-founder-images">🖼 Portraits</button>
       </div>
 
       <!-- TAB: MISSION -->
@@ -1285,6 +1306,43 @@
         </div>
       </div>
 
+      <!-- TAB: FOUNDER IMAGES -->
+      <div class="tab-panel" id="tab-founder-images">
+        <p style="font-size:.78rem;color:var(--text);margin-bottom:16px">
+          Replace a founder portrait. Drag to position the crop and use zoom to frame it.
+        </p>
+        <div class="form-group">
+          <label for="founder-image-target">Founder</label>
+          <select id="founder-image-target">
+            <option>NEZUMI</option><option>OUJI</option><option>TEN</option>
+            <option>MAMIKI</option><option>SAM</option>
+          </select>
+        </div>
+        <div class="founder-image-current">
+          <img id="founder-image-current" src="images/founder-nezumi.jpg" alt="Current founder portrait">
+          <div>
+            <div id="founder-image-current-name" style="font-family:var(--font-display);color:var(--white)">NEZUMI</div>
+            <div style="font-size:.72rem;color:var(--text)">CURRENT PORTRAIT</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="founder-image-file">Choose an image</label>
+          <input type="file" id="founder-image-file" accept="image/*">
+          <span class="form-hint">Images are cropped to a square portrait before upload. Maximum source file size: 12 MB.</span>
+        </div>
+        <div id="founder-crop-workspace" style="display:none">
+          <canvas id="founder-crop-canvas" class="founder-crop-canvas" width="360" height="360"
+            aria-label="Drag the image to adjust the square crop"></canvas>
+          <div class="founder-crop-tools">
+            <label for="founder-crop-zoom" style="font-size:.7rem;color:var(--text)">ZOOM</label>
+            <input type="range" id="founder-crop-zoom" min="1" max="3" step=".01" value="1">
+          </div>
+          <button type="button" class="submit-btn" id="founder-image-save" style="margin-top:14px">SAVE PORTRAIT</button>
+        </div>
+        <div id="founder-image-status" role="status" aria-live="polite"
+          style="margin-top:10px;font-size:.8rem;min-height:18px"></div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -1297,7 +1355,7 @@
 document.getElementById('yr').textContent = new Date().getFullYear();
 
 /* ---------- ENDPOINTS ---------- */
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwTF-s4OEDNl7-vIgVh_XBWkRDHwjxr3WdCVLI5NkG0y73XSDO2S_mjoJVeTStDmWBD-Q/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx2yTcKtDfolg9RZkCied9Wm4eDoTHKGclm7JleoktmtPLFTCjtFhf2599OHSY6D_cDMg/exec';
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR8ekE1phwUTs70v13LzPgtXN5KZ8mbPT74_RAM2rL7YL_cKVBmdPRpABZpdj01ry7r6hoY8uWR8_v5/pub?gid=0&single=true&output=csv';
 const NOTICES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR8ekE1phwUTs70v13LzPgtXN5KZ8mbPT74_RAM2rL7YL_cKVBmdPRpABZpdj01ry7r6hoY8uWR8_v5/pub?gid=244965018&single=true&output=csv';
 
@@ -1553,10 +1611,256 @@ function parseCSV(text){
 }
 
 /* ---------- RENDER FOUNDERS ---------- */
-(function renderFounders(){
+function renderFounders(){
   const grid=document.getElementById('founders-grid');
+  grid.innerHTML='';
   founders.forEach(f=>grid.appendChild(makeCard(f)));
-})();
+}
+
+const founderImageIds={};
+function loadFounderImages(){
+  return new Promise((resolve,reject)=>{
+    const callbackName='__rgFounderImages_'+Date.now()+'_'+Math.floor(Math.random()*1000000);
+    const script=document.createElement('script');
+    let timeout;
+    const cleanup=()=>{
+      clearTimeout(timeout);
+      delete window[callbackName];
+      script.remove();
+    };
+    window[callbackName]=data=>{
+      cleanup();
+      if(data&&data.result==='success'&&data.images)resolve(data);
+      else reject(new Error(data&&data.message?data.message:'Could not load founder portraits.'));
+    };
+    script.onerror=()=>{
+      cleanup();
+      reject(new Error('Founder image service could not be reached.'));
+    };
+    script.onload=()=>{
+      if(window[callbackName]){
+        cleanup();
+        reject(new Error('Founder image API is not deployed with image support yet.'));
+      }
+    };
+    timeout=setTimeout(()=>{
+      cleanup();
+      reject(new Error('Founder image service timed out.'));
+    },12000);
+    script.src=SCRIPT_URL+'?action=founder_images&callback='+callbackName+'&t='+Date.now();
+    document.head.appendChild(script);
+  });
+}
+
+function applyFounderImageIds(images){
+  Object.keys(founderImageIds).forEach(name=>delete founderImageIds[name]);
+  founders.forEach(founder=>{
+    const fileId=images[founder.name];
+    if(typeof fileId==='string'&&/^[A-Za-z0-9_-]+$/.test(fileId)){
+      founderImageIds[founder.name]=fileId;
+      founder.image='https://drive.google.com/thumbnail?id='+encodeURIComponent(fileId)+'&sz=w800';
+    }
+  });
+  renderFounders();
+  updateFounderImagePreview();
+}
+
+renderFounders();
+loadFounderImages().then(data=>applyFounderImageIds(data.images)).catch(error=>{
+  console.error('Unable to load saved founder portraits:',error);
+});
+
+/* ---------- FOUNDER IMAGE CROPPER ---------- */
+const founderImageTarget=document.getElementById('founder-image-target');
+const founderImageFile=document.getElementById('founder-image-file');
+const founderImagePreview=document.getElementById('founder-image-current');
+const founderImagePreviewName=document.getElementById('founder-image-current-name');
+const founderImageStatus=document.getElementById('founder-image-status');
+const founderCropWorkspace=document.getElementById('founder-crop-workspace');
+const founderCropCanvas=document.getElementById('founder-crop-canvas');
+const founderCropContext=founderCropCanvas.getContext('2d');
+const founderCropZoom=document.getElementById('founder-crop-zoom');
+const founderImageSave=document.getElementById('founder-image-save');
+let founderCropImage=null;
+let founderCropObjectUrl='';
+let founderCropZoomValue=1;
+let founderCropX=0;
+let founderCropY=0;
+let founderCropPointer=null;
+
+function selectedFounder(){
+  return founders.find(founder=>founder.name===founderImageTarget.value);
+}
+
+function updateFounderImagePreview(){
+  const founder=selectedFounder();
+  if(!founder)return;
+  founderImagePreviewName.textContent=founder.name;
+  founderImagePreview.alt=founder.name+' current portrait';
+  founderImagePreview.src=founder.image;
+}
+
+function drawFounderCrop(){
+  if(!founderCropImage)return;
+  const size=founderCropCanvas.width;
+  const scale=Math.max(size/founderCropImage.naturalWidth,size/founderCropImage.naturalHeight)*founderCropZoomValue;
+  const width=founderCropImage.naturalWidth*scale;
+  const height=founderCropImage.naturalHeight*scale;
+  founderCropX=Math.min(0,Math.max(size-width,founderCropX));
+  founderCropY=Math.min(0,Math.max(size-height,founderCropY));
+  founderCropContext.clearRect(0,0,size,size);
+  founderCropContext.fillStyle='#050508';
+  founderCropContext.fillRect(0,0,size,size);
+  founderCropContext.drawImage(founderCropImage,founderCropX,founderCropY,width,height);
+  founderCropContext.beginPath();
+  founderCropContext.arc(size/2,size/2,size/2-3,0,Math.PI*2);
+  founderCropContext.strokeStyle='#ff3300';
+  founderCropContext.lineWidth=3;
+  founderCropContext.stroke();
+}
+
+founderImageTarget.addEventListener('change',updateFounderImagePreview);
+founderImageFile.addEventListener('change',()=>{
+  founderImageStatus.textContent='';
+  founderImageStatus.style.color='var(--red)';
+  founderCropWorkspace.style.display='none';
+  founderCropImage=null;
+  if(founderCropObjectUrl){
+    URL.revokeObjectURL(founderCropObjectUrl);
+    founderCropObjectUrl='';
+  }
+  const file=founderImageFile.files&&founderImageFile.files[0];
+  if(!file)return;
+  if(!file.type.startsWith('image/')){
+    founderImageStatus.textContent='Choose a supported image file.';
+    founderImageFile.value='';
+    return;
+  }
+  if(file.size>12*1024*1024){
+    founderImageStatus.textContent='Image is larger than 12 MB.';
+    founderImageFile.value='';
+    return;
+  }
+  founderCropObjectUrl=URL.createObjectURL(file);
+  const image=new Image();
+  image.onload=()=>{
+    founderCropImage=image;
+    founderCropZoomValue=1;
+    founderCropZoom.value='1';
+    const size=founderCropCanvas.width;
+    const scale=Math.max(size/image.naturalWidth,size/image.naturalHeight);
+    founderCropX=(size-image.naturalWidth*scale)/2;
+    founderCropY=(size-image.naturalHeight*scale)/2;
+    founderCropWorkspace.style.display='block';
+    drawFounderCrop();
+  };
+  image.onerror=()=>{
+    founderImageStatus.textContent='Could not read that image. Try another file.';
+    URL.revokeObjectURL(founderCropObjectUrl);
+    founderCropObjectUrl='';
+    founderImageFile.value='';
+  };
+  image.src=founderCropObjectUrl;
+});
+
+founderCropZoom.addEventListener('input',()=>{
+  if(!founderCropImage)return;
+  const oldScale=founderCropZoomValue;
+  founderCropZoomValue=Number(founderCropZoom.value);
+  const factor=founderCropZoomValue/oldScale;
+  const center=founderCropCanvas.width/2;
+  founderCropX=center-(center-founderCropX)*factor;
+  founderCropY=center-(center-founderCropY)*factor;
+  drawFounderCrop();
+});
+
+founderCropCanvas.addEventListener('pointerdown',event=>{
+  if(!founderCropImage)return;
+  founderCropCanvas.setPointerCapture(event.pointerId);
+  const bounds=founderCropCanvas.getBoundingClientRect();
+  founderCropPointer={
+    x:event.clientX,y:event.clientY,
+    scaleX:founderCropCanvas.width/bounds.width,
+    scaleY:founderCropCanvas.height/bounds.height
+  };
+});
+founderCropCanvas.addEventListener('pointermove',event=>{
+  if(!founderCropPointer)return;
+  const bounds=founderCropCanvas.getBoundingClientRect();
+  founderCropX+=(event.clientX-founderCropPointer.x)*founderCropPointer.scaleX;
+  founderCropY+=(event.clientY-founderCropPointer.y)*founderCropPointer.scaleY;
+  founderCropPointer.x=event.clientX;
+  founderCropPointer.y=event.clientY;
+  founderCropPointer.scaleX=founderCropCanvas.width/bounds.width;
+  founderCropPointer.scaleY=founderCropCanvas.height/bounds.height;
+  drawFounderCrop();
+});
+founderCropCanvas.addEventListener('pointerup',()=>{founderCropPointer=null;});
+founderCropCanvas.addEventListener('pointercancel',()=>{founderCropPointer=null;});
+
+founderImageSave.addEventListener('click',async()=>{
+  const founder=selectedFounder();
+  if(!founder||!founderCropImage)return;
+  founderImageSave.disabled=true;
+  founderImageSave.textContent='UPLOADING…';
+  founderImageStatus.style.color='var(--text)';
+  founderImageStatus.textContent='Cropping and uploading portrait…';
+
+  try{
+    const output=document.createElement('canvas');
+    output.width=512;
+    output.height=512;
+    const outputScale=output.width/founderCropCanvas.width;
+    const scale=Math.max(founderCropCanvas.width/founderCropImage.naturalWidth,
+      founderCropCanvas.height/founderCropImage.naturalHeight)*founderCropZoomValue;
+    output.getContext('2d').drawImage(
+      founderCropImage,
+      founderCropX*outputScale,founderCropY*outputScale,
+      founderCropImage.naturalWidth*scale*outputScale,
+      founderCropImage.naturalHeight*scale*outputScale
+    );
+    const imageData=output.toDataURL('image/jpeg',.86).split(',')[1];
+    if(imageData.length>680000)throw new Error('The cropped image is too large. Zoom out or choose a simpler image.');
+
+    const previousFileId=founderImageIds[founder.name]||'';
+    await fetch(SCRIPT_URL,{
+      method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({
+        action:'founder_image',
+        password:missionPw.value.trim(),
+        founder:founder.name,
+        imageData:imageData
+      })
+    });
+
+    const result=await loadFounderImages();
+    const savedFileId=result.images&&result.images[founder.name];
+    if(!savedFileId||savedFileId===previousFileId){
+      throw new Error('The upload could not be verified. Check the Apps Script deployment and try again.');
+    }
+    applyFounderImageIds(result.images);
+    updateFounderImagePreview();
+    founderImageStatus.style.color='var(--accent)';
+    founderImageStatus.textContent=founder.name+' portrait saved and published.';
+    founderImageFile.value='';
+    founderCropWorkspace.style.display='none';
+    founderCropImage=null;
+    if(founderCropObjectUrl){
+      URL.revokeObjectURL(founderCropObjectUrl);
+      founderCropObjectUrl='';
+    }
+  }catch(error){
+    console.error('Founder portrait upload failed:',error);
+    founderImageStatus.style.color='var(--red)';
+    founderImageStatus.textContent=error.message||'Portrait upload failed.';
+  }finally{
+    founderImageSave.disabled=false;
+    founderImageSave.textContent='SAVE PORTRAIT';
+  }
+});
+
+updateFounderImagePreview();
 
 /* ---------- STATUS OVERRIDES (published CSV lags behind the sheet) ---------- */
 const STATUS_OVERRIDE_KEY='rg_status_overrides';
