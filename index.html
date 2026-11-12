@@ -1543,6 +1543,31 @@ function parseCSV(text){
   founders.forEach(f=>grid.appendChild(makeCard(f)));
 })();
 
+/* ---------- STATUS OVERRIDES (published CSV lags behind the sheet) ---------- */
+const STATUS_OVERRIDE_KEY='rg_status_overrides';
+const STATUS_OVERRIDE_TTL=15*60*1000;
+function readOverrides(){
+  try{return JSON.parse(localStorage.getItem(STATUS_OVERRIDE_KEY)||'{}');}catch(e){return {};}
+}
+function saveOverride(app,status){
+  const all=readOverrides();
+  all[app.row_index+'|'+app.name]={status,at:Date.now()};
+  try{localStorage.setItem(STATUS_OVERRIDE_KEY,JSON.stringify(all));}catch(e){}
+}
+/* Returns the status to display. Drops the override once the CSV matches or it expires. */
+function effectiveStatus(rowIndex,name,csvStatus){
+  const all=readOverrides();
+  const key=rowIndex+'|'+name;
+  const o=all[key];
+  if(!o) return csvStatus;
+  if(o.status===csvStatus || Date.now()-o.at>STATUS_OVERRIDE_TTL){
+    delete all[key];
+    try{localStorage.setItem(STATUS_OVERRIDE_KEY,JSON.stringify(all));}catch(e){}
+    return csvStatus;
+  }
+  return o.status;
+}
+
 /* ---------- LOAD MEMBER DATABASE ---------- */
 async function loadDB(){
   const grid=document.getElementById('db-grid');
@@ -1561,10 +1586,11 @@ async function loadDB(){
     const headers=rows[0].map(h=>h.trim().toLowerCase());
     let fileNum=6, count=0;
 
-    rows.slice(1).forEach(r=>{
+    rows.slice(1).forEach((r,rowIdx)=>{
       const o={};
       headers.forEach((h,i)=>{o[h]=(r[i]||'').trim();});
-      if(o.status && o.status.toLowerCase()==='approved' && o.name){
+      const st=effectiveStatus(rowIdx+2,o.name,(o.status||'').toLowerCase());
+      if(st==='approved' && o.name){
         const cofs=parseInt(o.cofs)||0;
         const rk=getRank(cofs);
         grid.insertBefore(makeCard({
@@ -1741,6 +1767,7 @@ async function updateApplicationStatus(app,status,button){
       body:JSON.stringify(payload)
     });
     app.status=status;
+    saveOverride(app,status);
     renderApplications();
     const notice=document.createElement('div');
     notice.className='no-notices';
@@ -1778,7 +1805,7 @@ async function loadApplications(){
       const o={};
       headers.forEach((h,i)=>{o[h]=(r[i]||'').trim();});
       if(!o.name && !o.role && !o.skills) return;
-      const status=(o.status||'pending').trim().toLowerCase();
+      const status=effectiveStatus(rowIndex+2,o.name,(o.status||'pending').trim().toLowerCase());
       apps.push({ ...o, row_index: rowIndex + 2, status });
     });
 
