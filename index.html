@@ -1635,7 +1635,7 @@ function loadFounderImages(){
     };
     script.onerror=()=>{
       cleanup();
-      reject(new Error('Founder image service could not be reached.'));
+      reject(new Error('The Apps Script portrait endpoint returned an error. Deploy the updated code.gs as a web app version and confirm it is available to anyone with the link.'));
     };
     script.onload=()=>{
       if(window[callbackName]){
@@ -1822,7 +1822,8 @@ founderImageSave.addEventListener('click',async()=>{
     const imageData=output.toDataURL('image/jpeg',.86).split(',')[1];
     if(imageData.length>680000)throw new Error('The cropped image is too large. Zoom out or choose a simpler image.');
 
-    const previousFileId=founderImageIds[founder.name]||'';
+    const before=await loadFounderImages();
+    const previousFileId=(before.images&&before.images[founder.name])||'';
     await fetch(SCRIPT_URL,{
       method:'POST',mode:'no-cors',
       headers:{'Content-Type':'text/plain;charset=utf-8'},
@@ -1837,7 +1838,7 @@ founderImageSave.addEventListener('click',async()=>{
     const result=await loadFounderImages();
     const savedFileId=result.images&&result.images[founder.name];
     if(!savedFileId||savedFileId===previousFileId){
-      throw new Error('The upload could not be verified. Check the Apps Script deployment and try again.');
+      throw new Error('Apps Script did not publish a new portrait ID. Confirm the latest code.gs is deployed, Drive access was authorized, and the web app is available to anyone with the link.');
     }
     applyFounderImageIds(result.images);
     updateFounderImagePreview();
