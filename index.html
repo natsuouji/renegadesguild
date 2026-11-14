@@ -470,7 +470,7 @@
   .m-story em{color:var(--accent)}
 
   /* ===== TABS & MANAGE ITEMS ===== */
-  .tab-bar{display:flex;gap:0;margin-bottom:20px}
+  .tab-bar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-bottom:20px}
   .tab-btn{
     flex:1;padding:11px 0;background:transparent;border:1px solid var(--card-border);
     color:var(--text);font-family:var(--font-display);font-size:.7rem;
@@ -487,6 +487,11 @@
     width:76px;height:76px;border:2px solid var(--red);border-radius:50%;
     background:var(--card);object-fit:cover;flex:none;
   }
+  .founder-image-current .portrait-placeholder{
+    display:flex;align-items:center;justify-content:center;width:76px;height:76px;
+    border:2px solid var(--red);border-radius:50%;background:var(--card);
+    color:var(--accent);font-family:var(--font-display);font-size:1.5rem;flex:none;
+  }
   .founder-crop-canvas{
     display:block;width:min(100%,320px);height:auto;aspect-ratio:1;
     margin:12px auto;border:1px solid var(--red);background:var(--black);
@@ -495,7 +500,6 @@
   .founder-crop-tools{display:flex;align-items:center;gap:10px}
   .founder-crop-tools input{flex:1;accent-color:var(--red)}
   @media(max-width:600px){
-    #mission-modal .tab-bar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
     #mission-modal .tab-btn{font-size:.55rem;letter-spacing:0;padding:9px 2px;min-height:42px}
     .founder-image-current{gap:10px}
   }
@@ -1165,7 +1169,8 @@
         <button class="tab-btn" data-tab="tab-notice">📡 Post Notice</button>
         <button class="tab-btn" data-tab="tab-applications">🧾 Applications</button>
         <button class="tab-btn" data-tab="tab-manage">✎ Manage</button>
-        <button class="tab-btn" data-tab="tab-founder-images">🖼 Portraits</button>
+        <button class="tab-btn" data-tab="tab-members">✎ Members</button>
+        <button class="tab-btn" data-tab="tab-founder-images">✎ Founders</button>
       </div>
 
       <!-- TAB: MISSION -->
@@ -1306,18 +1311,82 @@
         </div>
       </div>
 
+      <!-- TAB: APPROVED MEMBER EDITOR -->
+      <div class="tab-panel" id="tab-members">
+        <p style="font-size:.78rem;color:var(--text);margin-bottom:16px">
+          Edit public dossier details for approved members. Names, approval status, and COFs are managed separately.
+        </p>
+        <div class="form-group">
+          <label for="member-editor-target">Approved member</label>
+          <select id="member-editor-target" required disabled>
+            <option value="">Loading approved members…</option>
+          </select>
+        </div>
+        <form id="member-details-form" class="reg-form" style="max-width:100%">
+          <div id="member-details-fields"></div>
+          <button type="submit" class="submit-btn" id="member-details-save" disabled>SAVE MEMBER DETAILS</button>
+          <div id="member-details-status" role="status" aria-live="polite"
+            style="text-align:center;margin-top:10px;font-size:.82rem;min-height:18px"></div>
+        </form>
+        <div class="m-divider"></div>
+        <h3 style="font-family:var(--font-display);color:var(--accent);font-size:.85rem;margin-bottom:12px">
+          MEMBER PORTRAIT
+        </h3>
+        <div class="founder-image-current">
+          <img id="member-image-current" alt="Current member portrait" style="display:none">
+          <div id="member-image-placeholder" class="portrait-placeholder">?</div>
+          <div>
+            <div id="member-image-current-name" style="font-family:var(--font-display);color:var(--white)">Select a member</div>
+            <div style="font-size:.72rem;color:var(--text)">CURRENT PORTRAIT</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="member-image-file">Choose an image</label>
+          <input type="file" id="member-image-file" accept="image/*" disabled>
+          <span class="form-hint">Images are cropped to a square portrait before upload. Maximum source file size: 12 MB.</span>
+        </div>
+        <div id="member-crop-workspace" style="display:none">
+          <canvas id="member-crop-canvas" class="founder-crop-canvas" width="360" height="360"
+            aria-label="Drag the member image to adjust the square crop"></canvas>
+          <div class="founder-crop-tools">
+            <label for="member-crop-zoom" style="font-size:.7rem;color:var(--text)">ZOOM</label>
+            <input type="range" id="member-crop-zoom" min="1" max="3" step=".01" value="1" disabled>
+          </div>
+          <button type="button" class="submit-btn" id="member-image-save" style="margin-top:14px" disabled>SAVE PORTRAIT</button>
+        </div>
+        <div id="member-image-status" role="status" aria-live="polite"
+          style="margin-top:10px;font-size:.8rem;min-height:18px"></div>
+      </div>
+
       <!-- TAB: FOUNDER IMAGES -->
       <div class="tab-panel" id="tab-founder-images">
         <p style="font-size:.78rem;color:var(--text);margin-bottom:16px">
-          Replace a founder portrait. Drag to position the crop and use zoom to frame it.
+          Edit a founder's public dossier and replace their portrait from one place.
+        </p>
+        <p id="founder-sheet-link-wrap" style="font-size:.78rem;margin-bottom:16px;display:none">
+          <a id="founder-sheet-link" target="_blank" rel="noopener noreferrer"
+            style="color:var(--accent)">OPEN FOUNDERS SHEET ↗</a>
         </p>
         <div class="form-group">
-          <label for="founder-image-target">Founder</label>
+          <label for="founder-image-target">Founder to edit</label>
           <select id="founder-image-target">
             <option>NEZUMI</option><option>OUJI</option><option>TEN</option>
             <option>MAMIKI</option><option>SAM</option>
           </select>
         </div>
+        <form id="founder-details-form" class="reg-form" style="max-width:100%">
+          <h3 style="font-family:var(--font-display);color:var(--accent);font-size:.85rem;margin-bottom:12px">
+            FOUNDER DOSSIER DETAILS
+          </h3>
+          <div id="founder-details-fields"></div>
+          <button type="submit" class="submit-btn" id="founder-details-save">SAVE FOUNDER DETAILS</button>
+          <div id="founder-details-status" role="status" aria-live="polite"
+            style="text-align:center;margin-top:10px;font-size:.82rem;min-height:18px"></div>
+        </form>
+        <div class="m-divider"></div>
+        <h3 style="font-family:var(--font-display);color:var(--accent);font-size:.85rem;margin-bottom:12px">
+          FOUNDER PORTRAIT
+        </h3>
         <div class="founder-image-current">
           <img id="founder-image-current" src="images/founder-nezumi.jpg" alt="Current founder portrait">
           <div>
@@ -1335,9 +1404,9 @@
             aria-label="Drag the image to adjust the square crop"></canvas>
           <div class="founder-crop-tools">
             <label for="founder-crop-zoom" style="font-size:.7rem;color:var(--text)">ZOOM</label>
-            <input type="range" id="founder-crop-zoom" min="1" max="3" step=".01" value="1">
+            <input type="range" id="founder-crop-zoom" min="1" max="3" step=".01" value="1" disabled>
           </div>
-          <button type="button" class="submit-btn" id="founder-image-save" style="margin-top:14px">SAVE PORTRAIT</button>
+          <button type="button" class="submit-btn" id="founder-image-save" style="margin-top:14px" disabled>SAVE PORTRAIT</button>
         </div>
         <div id="founder-image-status" role="status" aria-live="polite"
           style="margin-top:10px;font-size:.8rem;min-height:18px"></div>
@@ -1397,84 +1466,7 @@ document.querySelectorAll('.drawer-link').forEach(l=>{
 });
 
 /* ---------- FOUNDERS DATA ---------- */
-const founders=[
-{
-  file:'001',name:'NEZUMI',handle:'Nezumiii',
-  role:'Network Overseer',weapon:'Electro Brass Knuckles',rank:'Founder',rankIcon:'🜏',
-  country:'Neo-Brazil',age:'31',blood:'O+',sign:'Cancer ♋ (July 13)',
-  smule:'@Nezumiii',
-  skills:'Close-quarters combat, territorial defense',
-  style:'Bruiser / Landlord & Warden',
-  personality:'Blunt, Possessive, Protective',
-  tattoo:'left side of the neck',food:'Cake',flower:'Hydrangea',animal:'Whale',
-  image:'images/founder-nezumi.jpg',
-  story:`<p>Nezu — handle <strong style="color:var(--accent)">Nezumiii</strong> — is a thirty-one-year-old bruiser out of the neon-choked sprawl of Neo-Brazil, their O+ blood marking them as a universal donor in a city that bleeds people dry.</p>
-<p>Within the guild, they're the <strong style="color:var(--red)">Landlord and Warden</strong> — the one who holds the keys, guards the walls, and makes sure nobody forgets whose ground they're standing on. Blunt, possessive, and fiercely protective, Nezu treats the guild like personal territory: step inside and you're under their shield, threaten it and you're scrap metal.</p>
-<p>No fancy chrome or long-range tech — just reinforced brass knuckles and brutal close-quarters combat that ends arguments before they start.</p>
-<p>Born July 13th under <em>Cancer ♋</em>, they're the perfect armored guardian: hard shell, iron grip, and utterly merciless to anyone who breaches their walls.</p>`
-},
-{
-  file:'002',name:'OUJI',handle:'NatsuOuji',
-  role:'Waste Grid Custodian',weapon:'Twin Tian Swords',rank:'Founder',rankIcon:'🜏',
-  country:'West Jap(v)anese',age:'99',blood:'Ø (Synthetic)',sign:'Orion',
-  smule:'@NatsuOuji',
-  skills:'Archive decoding, faction intelligence',
-  style:'Curator / Shadow Operative',
-  personality:'Sleepy-eyed, Observant, Silent',
-  tattoo:'top of left hand',food:'Egg',flower:'Jasmine',animal:'Cat',
-  image:'images/founder-ouji.jpg',
-  story:`<p>Ouji — handle <strong style="color:var(--accent)">NatsuOuji</strong> — is a ninety-nine-year-old keeper in the rusted sprawl of West Jap(v)anese, a world where steel towers crumble and new guilds rise from the wreckage. His synthetic blood type Ø lets him outlast what the wasteland takes from everyone else.</p>
-<p>Within the guild he serves as <strong style="color:var(--red)">Curator</strong>, safeguarding old-world archives and decoding forgotten data — but that's only the cover. Beneath it, he moves between factions as a shadow, gathering secrets under the guise of quiet scholarship.</p>
-<p>Sleepy-eyed and slow to speak, he'd rather watch from the corner of a firelit hall than stand at its centre, learning every face and every weakness.</p>
-<p>Born under the sign of <em>Orion</em>, he wears that old defiance like the chronometer on his wrist — saying nothing, explaining less.</p>`
-},
-{
-  file:'003',name:'TEN',handle:'96_10',
-  role:'Safehouse Warden',weapon:'96 Dagger',rank:'Founder',rankIcon:'🜏',
-  country:'Irradiated USA',age:'30',blood:'O',sign:'Taurus ♉',
-  smule:'@96_10',
-  skills:'Bare-handed combat, safehouse hospitality',
-  style:'Brawler / Innkeeper',
-  personality:'Easy-going, Warm, Unforgiving',
-  tattoo:'Mid-forearm (wrap)',
-  food:'Melon Pan',flower:'Spider Lily',animal:'Bird',
-  image:'images/founder-ten.jpg',
-  story:`<p>Ten — handle <strong style="color:var(--accent)">96_10</strong> — is a thirty-year-old brawler from the irradiated sprawl of what was once the USA, her blood type O marking her as a universal donor in a world that always needs something from everyone else.</p>
-<p>Within the guild she's the <strong style="color:var(--red)">Innkeeper</strong>, and on most nights she's the easiest soul in the room — laughing, pouring drinks, earrings catching the firelight as she dozes off behind the counter. Easy-going, warm, the kind of calm that makes every wanderer feel welcome.</p>
-<p>But cross her wrong and that warmth dies fast — her cold stare is enough to shake the guildhall walls, and the sleepy bartender closes the distance bare-handed before you can blink. A renegade's mark wraps her mid-forearm, a brand she's too chill to care about — until she isn't.</p>
-<p>Born under <em>Taurus ♉</em>, she's patient as stone, and just as unforgiving when pushed.</p>`
-},
-{
-  file:'004',name:'MAMIKI',handle:'8maamiki',
-  role:'Blood-Code Enchantress',weapon:'Whisper Longbow',rank:'Founder',rankIcon:'🜏',
-  country:'Drowned Indonesia',age:'220',blood:'A',sign:'Cancer ♋',
-  smule:'@8maamiki',
-  skills:'Long-range precision, ancient counsel',
-  style:'Advisor / Harbinger / Artist',
-  personality:'Quiet, Wise, Relentless',
-  tattoo:'left ankle',food:'Dango',flower:'Wild Rose',animal:'Cat',
-  image:'images/founder-mamiki.jpg',
-  story:`<p>Mami — handle <strong style="color:var(--accent)">8maamiki</strong> — is a two-hundred-and-twenty-year-old archer from the drowned coasts of what was once Indonesia, now just another fractured territory in the wasteland. Half-vampire, she has outlived centuries with unnatural grace, her blood type A kept pure by the very curse running through her veins.</p>
-<p>Within the guild she serves as <strong style="color:var(--red)">Advisor</strong> — the one younger members seek when the wasteland wears them down, her words quiet but heavy with the kind of wisdom only time and hunger can teach.</p>
-<p>She is also a harbinger and artist, a deadly shot who paints with arrows before the enemy even knows they're marked. She fights like a shadow — silent, precise, always one step ahead — driven by a single creed: <em>every arrow loosed is a lesson the next one will remember.</em></p>
-<p>Born under <em>Cancer ♋</em>, she carries the tide in her — patient, relentless, and impossible to pull back.</p>`
-},
-{
-  file:'005',name:'SAM',handle:'moemelonyan',
-  role:'Data Vault Archivist',weapon:'Rift Butterfly Knife',rank:'Founder',rankIcon:'🜏',
-  country:'Rain-soaked UK ruins',age:'25',blood:'Red (Unclassified)',sign:'Virgo ♍ (Aug 25)',
-  smule:'@moemelonyan',
-  skills:'Ledger tracking, contract enforcement',
-  style:'Handler / Bookkeeper',
-  personality:'Aloof, Sharp-tongued, Deeply Loyal',
-  tattoo:'inside left cat ear',food:'Sweets',flower:'Wisteria',animal:'Cat',
-  image:'images/founder-sam.jpg',
-  story:`<p>Sam — handle <strong style="color:var(--accent)">moemelonyan</strong> — is a twenty-five-year-old drifter with no fixed coordinates, though their accent ghosts somewhere around the rain-soaked ruins of the old UK. Their blood type is listed as simply "red," which is either a medical anomaly or a flat refusal to be categorized — take your pick.</p>
-<p>Within the guild, Sam is the <strong style="color:var(--red)">Handler and Bookkeeper</strong>, the quiet one tracking every credit, every contract, every debt owed. Don't let the ledger fool you: when the numbers stop adding up, a butterfly knife spins between their fingers with lethal, feline precision.</p>
-<p>Sam fights like a cat — silent, sudden, all claws and no warning. Aloof at first glance, sharp-tongued and seemingly cold, but earn their trust and you'll find a loyalty that runs deeper than most.</p>
-<p>Born August 25th under <em>Virgo ♍</em>, they're meticulous, calculating, and quietly devoted to the few they let past the hiss.</p>`
-}
-];
+let founders=[];
 
 /* ---------- RANK HELPER ---------- */
 function getRank(cofs){
@@ -1505,14 +1497,20 @@ function generateStory(d){
   const w=d.weapon&&d.weapon!=='—'?d.weapon:'an unregistered sidearm';
   const name=d.name||'UNKNOWN';
   const country=d.country&&d.country!=='—'?d.country:'an undisclosed sector';
-  let s=`<p>Operative <strong style="color:var(--white)">${name}</strong> emerged from the signal fog of <em>${country}</em>, carrying nothing but a scarred reputation and a deep-rooted mastery of <em>${ts}</em>.</p>`;
-  s+=`<p>Armed with their signature weapon — the <strong style="color:var(--red)">${w}</strong> — they carved a name into the wasteland's memory. Few who cross their path forget the encounter.</p>`;
+  let s=`<p>Operative <strong style="color:var(--white)">${escapeHtml(name)}</strong> emerged from the signal fog of <em>${escapeHtml(country)}</em>, carrying nothing but a scarred reputation and a deep-rooted mastery of <em>${escapeHtml(ts)}</em>.</p>`;
+  s+=`<p>Armed with their signature weapon — the <strong style="color:var(--red)">${escapeHtml(w)}</strong> — they carved a name into the wasteland's memory. Few who cross their path forget the encounter.</p>`;
   if(d.animal&&d.animal!=='—')
-    s+=`<p>Survivors speak of a presence that follows ${name} like a shadow — something primal, reminiscent of a <em>${d.animal}</em>, watching from behind the static.</p>`;
+    s+=`<p>Survivors speak of a presence that follows ${escapeHtml(name)} like a shadow — something primal, reminiscent of a <em>${escapeHtml(d.animal)}</em>, watching from behind the static.</p>`;
   if(d.personality&&d.personality!=='—')
-    s+=`<p>Field reports describe them as <em>${d.personality}</em> — a profile the network has learned not to underestimate.</p>`;
-  s+=`<p>Now embedded within the RENEG▲DES network, ${name} operates under a single directive: <em>"Nobody gets left behind."</em></p>`;
+    s+=`<p>Field reports describe them as <em>${escapeHtml(d.personality)}</em> — a profile the network has learned not to underestimate.</p>`;
+  s+=`<p>Now embedded within the RENEG▲DES network, ${escapeHtml(name)} operates under a single directive: <em>"Nobody gets left behind."</em></p>`;
   return s;
+}
+
+function escapeHtml(value){
+  return String(value==null?'':value).replace(/[&<>"']/g,char=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[char]));
 }
 
 /* ---------- CARD BUILDER ---------- */
@@ -1523,14 +1521,14 @@ function makeCard(d){
   const avatar=d.image
     ? `<img src="${d.image}" alt="${d.name}" class="card-avatar" onerror="this.outerHTML='<div class=\\'card-avatar\\'>${initial}</div>'">`
     : `<div class="card-avatar">${initial}</div>`;
-  const handle=d.handle?`<div class="card-handle">@${d.handle}</div>`:'';
+  const handle=d.handle?`<div class="card-handle">@${escapeHtml(d.handle)}</div>`:'';
   div.innerHTML=`
     ${avatar}
-    <div class="card-file">FILE ${d.file}</div>
-    <div class="card-name">${d.name}</div>
+    <div class="card-file">FILE ${escapeHtml(d.file)}</div>
+    <div class="card-name">${escapeHtml(d.name)}</div>
     ${handle}
-    <div class="card-role">${d.role}</div>
-    <div class="card-rank">${d.rankIcon||'🜏'} ${d.rank}${d.cofs!==undefined?' · '+d.cofs+' COFs':''}</div>`;
+    <div class="card-role">${escapeHtml(d.role)}</div>
+    <div class="card-rank">${escapeHtml(d.rankIcon||'🜏')} ${escapeHtml(d.rank)}${d.cofs!==undefined?' · '+escapeHtml(d.cofs)+' COFs':''}</div>`;
   div.addEventListener('click',()=>openModal(d));
   return div;
 }
@@ -1542,7 +1540,7 @@ const modalClose=document.getElementById('modal-close');
 
 function row(label,val){
   if(!val||val==='—'||val==='')return '';
-  return `<div class="m-row"><span class="label">${label}</span><span class="value">${val}</span></div>`;
+  return `<div class="m-row"><span class="label">${escapeHtml(label)}</span><span class="value">${escapeHtml(val)}</span></div>`;
 }
 
 function openModal(d){
@@ -1551,15 +1549,19 @@ function openModal(d){
     ? `<img src="${d.image}" alt="${d.name}" class="m-avatar" onerror="this.outerHTML='<div class=\\'m-avatar\\'>${initial}</div>'">`
     : `<div class="m-avatar">${initial}</div>`;
 
-  const story=d.story ? d.story : generateStory(d);
+  const story=d.story
+    ? (d.storyIsPlainText
+      ? d.story.split(/\n{2,}/).map(paragraph=>`<p>${escapeHtml(paragraph).replace(/\n/g,'<br>')}</p>`).join('')
+      : d.story)
+    : generateStory(d);
   const cofLine = d.cofs!==undefined ? row('COFs', d.cofs) : row('COFs','∞ Unlimited');
 
   modalContent.innerHTML=`
     ${avatar}
-    <div class="m-file">FILE ${d.file}</div>
-    <h2 class="m-name">${d.name}</h2>
-    ${d.handle?`<div class="m-handle">@${d.handle}</div>`:''}
-    <div class="m-role">${d.role}</div>
+    <div class="m-file">FILE ${escapeHtml(d.file)}</div>
+    <h2 class="m-name">${escapeHtml(d.name)}</h2>
+    ${d.handle?`<div class="m-handle">@${escapeHtml(d.handle)}</div>`:''}
+    <div class="m-role">${escapeHtml(d.role)}</div>
     <div class="m-divider"></div>
     ${row('Rank',(d.rankIcon||'🜏')+' '+d.rank)}
     ${cofLine}
@@ -1614,13 +1616,20 @@ function parseCSV(text){
 function renderFounders(){
   const grid=document.getElementById('founders-grid');
   grid.innerHTML='';
+  if(!founders.length){
+    grid.textContent='Loading founder dossiers…';
+    return;
+  }
   founders.forEach(f=>grid.appendChild(makeCard(f)));
 }
 
 const founderImageIds={};
-function loadFounderImages(){
+const founderSheetLinkWrap=document.getElementById('founder-sheet-link-wrap');
+const founderSheetLink=document.getElementById('founder-sheet-link');
+
+function loadScriptData(action,isValid,unsupportedMessage){
   return new Promise((resolve,reject)=>{
-    const callbackName='__rgFounderImages_'+Date.now()+'_'+Math.floor(Math.random()*1000000);
+    const callbackName='__rgData_'+Date.now()+'_'+Math.floor(Math.random()*1000000);
     const script=document.createElement('script');
     let timeout;
     const cleanup=()=>{
@@ -1630,32 +1639,62 @@ function loadFounderImages(){
     };
     window[callbackName]=data=>{
       cleanup();
-      if(data&&data.result==='success'&&data.images)resolve(data);
-      else reject(new Error(data&&data.message?data.message:'Could not load founder portraits.'));
+      if(data&&data.result==='success'&&isValid(data)){
+        resolve(data);
+      }else if(data&&data.result==='success'){
+        reject(new Error(unsupportedMessage));
+      }else{
+        reject(new Error(data&&data.message?data.message:'Could not load founder information.'));
+      }
     };
     script.onerror=()=>{
       cleanup();
-      reject(new Error('The Apps Script portrait endpoint returned an error. Deploy the updated code.gs as a web app version and confirm it is available to anyone with the link.'));
+      reject(new Error(unsupportedMessage));
     };
     script.onload=()=>{
       if(window[callbackName]){
         cleanup();
-        reject(new Error('Founder image API is not deployed with image support yet.'));
+        reject(new Error(unsupportedMessage));
       }
     };
     timeout=setTimeout(()=>{
       cleanup();
-      reject(new Error('Founder image service timed out.'));
+      reject(new Error('The Apps Script data service timed out.'));
     },12000);
-    script.src=SCRIPT_URL+'?action=founder_images&callback='+callbackName+'&t='+Date.now();
+    script.src=SCRIPT_URL+'?action='+encodeURIComponent(action)+'&callback='+callbackName+'&t='+Date.now();
     document.head.appendChild(script);
   });
 }
 
-function applyFounderImageIds(images){
+function loadFounderData(){
+  return loadScriptData(
+    'founders',
+    data=>Array.isArray(data.founders)&&data.images,
+    'Founder sheet support is not deployed yet. Deploy the latest code.gs as a new web app version.'
+  );
+}
+
+function loadApprovedMemberData(){
+  return loadScriptData(
+    'members',
+    data=>Array.isArray(data.members),
+    'Approved member editing is not deployed yet. Deploy the latest code.gs as a new web app version.'
+  );
+}
+
+function applyFounderData(data,refreshDetails){
+  founders=data.founders.map(founder=>({
+    ...founder,
+    image:'images/founder-'+founder.name.toLowerCase()+'.jpg',
+    storyIsPlainText:true
+  }));
+  if(typeof data.spreadsheetUrl==='string'&&/^https:\/\/docs\.google\.com\/spreadsheets\//.test(data.spreadsheetUrl)){
+    founderSheetLink.href=data.spreadsheetUrl;
+    founderSheetLinkWrap.style.display='block';
+  }
   Object.keys(founderImageIds).forEach(name=>delete founderImageIds[name]);
   founders.forEach(founder=>{
-    const fileId=images[founder.name];
+    const fileId=data.images[founder.name];
     if(typeof fileId==='string'&&/^[A-Za-z0-9_-]+$/.test(fileId)){
       founderImageIds[founder.name]=fileId;
       founder.image='https://drive.google.com/thumbnail?id='+encodeURIComponent(fileId)+'&sz=w800';
@@ -1663,11 +1702,16 @@ function applyFounderImageIds(images){
   });
   renderFounders();
   updateFounderImagePreview();
+  if(refreshDetails!==false)populateFounderDetailsForm();
 }
 
 renderFounders();
-loadFounderImages().then(data=>applyFounderImageIds(data.images)).catch(error=>{
-  console.error('Unable to load saved founder portraits:',error);
+loadFounderData().then(data=>{
+  applyFounderData(data);
+}).catch(error=>{
+  console.error('Unable to load founder information:',error);
+  const grid=document.getElementById('founders-grid');
+  grid.textContent='Founder information could not be loaded. Please try again later.';
 });
 
 /* ---------- FOUNDER IMAGE CROPPER ---------- */
@@ -1681,12 +1725,75 @@ const founderCropCanvas=document.getElementById('founder-crop-canvas');
 const founderCropContext=founderCropCanvas.getContext('2d');
 const founderCropZoom=document.getElementById('founder-crop-zoom');
 const founderImageSave=document.getElementById('founder-image-save');
+const founderDetailsForm=document.getElementById('founder-details-form');
+const founderDetailsFieldsWrap=document.getElementById('founder-details-fields');
+const founderDetailsSave=document.getElementById('founder-details-save');
+const founderDetailsStatus=document.getElementById('founder-details-status');
+const founderDetailsFields=[
+  {key:'handle',label:'Handle'},
+  {key:'role',label:'Role / title'},
+  {key:'rank',label:'Rank'},
+  {key:'rankIcon',label:'Rank icon'},
+  {key:'country',label:'Origin / country'},
+  {key:'age',label:'Age'},
+  {key:'blood',label:'Blood type'},
+  {key:'sign',label:'Zodiac / sign'},
+  {key:'smule',label:'Smule'},
+  {key:'skills',label:'Skills'},
+  {key:'style',label:'Style'},
+  {key:'weapon',label:'Weapon'},
+  {key:'personality',label:'Personality'},
+  {key:'tattoo',label:'Tattoo placement'},
+  {key:'food',label:'Favorite food'},
+  {key:'flower',label:'Favorite flower'},
+  {key:'animal',label:'Spirit animal'},
+  {key:'story',label:'Dossier story',multiline:true,maxLength:4000}
+];
 let founderCropImage=null;
 let founderCropObjectUrl='';
 let founderCropZoomValue=1;
 let founderCropX=0;
 let founderCropY=0;
 let founderCropPointer=null;
+let portraitUploadTarget='';
+
+function createFounderDetailsFields(){
+  founderDetailsFields.forEach(field=>{
+    const group=document.createElement('div');
+    group.className='form-group';
+    const label=document.createElement('label');
+    label.htmlFor='founder-detail-'+field.key;
+    label.textContent=field.label;
+    const input=document.createElement(field.multiline?'textarea':'input');
+    input.id='founder-detail-'+field.key;
+    input.maxLength=field.maxLength||200;
+    if(field.multiline){
+      input.rows=8;
+      input.placeholder='Use a blank line between paragraphs.';
+    }else{
+      input.type='text';
+    }
+    group.append(label,input);
+    if(field.key==='story'){
+      const hint=document.createElement('span');
+      hint.className='form-hint';
+      hint.textContent='Plain text only; separate paragraphs with a blank line. Maximum 4,000 characters.';
+      group.appendChild(hint);
+    }
+    founderDetailsFieldsWrap.appendChild(group);
+  });
+}
+
+function populateFounderDetailsForm(){
+  const founder=selectedFounder();
+  if(!founder)return;
+  founderDetailsFields.forEach(field=>{
+    document.getElementById('founder-detail-'+field.key).value=founder[field.key]||'';
+  });
+  founderDetailsStatus.textContent='';
+}
+
+createFounderDetailsFields();
 
 function selectedFounder(){
   return founders.find(founder=>founder.name===founderImageTarget.value);
@@ -1700,45 +1807,282 @@ function updateFounderImagePreview(){
   founderImagePreview.src=founder.image;
 }
 
-function drawFounderCrop(){
+founderImageTarget.addEventListener('change',()=>{
+  updateFounderImagePreview();
+  populateFounderDetailsForm();
+});
+
+founderDetailsForm.addEventListener('submit',async event=>{
+  event.preventDefault();
+  const founder=selectedFounder();
+  if(!founder)return;
+
+  const details={};
+  founderDetailsFields.forEach(field=>{
+    details[field.key]=document.getElementById('founder-detail-'+field.key).value.trim();
+  });
+  founderDetailsSave.disabled=true;
+  founderDetailsSave.textContent='SAVING…';
+  founderDetailsStatus.style.color='var(--text)';
+  founderDetailsStatus.textContent='Saving founder details…';
+
+  try{
+    await fetch(SCRIPT_URL,{
+      method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({
+        action:'founder_details',
+        password:missionPw.value.trim(),
+        founder:founder.name,
+        details
+      })
+    });
+
+    const result=await loadFounderData();
+    const saved=result.founders.find(item=>item.name===founder.name);
+    if(!saved||!founderDetailsFields.every(field=>saved[field.key]===details[field.key])){
+      throw new Error('Founder details were not verified. Confirm the latest code.gs is deployed and try again.');
+    }
+    applyFounderData(result);
+    founderDetailsStatus.style.color='var(--accent)';
+    founderDetailsStatus.textContent=founder.name+' details saved to the Founders sheet.';
+  }catch(error){
+    console.error('Founder detail update failed:',error);
+    founderDetailsStatus.style.color='var(--red)';
+    founderDetailsStatus.textContent=error.message||'Could not save founder details.';
+  }finally{
+    founderDetailsSave.disabled=false;
+    founderDetailsSave.textContent='SAVE FOUNDER DETAILS';
+  }
+});
+
+const memberEditorTarget=document.getElementById('member-editor-target');
+const memberDetailsForm=document.getElementById('member-details-form');
+const memberDetailsFieldsWrap=document.getElementById('member-details-fields');
+const memberDetailsSave=document.getElementById('member-details-save');
+const memberDetailsStatus=document.getElementById('member-details-status');
+const memberImageFile=document.getElementById('member-image-file');
+const memberImagePreview=document.getElementById('member-image-current');
+const memberImagePlaceholder=document.getElementById('member-image-placeholder');
+const memberImagePreviewName=document.getElementById('member-image-current-name');
+const memberImageStatus=document.getElementById('member-image-status');
+const memberCropWorkspace=document.getElementById('member-crop-workspace');
+const memberCropCanvas=document.getElementById('member-crop-canvas');
+const memberCropContext=memberCropCanvas.getContext('2d');
+const memberCropZoom=document.getElementById('member-crop-zoom');
+const memberImageSave=document.getElementById('member-image-save');
+const memberDetailsFields=[
+  {key:'smule',label:'Smule username'},
+  {key:'country',label:'Country'},
+  {key:'age',label:'Age'},
+  {key:'blood',label:'Blood type'},
+  {key:'sign',label:'Zodiac sign'},
+  {key:'role',label:'Role / title'},
+  {key:'skills',label:'Skills'},
+  {key:'style',label:'Vocal / art style'},
+  {key:'weapon',label:'Signature weapon'},
+  {key:'personality',label:'Personality'},
+  {key:'tattoo',label:'Renegade tattoo placement'},
+  {key:'food',label:'Favorite food'},
+  {key:'flower',label:'Favorite flower'},
+  {key:'animal',label:'Spirit animal'}
+];
+let approvedMembers=[];
+
+function createMemberDetailsFields(){
+  memberDetailsFields.forEach(field=>{
+    const group=document.createElement('div');
+    group.className='form-group';
+    const label=document.createElement('label');
+    label.htmlFor='member-detail-'+field.key;
+    label.textContent=field.label;
+    const input=document.createElement('input');
+    input.id='member-detail-'+field.key;
+    input.type=field.type||'text';
+    input.maxLength=field.maxLength||500;
+    group.append(label,input);
+    memberDetailsFieldsWrap.appendChild(group);
+  });
+}
+
+function sameMemberRecord(left,right){
+  if(!left||!right||left.name!==right.name)return false;
+  return left.timestamp&&right.timestamp
+    ? left.timestamp===right.timestamp
+    : String(left.rowIndex)===String(right.rowIndex);
+}
+
+function populateMemberDetailsForm(){
+  const member=approvedMembers.find(item=>String(item.rowIndex)===memberEditorTarget.value);
+  memberDetailsFields.forEach(field=>{
+    document.getElementById('member-detail-'+field.key).value=member?member[field.key]||'':'';
+  });
+  memberDetailsSave.disabled=!member;
+  memberImageFile.disabled=!member;
+  memberCropZoom.disabled=!member||!founderCropImage||portraitUploadTarget!=='member';
+  memberImageSave.disabled=!member||!founderCropImage||portraitUploadTarget!=='member';
+  updateMemberImagePreview(member);
+}
+
+function setApprovedMembers(members,selectedMember){
+  approvedMembers=members;
+  memberEditorTarget.replaceChildren(new Option('— Select an approved member —',''));
+  approvedMembers.forEach(member=>{
+    const label=[member.name,member.role].filter(Boolean).join(' — ');
+    memberEditorTarget.add(new Option(label,String(member.rowIndex)));
+  });
+  const selected=approvedMembers.find(member=>sameMemberRecord(member,selectedMember))||approvedMembers[0];
+  memberEditorTarget.value=selected?String(selected.rowIndex):'';
+  memberEditorTarget.disabled=approvedMembers.length===0;
+  populateMemberDetailsForm();
+}
+
+async function loadManageMembers(){
+  memberEditorTarget.disabled=true;
+  memberDetailsSave.disabled=true;
+  memberDetailsStatus.style.color='var(--text)';
+  memberDetailsStatus.textContent='Loading approved members…';
+  try{
+    const data=await loadApprovedMemberData();
+    setApprovedMembers(data.members);
+    memberDetailsStatus.textContent=approvedMembers.length
+      ? ''
+      : 'No approved members are available to edit.';
+  }catch(error){
+    console.error('Unable to load approved members:',error);
+    approvedMembers=[];
+    setApprovedMembers([]);
+    memberDetailsStatus.style.color='var(--red)';
+    memberDetailsStatus.textContent=error.message||'Could not load approved members.';
+  }
+}
+
+createMemberDetailsFields();
+memberEditorTarget.addEventListener('change',()=>{
+  if(portraitUploadTarget==='member')clearPortraitCrop();
+  populateMemberDetailsForm();
+});
+memberDetailsForm.addEventListener('submit',async event=>{
+  event.preventDefault();
+  const member=approvedMembers.find(item=>String(item.rowIndex)===memberEditorTarget.value);
+  if(!member)return;
+
+  const details={};
+  memberDetailsFields.forEach(field=>{
+    details[field.key]=document.getElementById('member-detail-'+field.key).value.trim();
+  });
+  memberDetailsSave.disabled=true;
+  memberDetailsSave.textContent='SAVING…';
+  memberDetailsStatus.style.color='var(--text)';
+  memberDetailsStatus.textContent='Saving member details…';
+
+  try{
+    await fetch(SCRIPT_URL,{
+      method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({
+        action:'member_details',
+        password:missionPw.value.trim(),
+        row_index:member.rowIndex,
+        timestamp:member.timestamp,
+        name:member.name,
+        details
+      })
+    });
+
+    const result=await loadApprovedMemberData();
+    const saved=result.members.find(item=>sameMemberRecord(item,member));
+    if(!saved||!memberDetailsFields.every(field=>saved[field.key]===details[field.key])){
+      throw new Error('Member details were not verified. Confirm the latest code.gs is deployed and the member is still approved.');
+    }
+    setApprovedMembers(result.members,saved);
+    memberDetailsStatus.style.color='var(--accent)';
+    memberDetailsStatus.textContent=member.name+' details saved.';
+  }catch(error){
+    console.error('Member detail update failed:',error);
+    memberDetailsStatus.style.color='var(--red)';
+    memberDetailsStatus.textContent=error.message||'Could not save member details.';
+  }finally{
+    memberDetailsSave.disabled=!memberEditorTarget.value;
+    memberDetailsSave.textContent='SAVE MEMBER DETAILS';
+  }
+});
+
+function updateMemberImagePreview(member){
+  memberImagePreviewName.textContent=member?member.name:'Select a member';
+  memberImagePlaceholder.textContent=member?(member.name||'?').charAt(0).toUpperCase():'?';
+  const imageUrl=member&&member.image?member.image:'';
+  memberImagePreview.style.display=imageUrl?'block':'none';
+  memberImagePlaceholder.style.display=imageUrl?'none':'flex';
+  memberImagePreview.alt=member?member.name+' current portrait':'Current member portrait';
+  memberImagePreview.onerror=()=>{
+    memberImagePreview.style.display='none';
+    memberImagePlaceholder.style.display='flex';
+  };
+  if(imageUrl)memberImagePreview.src=imageUrl;
+  else memberImagePreview.removeAttribute('src');
+}
+
+function drawPortraitCrop(canvas,context){
   if(!founderCropImage)return;
-  const size=founderCropCanvas.width;
+  const size=canvas.width;
   const scale=Math.max(size/founderCropImage.naturalWidth,size/founderCropImage.naturalHeight)*founderCropZoomValue;
   const width=founderCropImage.naturalWidth*scale;
   const height=founderCropImage.naturalHeight*scale;
   founderCropX=Math.min(0,Math.max(size-width,founderCropX));
   founderCropY=Math.min(0,Math.max(size-height,founderCropY));
-  founderCropContext.clearRect(0,0,size,size);
-  founderCropContext.fillStyle='#050508';
-  founderCropContext.fillRect(0,0,size,size);
-  founderCropContext.drawImage(founderCropImage,founderCropX,founderCropY,width,height);
-  founderCropContext.beginPath();
-  founderCropContext.arc(size/2,size/2,size/2-3,0,Math.PI*2);
-  founderCropContext.strokeStyle='#ff3300';
-  founderCropContext.lineWidth=3;
-  founderCropContext.stroke();
+  context.clearRect(0,0,size,size);
+  context.fillStyle='#050508';
+  context.fillRect(0,0,size,size);
+  context.drawImage(founderCropImage,founderCropX,founderCropY,width,height);
+  context.beginPath();
+  context.arc(size/2,size/2,size/2-3,0,Math.PI*2);
+  context.strokeStyle='#ff3300';
+  context.lineWidth=3;
+  context.stroke();
 }
 
-founderImageTarget.addEventListener('change',updateFounderImagePreview);
-founderImageFile.addEventListener('change',()=>{
-  founderImageStatus.textContent='';
-  founderImageStatus.style.color='var(--red)';
+function drawFounderCrop(){
+  drawPortraitCrop(founderCropCanvas,founderCropContext);
+  drawPortraitCrop(memberCropCanvas,memberCropContext);
+}
+
+function clearPortraitCrop(){
   founderCropWorkspace.style.display='none';
+  memberCropWorkspace.style.display='none';
   founderCropImage=null;
   if(founderCropObjectUrl){
     URL.revokeObjectURL(founderCropObjectUrl);
     founderCropObjectUrl='';
   }
-  const file=founderImageFile.files&&founderImageFile.files[0];
+  founderImageFile.value='';
+  memberImageFile.value='';
+  founderCropZoom.value='1';
+  memberCropZoom.value='1';
+  founderImageSave.disabled=true;
+  memberImageSave.disabled=true;
+  founderCropZoom.disabled=true;
+  memberCropZoom.disabled=true;
+  founderCropPointer=null;
+  portraitUploadTarget='';
+}
+
+function loadPortraitFile(fileInput,target){
+  const file=fileInput.files&&fileInput.files[0];
+  clearPortraitCrop();
   if(!file)return;
+  portraitUploadTarget=target;
+  const status=target==='member'?memberImageStatus:founderImageStatus;
   if(!file.type.startsWith('image/')){
-    founderImageStatus.textContent='Choose a supported image file.';
-    founderImageFile.value='';
+    status.textContent='Choose a supported image file.';
+    fileInput.value='';
+    portraitUploadTarget='';
     return;
   }
   if(file.size>12*1024*1024){
-    founderImageStatus.textContent='Image is larger than 12 MB.';
-    founderImageFile.value='';
+    status.textContent='Image is larger than 12 MB.';
+    fileInput.value='';
+    portraitUploadTarget='';
     return;
   }
   founderCropObjectUrl=URL.createObjectURL(file);
@@ -1747,82 +2091,117 @@ founderImageFile.addEventListener('change',()=>{
     founderCropImage=image;
     founderCropZoomValue=1;
     founderCropZoom.value='1';
+    memberCropZoom.value='1';
     const size=founderCropCanvas.width;
     const scale=Math.max(size/image.naturalWidth,size/image.naturalHeight);
     founderCropX=(size-image.naturalWidth*scale)/2;
     founderCropY=(size-image.naturalHeight*scale)/2;
-    founderCropWorkspace.style.display='block';
+    founderCropWorkspace.style.display=target==='founder'?'block':'none';
+    memberCropWorkspace.style.display=target==='member'?'block':'none';
+    founderImageSave.disabled=target!=='founder';
+    memberImageSave.disabled=target!=='member'||!approvedMembers.length;
+    founderCropZoom.disabled=target!=='founder';
+    memberCropZoom.disabled=target!=='member'||!approvedMembers.length;
     drawFounderCrop();
   };
   image.onerror=()=>{
-    founderImageStatus.textContent='Could not read that image. Try another file.';
+    status.textContent='Could not read that image. Try another file.';
     URL.revokeObjectURL(founderCropObjectUrl);
     founderCropObjectUrl='';
-    founderImageFile.value='';
+    fileInput.value='';
+    portraitUploadTarget='';
   };
   image.src=founderCropObjectUrl;
-});
+}
 
-founderCropZoom.addEventListener('input',()=>{
+function updatePortraitZoom(input){
   if(!founderCropImage)return;
   const oldScale=founderCropZoomValue;
-  founderCropZoomValue=Number(founderCropZoom.value);
+  founderCropZoomValue=Number(input.value);
+  founderCropZoom.value=String(founderCropZoomValue);
+  memberCropZoom.value=String(founderCropZoomValue);
   const factor=founderCropZoomValue/oldScale;
   const center=founderCropCanvas.width/2;
   founderCropX=center-(center-founderCropX)*factor;
   founderCropY=center-(center-founderCropY)*factor;
   drawFounderCrop();
-});
+}
 
-founderCropCanvas.addEventListener('pointerdown',event=>{
-  if(!founderCropImage)return;
-  founderCropCanvas.setPointerCapture(event.pointerId);
-  const bounds=founderCropCanvas.getBoundingClientRect();
-  founderCropPointer={
-    x:event.clientX,y:event.clientY,
-    scaleX:founderCropCanvas.width/bounds.width,
-    scaleY:founderCropCanvas.height/bounds.height
-  };
+function bindPortraitCropCanvas(canvas){
+  canvas.addEventListener('pointerdown',event=>{
+    if(!founderCropImage)return;
+    canvas.setPointerCapture(event.pointerId);
+    const bounds=canvas.getBoundingClientRect();
+    founderCropPointer={
+      canvas:canvas,
+      x:event.clientX,y:event.clientY,
+      scaleX:canvas.width/bounds.width,
+      scaleY:canvas.height/bounds.height
+    };
+  });
+  canvas.addEventListener('pointermove',event=>{
+    if(!founderCropPointer||founderCropPointer.canvas!==canvas)return;
+    const bounds=canvas.getBoundingClientRect();
+    founderCropX+=(event.clientX-founderCropPointer.x)*founderCropPointer.scaleX;
+    founderCropY+=(event.clientY-founderCropPointer.y)*founderCropPointer.scaleY;
+    founderCropPointer.x=event.clientX;
+    founderCropPointer.y=event.clientY;
+    founderCropPointer.scaleX=canvas.width/bounds.width;
+    founderCropPointer.scaleY=canvas.height/bounds.height;
+    drawFounderCrop();
+  });
+  canvas.addEventListener('pointerup',()=>{founderCropPointer=null;});
+  canvas.addEventListener('pointercancel',()=>{founderCropPointer=null;});
+}
+
+founderImageTarget.addEventListener('change',()=>{
+  if(portraitUploadTarget==='founder')clearPortraitCrop();
+  updateFounderImagePreview();
 });
-founderCropCanvas.addEventListener('pointermove',event=>{
-  if(!founderCropPointer)return;
-  const bounds=founderCropCanvas.getBoundingClientRect();
-  founderCropX+=(event.clientX-founderCropPointer.x)*founderCropPointer.scaleX;
-  founderCropY+=(event.clientY-founderCropPointer.y)*founderCropPointer.scaleY;
-  founderCropPointer.x=event.clientX;
-  founderCropPointer.y=event.clientY;
-  founderCropPointer.scaleX=founderCropCanvas.width/bounds.width;
-  founderCropPointer.scaleY=founderCropCanvas.height/bounds.height;
-  drawFounderCrop();
+founderImageFile.addEventListener('change',()=>{
+  founderImageStatus.textContent='';
+  founderImageStatus.style.color='var(--red)';
+  loadPortraitFile(founderImageFile,'founder');
 });
-founderCropCanvas.addEventListener('pointerup',()=>{founderCropPointer=null;});
-founderCropCanvas.addEventListener('pointercancel',()=>{founderCropPointer=null;});
+memberImageFile.addEventListener('change',()=>{
+  memberImageStatus.textContent='';
+  memberImageStatus.style.color='var(--red)';
+  loadPortraitFile(memberImageFile,'member');
+});
+founderCropZoom.addEventListener('input',()=>updatePortraitZoom(founderCropZoom));
+memberCropZoom.addEventListener('input',()=>updatePortraitZoom(memberCropZoom));
+bindPortraitCropCanvas(founderCropCanvas);
+bindPortraitCropCanvas(memberCropCanvas);
+
+function createCroppedPortraitData(){
+  const output=document.createElement('canvas');
+  output.width=512;
+  output.height=512;
+  const outputScale=output.width/founderCropCanvas.width;
+  const scale=Math.max(founderCropCanvas.width/founderCropImage.naturalWidth,
+    founderCropCanvas.height/founderCropImage.naturalHeight)*founderCropZoomValue;
+  output.getContext('2d').drawImage(
+    founderCropImage,
+    founderCropX*outputScale,founderCropY*outputScale,
+    founderCropImage.naturalWidth*scale*outputScale,
+    founderCropImage.naturalHeight*scale*outputScale
+  );
+  const imageData=output.toDataURL('image/jpeg',.86).split(',')[1];
+  if(imageData.length>680000)throw new Error('The cropped image is too large. Zoom out or choose a simpler image.');
+  return imageData;
+}
 
 founderImageSave.addEventListener('click',async()=>{
   const founder=selectedFounder();
-  if(!founder||!founderCropImage)return;
+  if(!founder||!founderCropImage||portraitUploadTarget!=='founder')return;
   founderImageSave.disabled=true;
   founderImageSave.textContent='UPLOADING…';
   founderImageStatus.style.color='var(--text)';
   founderImageStatus.textContent='Cropping and uploading portrait…';
 
   try{
-    const output=document.createElement('canvas');
-    output.width=512;
-    output.height=512;
-    const outputScale=output.width/founderCropCanvas.width;
-    const scale=Math.max(founderCropCanvas.width/founderCropImage.naturalWidth,
-      founderCropCanvas.height/founderCropImage.naturalHeight)*founderCropZoomValue;
-    output.getContext('2d').drawImage(
-      founderCropImage,
-      founderCropX*outputScale,founderCropY*outputScale,
-      founderCropImage.naturalWidth*scale*outputScale,
-      founderCropImage.naturalHeight*scale*outputScale
-    );
-    const imageData=output.toDataURL('image/jpeg',.86).split(',')[1];
-    if(imageData.length>680000)throw new Error('The cropped image is too large. Zoom out or choose a simpler image.');
-
-    const before=await loadFounderImages();
+    const imageData=createCroppedPortraitData();
+    const before=await loadFounderData();
     const previousFileId=(before.images&&before.images[founder.name])||'';
     await fetch(SCRIPT_URL,{
       method:'POST',mode:'no-cors',
@@ -1835,29 +2214,69 @@ founderImageSave.addEventListener('click',async()=>{
       })
     });
 
-    const result=await loadFounderImages();
+    const result=await loadFounderData();
     const savedFileId=result.images&&result.images[founder.name];
     if(!savedFileId||savedFileId===previousFileId){
       throw new Error('Apps Script did not publish a new portrait ID. Confirm the latest code.gs is deployed, Drive access was authorized, and the web app is available to anyone with the link.');
     }
-    applyFounderImageIds(result.images);
+    applyFounderData(result,false);
     updateFounderImagePreview();
     founderImageStatus.style.color='var(--accent)';
     founderImageStatus.textContent=founder.name+' portrait saved and published.';
-    founderImageFile.value='';
-    founderCropWorkspace.style.display='none';
-    founderCropImage=null;
-    if(founderCropObjectUrl){
-      URL.revokeObjectURL(founderCropObjectUrl);
-      founderCropObjectUrl='';
-    }
+    clearPortraitCrop();
   }catch(error){
     console.error('Founder portrait upload failed:',error);
     founderImageStatus.style.color='var(--red)';
     founderImageStatus.textContent=error.message||'Portrait upload failed.';
   }finally{
-    founderImageSave.disabled=false;
+    founderImageSave.disabled=!founderCropImage||portraitUploadTarget!=='founder';
     founderImageSave.textContent='SAVE PORTRAIT';
+  }
+});
+
+memberImageSave.addEventListener('click',async()=>{
+  const member=approvedMembers.find(item=>String(item.rowIndex)===memberEditorTarget.value);
+  if(!member||!founderCropImage||portraitUploadTarget!=='member')return;
+  memberImageSave.disabled=true;
+  memberImageSave.textContent='UPLOADING…';
+  memberImageStatus.style.color='var(--text)';
+  memberImageStatus.textContent='Cropping and uploading portrait…';
+
+  try{
+    const imageData=createCroppedPortraitData();
+    const before=await loadApprovedMemberData();
+    const previous=before.members.find(item=>sameMemberRecord(item,member));
+    if(!previous)throw new Error('This member is no longer approved or available to edit.');
+    await fetch(SCRIPT_URL,{
+      method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({
+        action:'member_image',
+        password:missionPw.value.trim(),
+        row_index:member.rowIndex,
+        timestamp:member.timestamp,
+        name:member.name,
+        imageData:imageData
+      })
+    });
+
+    const result=await loadApprovedMemberData();
+    const saved=result.members.find(item=>sameMemberRecord(item,member));
+    if(!saved||!saved.image||saved.image===previous.image){
+      throw new Error('Member portrait was not verified. Confirm the latest code.gs is deployed, Drive access was authorized, and the member is still approved.');
+    }
+    clearPortraitCrop();
+    setApprovedMembers(result.members,saved);
+    memberImageStatus.style.color='var(--accent)';
+    memberImageStatus.textContent=member.name+' portrait saved and published.';
+    loadDB();
+  }catch(error){
+    console.error('Member portrait upload failed:',error);
+    memberImageStatus.style.color='var(--red)';
+    memberImageStatus.textContent=error.message||'Portrait upload failed.';
+  }finally{
+    memberImageSave.disabled=!founderCropImage||portraitUploadTarget!=='member';
+    memberImageSave.textContent='SAVE PORTRAIT';
   }
 });
 
@@ -1898,42 +2317,31 @@ async function loadDB(){
   grid.querySelectorAll('.db-card').forEach(c=>c.remove());
 
   try{
-    const res=await fetch(CSV_URL+'&t='+Date.now());
-    const txt=await res.text();
-    const rows=parseCSV(txt);
-    if(rows.length<2){loading.textContent='No operatives registered yet.';return;}
+    const data=await loadApprovedMemberData();
+    const members=data.members;
+    if(!members.length){loading.textContent='No approved operatives yet.';return;}
 
-    const headers=rows[0].map(h=>h.trim().toLowerCase());
-    let fileNum=6, count=0;
-
-    rows.slice(1).forEach((r,rowIdx)=>{
-      const o={};
-      headers.forEach((h,i)=>{o[h]=(r[i]||'').trim();});
-      const st=effectiveStatus(rowIdx+2,o.name,(o.status||'').toLowerCase());
-      if(st==='approved' && o.name){
-        const cofs=parseInt(o.cofs)||0;
-        const rk=getRank(cofs);
-        grid.insertBefore(makeCard({
-          file:String(fileNum).padStart(3,'0'),
-          name:o.name,
-          handle:o.smule?o.smule.replace('@',''):'',
-          role:o.role||'Operative',
-          weapon:o.weapon||'—',
-          rank:rk.label, rankIcon:rk.icon, cofs:cofs,
-          country:o.country, age:o.age, blood:o.blood, sign:o.sign,
-          smule:o.smule, skills:o.skills, style:o.style,
-          personality:o.personality, tattoo:o.tattoo, food:o.food,
-          flower:o.flower, animal:o.animal, image:o.image||''
-        }),loading);
-        fileNum++;count++;
-      }
+    members.forEach((member,index)=>{
+      const cofs=parseInt(member.cofs)||0;
+      const rank=getRank(cofs);
+      grid.insertBefore(makeCard({
+        file:String(index+6).padStart(3,'0'),
+        name:member.name,
+        handle:member.smule?member.smule.replace('@',''):'',
+        role:member.role||'Operative',
+        weapon:member.weapon||'—',
+        rank:rank.label,rankIcon:rank.icon,cofs:cofs,
+        country:member.country,age:member.age,blood:member.blood,sign:member.sign,
+        smule:member.smule,skills:member.skills,style:member.style,
+        personality:member.personality,tattoo:member.tattoo,food:member.food,
+        flower:member.flower,animal:member.animal,image:member.image||''
+      }),loading);
     });
 
-    loading.style.display = count===0 ? 'block' : 'none';
-    if(count===0) loading.textContent='No approved operatives yet.';
+    loading.style.display='none';
 
   }catch(err){
-    loading.textContent='⚠ Network error — could not reach the database.';
+    loading.textContent='⚠ '+(err.message||'Could not reach the member database.');
     console.error(err);
   }
 }
@@ -2252,6 +2660,7 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     document.getElementById(btn.dataset.tab).classList.add('active');
     if(btn.dataset.tab === 'tab-manage') loadManageNotices();
     if(btn.dataset.tab === 'tab-applications') loadApplications();
+    if(btn.dataset.tab === 'tab-members') loadManageMembers();
   });
 });
 
