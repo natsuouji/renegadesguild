@@ -2360,8 +2360,12 @@ async function loadDB(){
 loadDB();
 
 /* ---------- LOAD GUILD NOTICES ---------- */
+let noticeExpiryTimeout=null;
+
 async function loadNotices(){
   const box=document.getElementById('notices-container');
+  clearTimeout(noticeExpiryTimeout);
+  noticeExpiryTimeout=null;
   try{
     const data=await loadScriptData(
       'notices',
@@ -2369,6 +2373,14 @@ async function loadNotices(){
       'Notice sheet support is not deployed yet. Deploy the latest code.gs as a new web app version.'
     );
     const now=new Date();
+    const expiryFormatter=new Intl.DateTimeFormat(undefined,{
+      year:'numeric',
+      month:'short',
+      day:'numeric',
+      hour:'numeric',
+      minute:'2-digit',
+      timeZoneName:'short'
+    });
     const active=[];
 
     data.notices.forEach(notice=>{
@@ -2376,9 +2388,10 @@ async function loadNotices(){
       if(!notice.title||!expiry) return;
 
       const exp=new Date(expiry);
-      if(isNaN(exp) || exp<=now) return;
+      const expiryTime=exp.getTime();
+      if(!Number.isFinite(expiryTime)||expiryTime<=now.getTime()) return;
 
-      const ms=exp-now;
+      const ms=expiryTime-now.getTime();
       const d=Math.floor(ms/86400000);
       const h=Math.floor((ms%86400000)/3600000);
       const m=Math.floor((ms%3600000)/60000);
@@ -2387,7 +2400,9 @@ async function loadNotices(){
         title:notice.title,
         content:notice.content,
         founder:notice.founder||'UNKNOWN',
-        left:left
+        left:left,
+        expiryTime:expiryTime,
+        expiresAt:expiryFormatter.format(exp)
       });
     });
 
@@ -2395,14 +2410,27 @@ async function loadNotices(){
     active.reverse();
 
     box.innerHTML=active.map(n=>`
-      <div class="notice-card">
+      <div class="notice-card" data-expiry-time="${n.expiryTime}">
         <div class="n-title">📡 ${escapeHtml(n.title)}</div>
         <div class="n-content">${escapeHtml(n.content)}</div>
         <div class="n-meta">
-          <span>⏱ Expires in ${n.left}</span>
+          <span>⏱ Expires in ${n.left} · 📅 ${escapeHtml(n.expiresAt)}</span>
           <span class="n-founder">🜏 Prepared by ${escapeHtml(n.founder)}</span>
         </div>
       </div>`).join('');
+
+    const nextExpiry=Math.min(...active.map(notice=>notice.expiryTime));
+    const refreshDelay=Math.min(Math.max(0,nextExpiry-Date.now()),2147483647);
+    noticeExpiryTimeout=setTimeout(()=>{
+      const currentTime=Date.now();
+      box.querySelectorAll('.notice-card').forEach(card=>{
+        if(Number(card.dataset.expiryTime)<=currentTime) card.remove();
+      });
+      if(!box.querySelector('.notice-card')){
+        box.innerHTML='<div class="no-notices">No active broadcasts.</div>';
+      }
+      loadNotices();
+    },refreshDelay);
 
   }catch(err){
     box.innerHTML='<div class="no-notices">Could not load guild broadcasts.</div>';
