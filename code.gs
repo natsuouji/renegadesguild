@@ -91,7 +91,7 @@ const FOUNDER_EDITABLE_FIELDS = [
 ];
 const MEMBER_EDITABLE_FIELDS = [
   "smule", "country", "age", "blood", "sign", "role", "skills", "style",
-  "weapon", "personality", "tattoo", "food", "flower", "animal"
+  "weapon", "personality", "tattoo", "food", "flower", "animal", "story"
 ];
 const MEMBER_RECORD_FIELDS = MEMBER_EDITABLE_FIELDS.concat(["image"]);
 const FOUNDER_DEFAULT_ROWS = [
@@ -231,6 +231,7 @@ function handleFounderDetails(data) {
 function getApprovedMemberRecords() {
   const sheet = getFounderSpreadsheet().getSheetByName("RENEGADES Database");
   if (!sheet) throw new Error("Sheet 'RENEGADES Database' not found.");
+  ensureMemberStoryColumn(sheet);
 
   const values = sheet.getDataRange().getDisplayValues();
   if (!values.length) throw new Error("The member database is empty.");
@@ -274,7 +275,7 @@ function handleMemberDetails(data) {
     if (typeof value !== "string") {
       throw new Error("Invalid member detail: " + field);
     }
-    const maxLength = 500;
+    const maxLength = field === "story" ? 4000 : 500;
     if (value.length > maxLength) {
       throw new Error(field + " must be no more than " + maxLength + " characters.");
     }
@@ -303,6 +304,7 @@ function findApprovedMemberTarget(data) {
 
   const sheet = getFounderSpreadsheet().getSheetByName("RENEGADES Database");
   if (!sheet) throw new Error("Sheet 'RENEGADES Database' not found.");
+  ensureMemberStoryColumn(sheet);
   const values = sheet.getDataRange().getDisplayValues();
   const headers = values[0].map(header => header.toString().trim().toLowerCase());
   const nameColumn = headers.indexOf("name");
@@ -331,6 +333,16 @@ function findApprovedMemberTarget(data) {
     rowNumber: targetIndex + 1,
     name: name
   };
+}
+
+function ensureMemberStoryColumn(sheet) {
+  const lastColumn = sheet.getLastColumn();
+  if (lastColumn < 1) throw new Error("The member database has no header row.");
+  const headers = sheet.getRange(1, 1, 1, lastColumn).getDisplayValues()[0]
+    .map(header => header.toString().trim().toLowerCase());
+  if (headers.indexOf("story") === -1) {
+    sheet.getRange(1, lastColumn + 1).setValue("story");
+  }
 }
 
 function handleMemberImage(data) {

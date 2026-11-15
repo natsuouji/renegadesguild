@@ -1885,7 +1885,8 @@ const memberDetailsFields=[
   {key:'tattoo',label:'Renegade tattoo placement'},
   {key:'food',label:'Favorite food'},
   {key:'flower',label:'Favorite flower'},
-  {key:'animal',label:'Spirit animal'}
+  {key:'animal',label:'Spirit animal'},
+  {key:'story',label:'Dossier story',multiline:true,maxLength:4000}
 ];
 let approvedMembers=[];
 
@@ -1896,11 +1897,22 @@ function createMemberDetailsFields(){
     const label=document.createElement('label');
     label.htmlFor='member-detail-'+field.key;
     label.textContent=field.label;
-    const input=document.createElement('input');
+    const input=document.createElement(field.multiline?'textarea':'input');
     input.id='member-detail-'+field.key;
-    input.type=field.type||'text';
     input.maxLength=field.maxLength||500;
+    if(field.multiline){
+      input.rows=8;
+      input.placeholder='Use a blank line between paragraphs.';
+    }else{
+      input.type=field.type||'text';
+    }
     group.append(label,input);
+    if(field.key==='story'){
+      const hint=document.createElement('span');
+      hint.className='form-hint';
+      hint.textContent='Plain text only; separate paragraphs with a blank line. Maximum 4,000 characters.';
+      group.appendChild(hint);
+    }
     memberDetailsFieldsWrap.appendChild(group);
   });
 }
@@ -2334,7 +2346,8 @@ async function loadDB(){
         country:member.country,age:member.age,blood:member.blood,sign:member.sign,
         smule:member.smule,skills:member.skills,style:member.style,
         personality:member.personality,tattoo:member.tattoo,food:member.food,
-        flower:member.flower,animal:member.animal,image:member.image||''
+        flower:member.flower,animal:member.animal,image:member.image||'',
+        story:member.story||'',storyIsPlainText:true
       }),loading);
     });
 
