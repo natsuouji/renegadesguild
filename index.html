@@ -412,6 +412,41 @@
   @media(max-width:500px){.form-row{grid-template-columns:1fr}}
   .form-group select option{background:var(--card);color:var(--white)}
   .form-hint{font-size:.7rem;color:var(--text);opacity:.5}
+  .mission-member-picker{position:relative}
+  .mission-member-picker summary{
+    cursor:pointer;list-style:none;background:var(--card);border:1px solid var(--card-border);
+    color:var(--white);padding:10px 14px;font-size:.88rem;
+  }
+  .mission-member-picker summary::-webkit-details-marker{display:none}
+  .mission-member-picker summary::after{content:'▾';float:right;color:var(--accent)}
+  .mission-member-picker[open] summary{border-color:var(--accent)}
+  .mission-member-menu{
+    position:absolute;z-index:20;top:calc(100% + 4px);left:0;right:0;
+    background:var(--card);border:1px solid var(--accent);padding:10px;
+    box-shadow:0 8px 24px rgba(0,0,0,.55);
+  }
+  .mission-member-menu input[type="search"]{width:100%;margin-bottom:8px}
+  .mission-member-options{max-height:220px;overflow-y:auto}
+  .form-group .mission-member-option{
+    display:flex;align-items:center;gap:10px;padding:8px 6px;
+    color:var(--text);font-size:.8rem;letter-spacing:normal;text-transform:none;cursor:pointer;
+  }
+  .form-group .mission-member-option:hover{background:rgba(255,255,255,.05);color:var(--white)}
+  .form-group .mission-member-option[hidden]{display:none}
+  .mission-member-empty{padding:8px 6px;color:var(--text);font-size:.75rem;opacity:.65}
+  .mission-member-option input{
+    width:16px;height:16px;margin:0;padding:0;accent-color:var(--red);flex:none;
+  }
+  .mission-member-selected{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .mission-member-selected:empty{display:none}
+  .mission-member-chip{
+    display:inline-flex;align-items:center;gap:6px;padding:4px 8px;
+    border:1px solid var(--card-border);color:var(--white);font-size:.72rem;
+  }
+  .mission-member-chip button{
+    background:none;border:0;color:var(--red);font:inherit;font-size:.95rem;
+    cursor:pointer;padding:0 2px;
+  }
   .submit-btn{
     padding:14px 0;background:var(--red);color:var(--black);
     font-family:var(--font-display);font-size:.85rem;font-weight:700;
@@ -1176,7 +1211,7 @@
       <!-- TAB: MISSION -->
       <div class="tab-panel active" id="tab-mission">
         <p style="font-size:.78rem;color:var(--text);margin-bottom:16px">
-          Log a completed mission. Separate multiple operatives with commas to award COFs to all of them at once.
+          Log a completed mission. Select one or more approved operatives to award COFs to all of them.
         </p>
         <form id="mission-form" class="reg-form" style="max-width:100%">
           <div class="form-group">
@@ -1188,9 +1223,17 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="m-member">Operative Names *</label>
-            <input type="text" id="m-member" required placeholder="e.g. KIRA, COCO, AOI">
-            <span class="form-hint">Separate multiple names with commas. Names must match the database exactly.</span>
+            <label>Approved Operatives *</label>
+            <div class="mission-member-selected" id="m-member-selected" aria-live="polite"></div>
+            <details class="mission-member-picker" id="m-member-picker">
+              <summary id="m-member-summary">Unlock command panel to load approved members.</summary>
+              <div class="mission-member-menu">
+                <input type="search" id="m-member-search" placeholder="Search approved members…" disabled>
+                <div class="mission-member-options" id="m-member-options"></div>
+                <div class="mission-member-empty" id="m-member-empty" hidden>No members match your search.</div>
+              </div>
+            </details>
+            <span class="form-hint">Search and check any members to award COFs. Click × beside a selected name to remove it.</span>
           </div>
           <div class="form-group">
             <label for="m-mission">Mission Title *</label>
@@ -2664,7 +2707,41 @@ document.getElementById('open-mission-btn-mobile').addEventListener('click',e=>{
 missionClose.addEventListener('click',closeCommand);
 
 // UNLOCK GATE
-unlockBtn.addEventListener('click', function () {
+async function loadMissionOperatives(){
+  const memberOptions=document.getElementById('m-member-options');
+  const noMembersMessage=document.getElementById('m-member-empty');
+  missionMemberSearch.disabled=true;
+  missionMemberSummary.textContent='Loading approved members…';
+  memberOptions.textContent='Loading approved members…';
+  const data=await loadApprovedMemberData();
+  if(!data.members.length) throw new Error('No approved members are available for mission logging.');
+  memberOptions.replaceChildren();
+  noMembersMessage.hidden=true;
+  data.members.forEach(member=>{
+    const option=document.createElement('label');
+    option.className='mission-member-option';
+    option.dataset.search=[member.name,member.role].filter(Boolean).join(' ').toLowerCase();
+    const checkbox=document.createElement('input');
+    checkbox.type='checkbox';
+    checkbox.value=member.name;
+    checkbox.addEventListener('change',()=>{
+      if(checkbox.checked)selectedMissionMembers.set(member.name,member.role||'');
+      else selectedMissionMembers.delete(member.name);
+      renderMissionMemberSelection();
+    });
+    const label=document.createElement('span');
+    label.textContent=[member.name,member.role].filter(Boolean).join(' — ');
+    if(member.role)label.title=member.role;
+    option.append(checkbox,label);
+    memberOptions.appendChild(option);
+  });
+  missionMemberSearch.value='';
+  missionMemberSearch.disabled=false;
+  missionMemberPicker.open=false;
+  renderMissionMemberSelection();
+}
+
+unlockBtn.addEventListener('click', async function () {
   const enteredPw = String(missionPw.value || '').trim();
 
   if (!enteredPw) {
@@ -2682,8 +2759,22 @@ unlockBtn.addEventListener('click', function () {
   }
 
   pwStatus.textContent = '';
-  missionGate.style.display = 'none';
-  missionWrap.style.display = 'block';
+  pwStatus.style.color = 'var(--text)';
+  pwStatus.textContent = 'Loading approved members…';
+  unlockBtn.disabled = true;
+  unlockBtn.textContent = 'LOADING…';
+  try{
+    await loadMissionOperatives();
+    missionGate.style.display = 'none';
+    missionWrap.style.display = 'block';
+  }catch(error){
+    console.error('Unable to load approved mission operatives:',error);
+    pwStatus.style.color = 'var(--red)';
+    pwStatus.textContent = error.message||'Could not load approved members.';
+  }finally{
+    unlockBtn.disabled = false;
+    unlockBtn.textContent = 'UNLOCK';
+  }
 });
 
 missionPw.addEventListener('keydown', function (e) {
@@ -2706,6 +2797,65 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
   });
 });
 
+/* ---------- MISSION MEMBER PICKER ---------- */
+const missionMemberPicker=document.getElementById('m-member-picker');
+const missionMemberSummary=document.getElementById('m-member-summary');
+const missionMemberSearch=document.getElementById('m-member-search');
+const missionMemberOptions=document.getElementById('m-member-options');
+const missionMemberSelected=document.getElementById('m-member-selected');
+const selectedMissionMembers=new Map();
+
+function renderMissionMemberSelection(){
+  const count=selectedMissionMembers.size;
+  missionMemberSummary.textContent=count
+    ? count+' operative'+(count===1?'':'s')+' selected'
+    : 'Select approved operatives';
+  missionMemberSelected.replaceChildren();
+
+  selectedMissionMembers.forEach((role,name)=>{
+    const chip=document.createElement('span');
+    chip.className='mission-member-chip';
+    const label=document.createElement('span');
+    label.textContent=name;
+    if(role)label.title=role;
+    const remove=document.createElement('button');
+    remove.type='button';
+    remove.setAttribute('aria-label','Remove '+name);
+    remove.textContent='×';
+    remove.addEventListener('click',()=>{
+      selectedMissionMembers.delete(name);
+      const checkbox=Array.from(missionMemberOptions.querySelectorAll('input[type="checkbox"]'))
+        .find(input=>input.value===name);
+      if(checkbox)checkbox.checked=false;
+      renderMissionMemberSelection();
+    });
+    chip.append(label,remove);
+    missionMemberSelected.appendChild(chip);
+  });
+}
+
+missionMemberSearch.addEventListener('input',()=>{
+  const query=missionMemberSearch.value.trim().toLowerCase();
+  const options=Array.from(missionMemberOptions.querySelectorAll('.mission-member-option'));
+  let visibleCount=0;
+  options.forEach(option=>{
+    option.hidden=!option.dataset.search.includes(query);
+    if(!option.hidden)visibleCount++;
+  });
+  document.getElementById('m-member-empty').hidden=visibleCount>0;
+});
+
+document.addEventListener('click',event=>{
+  if(!missionMemberPicker.contains(event.target))missionMemberPicker.open=false;
+});
+
+missionMemberPicker.addEventListener('keydown',event=>{
+  if(event.key==='Escape'){
+    missionMemberPicker.open=false;
+    missionMemberSummary.focus();
+  }
+});
+
 /* ---------- MISSION FORM SUBMIT ---------- */
 const missionForm=document.getElementById('mission-form');
 const missionStatus=document.getElementById('mission-status');
@@ -2713,6 +2863,12 @@ const missionBtn=document.getElementById('mission-submit-btn');
 
 missionForm.addEventListener('submit',async function(e){
   e.preventDefault();
+  const selectedMembers=Array.from(selectedMissionMembers.keys());
+  if(!selectedMembers.length){
+    missionStatus.style.color='var(--red)';
+    missionStatus.textContent='Select at least one approved operative.';
+    return;
+  }
   missionBtn.disabled=true;missionBtn.textContent='TRANSMITTING…';
   missionStatus.textContent='';
 
@@ -2720,14 +2876,14 @@ missionForm.addEventListener('submit',async function(e){
     action:'mission',
     password:missionPw.value.trim(),
     founder:document.getElementById('m-founder').value,
-    member:document.getElementById('m-member').value.trim(),
+    member:selectedMembers.join(','),
     mission:document.getElementById('m-mission').value.trim(),
     type:document.getElementById('m-type').value,
     cofs:document.getElementById('m-cofs').value,
     notes:document.getElementById('m-notes').value.trim()
   };
 
-  const names=payload.member.split(',').map(n=>n.trim()).filter(Boolean);
+  const names=selectedMembers;
 
   try{
     await fetch(SCRIPT_URL,{
@@ -2738,6 +2894,13 @@ missionForm.addEventListener('submit',async function(e){
     missionStatus.style.color='var(--accent)';
     missionStatus.textContent='✔ Mission logged. '+payload.cofs+' COFs sent to '+names.length+' operative(s).';
     missionForm.reset();
+    selectedMissionMembers.clear();
+    missionMemberOptions.querySelectorAll('input[type="checkbox"]').forEach(input=>{input.checked=false;});
+    missionMemberOptions.querySelectorAll('.mission-member-option').forEach(option=>{option.hidden=false;});
+    missionMemberSearch.value='';
+    document.getElementById('m-member-empty').hidden=true;
+    missionMemberPicker.open=false;
+    renderMissionMemberSelection();
     setTimeout(loadDB,2500);
   }catch(err){
     missionStatus.style.color='var(--red)';
