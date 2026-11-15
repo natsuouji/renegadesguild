@@ -40,7 +40,7 @@ function doPost(e) {
 
 function doGet(e) {
   const action = e && e.parameter ? e.parameter.action : "";
-  if (action === "founders" || action === "founder_images" || action === "members") {
+  if (action === "founders" || action === "founder_images" || action === "members" || action === "notices") {
     const payload = { result: "success" };
     if (action === "founders" || action === "founder_images") {
       payload.images = getFounderImageIds();
@@ -52,6 +52,7 @@ function doGet(e) {
       payload.spreadsheetUrl = spreadsheet.getUrl().replace(/#.*$/, "") + "#gid=" + founderSheet.getSheetId();
     }
     if (action === "members") payload.members = getApprovedMemberRecords();
+    if (action === "notices") payload.notices = getNoticeRecords();
     const serialized = JSON.stringify(payload);
     const callback = (e.parameter.callback || "").toString();
     if (callback) {
@@ -256,6 +257,10 @@ function getApprovedMemberRecords() {
     MEMBER_RECORD_FIELDS.forEach(field => {
       member[field] = row[columns[field]].trim();
     });
+    if (!member.story) {
+      member.story = generateMemberStory(member);
+      sheet.getRange(member.rowIndex, columns.story + 1).setValue(member.story);
+    }
     members.push(member);
     return members;
   }, []);
@@ -343,6 +348,57 @@ function ensureMemberStoryColumn(sheet) {
   if (headers.indexOf("story") === -1) {
     sheet.getRange(1, lastColumn + 1).setValue("story");
   }
+}
+
+function generateMemberStory(member) {
+  const skills = translateMemberSkills(member.skills);
+  const weapon = member.weapon && member.weapon !== "—"
+    ? member.weapon
+    : "an unregistered sidearm";
+  const name = member.name || "UNKNOWN";
+  const country = member.country && member.country !== "—"
+    ? member.country
+    : "an undisclosed sector";
+  const paragraphs = [
+    "Operative " + name + " emerged from the signal fog of " + country +
+      ", carrying nothing but a scarred reputation and a deep-rooted mastery of " + skills + ".",
+    "Armed with their signature weapon — the " + weapon +
+      " — they carved a name into the wasteland's memory. Few who cross their path forget the encounter."
+  ];
+  if (member.animal && member.animal !== "—") {
+    paragraphs.push(
+      "Survivors speak of a presence that follows " + name +
+        " like a shadow — something primal, reminiscent of a " + member.animal +
+        ", watching from behind the static."
+    );
+  }
+  if (member.personality && member.personality !== "—") {
+    paragraphs.push(
+      "Field reports describe them as " + member.personality +
+        " — a profile the network has learned not to underestimate."
+    );
+  }
+  paragraphs.push(
+    "Now embedded within the RENEG▲DES network, " + name +
+      " operates under a single directive: \"Nobody gets left behind.\""
+  );
+  return paragraphs.join("\n\n");
+}
+
+function translateMemberSkills(raw) {
+  if (!raw) return "unknown augmentation";
+  const map = [
+    [/(art|draw|illustrat|design|paint|sketch)/i, "neural-optic design and visual augmentation"],
+    [/(audio|mix|master|sound|produc)/i, "frequency manipulation and audio-signal encryption"],
+    [/(sing|vocal|rap|scream|voice|choir)/i, "sonic-wave disruption and vocal-frequency projection"],
+    [/(manage|organiz|coordinat|lead|direct|host)/i, "tactical operation coordination"],
+    [/(video|edit|animat|motion|vfx|render)/i, "holographic splicing and data-illusion generation"]
+  ];
+  const found = [];
+  map.forEach(entry => {
+    if (entry[0].test(raw) && found.indexOf(entry[1]) === -1) found.push(entry[1]);
+  });
+  return found.length ? found.join(", ") : raw;
 }
 
 function handleMemberImage(data) {
@@ -543,7 +599,7 @@ function handleNotice(data) {
     return jsonResponse("error", "Access denied. Invalid Founder code.");
   }
 
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getFounderSpreadsheet();
   const noticeSheet = ss.getSheetByName("Notices");
   if (!noticeSheet) throw new Error("Sheet 'Notices' not found.");
 
@@ -563,12 +619,42 @@ function handleNotice(data) {
   return jsonResponse("success", "Notice posted.");
 }
 
+function getNoticeRecords() {
+  const sheet = getFounderSpreadsheet().getSheetByName("Notices");
+  if (!sheet) throw new Error("Sheet 'Notices' not found.");
+  if (sheet.getLastRow() === 0) return [];
+
+  const values = sheet.getDataRange().getDisplayValues();
+  const headers = values[0].map(header => header.toString().trim().toLowerCase());
+  const columns = {};
+  ["timestamp", "title", "content", "duration_hours", "founder"].forEach(header => {
+    const column = headers.indexOf(header);
+    if (column === -1) throw new Error("Notices sheet is missing the '" + header + "' column.");
+    columns[header] = column;
+  });
+  columns.expires_at = headers.indexOf("expires_at");
+  if (columns.expires_at === -1) columns.expires_at = headers.indexOf("expired_at");
+  if (columns.expires_at === -1) {
+    throw new Error("Notices sheet is missing the 'expires_at' column.");
+  }
+
+  return values.slice(1).filter(row => row.some(value => value.toString().trim() !== ""))
+    .map(row => ({
+      timestamp: row[columns.timestamp].trim(),
+      title: row[columns.title].trim(),
+      content: row[columns.content].trim(),
+      duration_hours: row[columns.duration_hours].trim(),
+      founder: row[columns.founder].trim(),
+      expires_at: row[columns.expires_at].trim()
+    }));
+}
+
 // ========== EDIT NOTICE ==========
 function handleNoticeEdit(data) {
   if (data.password !== FOUNDER_PASSWORD) {
     return jsonResponse("error", "Access denied. Invalid Founder code.");
   }
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Notices");
+  const sheet = getFounderSpreadsheet().getSheetByName("Notices");
   if (!sheet) throw new Error("Sheet 'Notices' not found.");
 
   const values = sheet.getDataRange().getValues();
@@ -608,7 +694,7 @@ function handleNoticeDelete(data) {
   if (data.password !== FOUNDER_PASSWORD) {
     return jsonResponse("error", "Access denied. Invalid Founder code.");
   }
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Notices");
+  const sheet = getFounderSpreadsheet().getSheetByName("Notices");
   if (!sheet) throw new Error("Sheet 'Notices' not found.");
 
   const values = sheet.getDataRange().getValues();

@@ -1426,7 +1426,6 @@ document.getElementById('yr').textContent = new Date().getFullYear();
 /* ---------- ENDPOINTS ---------- */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx2yTcKtDfolg9RZkCied9Wm4eDoTHKGclm7JleoktmtPLFTCjtFhf2599OHSY6D_cDMg/exec';
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR8ekE1phwUTs70v13LzPgtXN5KZ8mbPT74_RAM2rL7YL_cKVBmdPRpABZpdj01ry7r6hoY8uWR8_v5/pub?gid=0&single=true&output=csv';
-const NOTICES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR8ekE1phwUTs70v13LzPgtXN5KZ8mbPT74_RAM2rL7YL_cKVBmdPRpABZpdj01ry7r6hoY8uWR8_v5/pub?gid=244965018&single=true&output=csv';
 
 /* ---------- PARTICLE BACKGROUND ---------- */
 (function(){
@@ -2364,20 +2363,17 @@ loadDB();
 async function loadNotices(){
   const box=document.getElementById('notices-container');
   try{
-    const res=await fetch(NOTICES_CSV_URL+'&t='+Date.now());
-    const txt=await res.text();
-    const rows=parseCSV(txt);
-    if(rows.length<2){box.innerHTML='<div class="no-notices">No active broadcasts.</div>';return;}
-
-    const headers=rows[0].map(h=>h.trim().toLowerCase());
+    const data=await loadScriptData(
+      'notices',
+      response=>Array.isArray(response.notices),
+      'Notice sheet support is not deployed yet. Deploy the latest code.gs as a new web app version.'
+    );
     const now=new Date();
     const active=[];
 
-    rows.slice(1).forEach(r=>{
-      const o={};
-      headers.forEach((h,i)=>{o[h]=(r[i]||'').trim();});
-      const expiry = o.expires_at || o.expired_at;
-      if(!o.title || !expiry) return;
+    data.notices.forEach(notice=>{
+      const expiry=notice.expires_at||notice.expired_at;
+      if(!notice.title||!expiry) return;
 
       const exp=new Date(expiry);
       if(isNaN(exp) || exp<=now) return;
@@ -2387,7 +2383,12 @@ async function loadNotices(){
       const h=Math.floor((ms%86400000)/3600000);
       const m=Math.floor((ms%3600000)/60000);
       const left = d>0 ? d+'d '+h+'h' : (h>0 ? h+'h '+m+'m' : m+'m');
-      active.push({title:o.title,content:o.content,founder:o.founder||'UNKNOWN',left:left});
+      active.push({
+        title:notice.title,
+        content:notice.content,
+        founder:notice.founder||'UNKNOWN',
+        left:left
+      });
     });
 
     if(!active.length){box.innerHTML='<div class="no-notices">No active broadcasts.</div>';return;}
@@ -2395,16 +2396,16 @@ async function loadNotices(){
 
     box.innerHTML=active.map(n=>`
       <div class="notice-card">
-        <div class="n-title">📡 ${n.title}</div>
-        <div class="n-content">${n.content}</div>
+        <div class="n-title">📡 ${escapeHtml(n.title)}</div>
+        <div class="n-content">${escapeHtml(n.content)}</div>
         <div class="n-meta">
           <span>⏱ Expires in ${n.left}</span>
-          <span class="n-founder">🜏 Prepared by ${n.founder}</span>
+          <span class="n-founder">🜏 Prepared by ${escapeHtml(n.founder)}</span>
         </div>
       </div>`).join('');
 
   }catch(err){
-    box.innerHTML='<div class="no-notices">No active broadcasts.</div>';
+    box.innerHTML='<div class="no-notices">Could not load guild broadcasts.</div>';
     console.error(err);
   }
 }
@@ -2770,29 +2771,24 @@ async function loadManageNotices(){
   editWrap.style.display = 'none';
 
   try{
-    const res = await fetch(NOTICES_CSV_URL + '&t=' + Date.now());
-    const txt = await res.text();
-    const rows = parseCSV(txt);
-    if(rows.length < 2){
-      manageList.innerHTML = '<div class="no-notices">No notices in database.</div>';
-      return;
-    }
-    const headers = rows[0].map(h => h.trim().toLowerCase());
+    const data = await loadScriptData(
+      'notices',
+      response => Array.isArray(response.notices),
+      'Notice sheet support is not deployed yet. Deploy the latest code.gs as a new web app version.'
+    );
     const now = new Date();
     const items = [];
 
-    rows.slice(1).forEach(r => {
-      const o = {};
-      headers.forEach((h,i) => { o[h] = (r[i] || '').trim(); });
-      const expiry = o.expires_at || o.expired_at || '';
+    data.notices.forEach(notice => {
+      const expiry = notice.expires_at || notice.expired_at || '';
       const exp = expiry ? new Date(expiry) : null;
       const active = exp && !isNaN(exp) && exp > now;
       items.push({
-        timestamp: o.timestamp || '',
-        title: o.title || '(untitled)',
-        content: o.content || '',
-        founder: o.founder || '',
-        duration_hours: o.duration_hours || '48',
+        timestamp: notice.timestamp || '',
+        title: notice.title || '(untitled)',
+        content: notice.content || '',
+        founder: notice.founder || '',
+        duration_hours: notice.duration_hours || '48',
         expiry: expiry,
         active: !!active
       });
@@ -2806,9 +2802,9 @@ async function loadManageNotices(){
     items.reverse();
     manageList.innerHTML = items.map((n, idx) => `
       <div class="manage-item" data-idx="${idx}">
-        <div class="mi-title">${n.active ? '🟢' : '⚫'} ${n.title}</div>
-        <div class="mi-content">${n.content.substring(0,120)}${n.content.length>120?'…':''}</div>
-        <div style="font-size:.65rem;opacity:.5;margin-bottom:8px">🜏 ${n.founder} · ${n.active ? 'Active' : 'Expired'}</div>
+        <div class="mi-title">${n.active ? '🟢' : '⚫'} ${escapeHtml(n.title)}</div>
+        <div class="mi-content">${escapeHtml(n.content.substring(0,120))}${n.content.length>120?'…':''}</div>
+        <div style="font-size:.65rem;opacity:.5;margin-bottom:8px">🜏 ${escapeHtml(n.founder)} · ${n.active ? 'Active' : 'Expired'}</div>
         <div class="mi-actions">
           <button type="button" class="btn-edit" data-ts="${encodeURIComponent(n.timestamp)}">Edit</button>
           <button type="button" class="btn-del" data-ts="${encodeURIComponent(n.timestamp)}">Delete</button>
