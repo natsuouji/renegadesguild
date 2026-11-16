@@ -40,7 +40,8 @@ function doPost(e) {
 
 function doGet(e) {
   const action = e && e.parameter ? e.parameter.action : "";
-  if (action === "founders" || action === "founder_images" || action === "members" || action === "notices") {
+  if (action === "founders" || action === "founder_images" || action === "members" ||
+      action === "notices" || action === "cof_history") {
     const payload = { result: "success" };
     if (action === "founders" || action === "founder_images") {
       payload.images = getFounderImageIds();
@@ -53,6 +54,12 @@ function doGet(e) {
     }
     if (action === "members") payload.members = getApprovedMemberRecords();
     if (action === "notices") payload.notices = getNoticeRecords();
+    if (action === "cof_history") {
+      const history = getMemberCofHistory(e.parameter.member || "");
+      payload.history = history.entries;
+      payload.totalCofs = history.totalCofs;
+      payload.count = history.count;
+    }
     const serialized = JSON.stringify(payload);
     const callback = (e.parameter.callback || "").toString();
     if (callback) {
@@ -535,6 +542,66 @@ function handleApplicationStatus(data, newStatus) {
 }
 
 // ========== MISSION LOG ==========
+function getMemberCofHistory(memberName) {
+  const targetName = (memberName || "").toString().trim();
+  if (!targetName) throw new Error("Member name is required.");
+
+  const member = getApprovedMemberRecords().find(record =>
+    record.name.toLowerCase() === targetName.toLowerCase()
+  );
+  if (!member) throw new Error("COF history is available for approved members only.");
+
+  const sheet = getFounderSpreadsheet().getSheetByName("Mission Log");
+  if (!sheet) throw new Error("Sheet 'Mission Log' not found.");
+  if (sheet.getLastRow() === 0) return { entries: [], totalCofs: 0, count: 0 };
+
+  const values = sheet.getDataRange().getDisplayValues();
+  const headers = values[0].map(value => value.toString().trim().toLowerCase());
+  const aliases = {
+    timestamp: ["timestamp", "date", "date awarded"],
+    founder: ["founder", "reporting founder", "awarded by"],
+    member: ["member", "member name", "operative", "name"],
+    mission: ["mission", "mission title", "activity"],
+    type: ["type", "mission type"],
+    cofs: ["cofs", "cofs awarded", "cofs per member", "amount"]
+  };
+  const columns = {};
+  Object.keys(aliases).forEach(field => {
+    columns[field] = headers.findIndex(header => aliases[field].indexOf(header) !== -1);
+  });
+
+  const hasHeaders = columns.member !== -1 && columns.mission !== -1 && columns.cofs !== -1;
+  const positions = hasHeaders
+    ? columns
+    : { timestamp: 0, founder: 1, member: 2, mission: 3, type: 4, cofs: 5 };
+  const entries = values.slice(hasHeaders ? 1 : 0).reduce((results, row) => {
+    const rowName = (row[positions.member] || "").toString().trim();
+    const amount = parseInt(row[positions.cofs], 10);
+    if (rowName.toLowerCase() !== member.name.toLowerCase() || !Number.isFinite(amount)) {
+      return results;
+    }
+    results.push({
+      timestamp: (row[positions.timestamp] || "").toString().trim(),
+      founder: (row[positions.founder] || "").toString().trim(),
+      mission: (row[positions.mission] || "").toString().trim(),
+      type: (row[positions.type] || "").toString().trim(),
+      cofs: amount
+    });
+    return results;
+  }, []);
+
+  entries.sort((a, b) => {
+    const timeA = Date.parse(a.timestamp) || 0;
+    const timeB = Date.parse(b.timestamp) || 0;
+    return timeB - timeA;
+  });
+  return {
+    entries: entries.slice(0, 30),
+    totalCofs: entries.reduce((total, entry) => total + entry.cofs, 0),
+    count: entries.length
+  };
+}
+
 function handleMission(data) {
   if (data.password !== FOUNDER_PASSWORD) {
     return jsonResponse("error", "Access denied. Invalid Founder code.");

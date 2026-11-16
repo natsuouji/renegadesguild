@@ -503,6 +503,21 @@
   .m-story{margin-top:18px;font-size:.85rem;color:var(--text);line-height:1.75}
   .m-story p{margin-bottom:12px}
   .m-story em{color:var(--accent)}
+  .m-cof-history h3{
+    color:var(--accent);font-family:var(--font-display);font-size:.78rem;
+    letter-spacing:1px;margin-bottom:10px;
+  }
+  .m-cof-history-summary{font-size:.72rem;color:var(--text);margin-bottom:8px}
+  .m-cof-history-list{list-style:none;padding:0;margin:0}
+  .m-cof-history-item{
+    display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
+    padding:9px 0;border-top:1px solid var(--card-border);
+  }
+  .m-cof-history-title{display:block;color:var(--white);font-size:.78rem}
+  .m-cof-history-meta{display:block;color:var(--text);font-size:.67rem;margin-top:3px}
+  .m-cof-history-amount{color:var(--accent);font-size:.78rem;white-space:nowrap}
+  .m-cof-history-amount.negative{color:var(--red)}
+  .m-cof-history-state{font-size:.75rem;color:var(--text)}
 
   /* ===== TABS & MANAGE ITEMS ===== */
   .tab-bar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-bottom:20px}
@@ -1586,6 +1601,7 @@ function row(label,val){
 }
 
 function openModal(d){
+  const historyRequest=++cofHistoryRequest;
   const initial=(d.name||'?').charAt(0).toUpperCase();
   const avatar=d.image
     ? `<img src="${d.image}" alt="${d.name}" class="m-avatar" onerror="this.outerHTML='<div class=\\'m-avatar\\'>${initial}</div>'">`
@@ -1621,16 +1637,26 @@ function openModal(d){
     ${row('Flower',d.flower)}
     ${row('Spirit Animal',d.animal)}
     <div class="m-divider"></div>
-    <div class="m-story">${story}</div>`;
+    <div class="m-story">${story}</div>
+    ${d.cofs!==undefined?`
+      <div class="m-divider"></div>
+      <section class="m-cof-history" id="m-cof-history" aria-live="polite">
+        <h3>// COF ACTIVITY</h3>
+        <p class="m-cof-history-state">Loading contribution history…</p>
+      </section>`:''}`;
 
   modalOverlay.classList.add('active');
   document.body.style.overflow='hidden';
+  if(d.cofs!==undefined)loadCofHistory(d.name,historyRequest);
 }
 function closeModal(){
+  cofHistoryRequest++;
   modalOverlay.classList.remove('active');
   document.body.style.overflow='';
 }
 modalClose.addEventListener('click',closeModal);
+
+let cofHistoryRequest=0;
 
 /* ---------- CSV PARSER ---------- */
 function parseCSV(text){
@@ -1669,7 +1695,7 @@ const founderImageIds={};
 const founderSheetLinkWrap=document.getElementById('founder-sheet-link-wrap');
 const founderSheetLink=document.getElementById('founder-sheet-link');
 
-function loadScriptData(action,isValid,unsupportedMessage){
+function loadScriptData(action,isValid,unsupportedMessage,queryParams){
   return new Promise((resolve,reject)=>{
     const callbackName='__rgData_'+Date.now()+'_'+Math.floor(Math.random()*1000000);
     const script=document.createElement('script');
@@ -1703,7 +1729,12 @@ function loadScriptData(action,isValid,unsupportedMessage){
       cleanup();
       reject(new Error('The Apps Script data service timed out.'));
     },12000);
-    script.src=SCRIPT_URL+'?action='+encodeURIComponent(action)+'&callback='+callbackName+'&t='+Date.now();
+    const query=new URLSearchParams();
+    query.set('action',action);
+    query.set('callback',callbackName);
+    query.set('t',Date.now());
+    Object.keys(queryParams||{}).forEach(key=>query.set(key,queryParams[key]));
+    script.src=SCRIPT_URL+'?'+query.toString();
     document.head.appendChild(script);
   });
 }
@@ -1722,6 +1753,56 @@ function loadApprovedMemberData(){
     data=>Array.isArray(data.members),
     'Approved member editing is not deployed yet. Deploy the latest code.gs as a new web app version.'
   );
+}
+
+function loadCofHistoryData(member){
+  return loadScriptData(
+    'cof_history',
+    data=>Array.isArray(data.history)&&Number.isFinite(Number(data.totalCofs)),
+    'COF history support is not deployed yet. Deploy the latest code.gs as a new web app version.',
+    {member}
+  );
+}
+
+async function loadCofHistory(member,requestId){
+  try{
+    const data=await loadCofHistoryData(member);
+    if(requestId!==cofHistoryRequest)return;
+    const section=document.getElementById('m-cof-history');
+    if(!section)return;
+    const total=data.totalCofs;
+    const totalLabel=(total>0?'+':'')+total+' COFs from logged missions';
+    const entries=data.history;
+    const countLabel=data.count>entries.length
+      ? 'Showing '+entries.length+' most recent of '+data.count+' entries'
+      : data.count+' logged '+(data.count===1?'entry':'entries');
+    section.innerHTML=`
+      <h3>// COF ACTIVITY</h3>
+      <p class="m-cof-history-summary">${escapeHtml(countLabel)} · ${escapeHtml(totalLabel)}</p>
+      ${entries.length?`<ol class="m-cof-history-list">${entries.map(entry=>{
+        const parsedDate=new Date(entry.timestamp);
+        const dateLabel=Number.isNaN(parsedDate.getTime())
+          ? entry.timestamp
+          : parsedDate.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
+        const amount=Number(entry.cofs);
+        const signedAmount=(amount>0?'+':'')+amount+' COFs';
+        const meta=[entry.type,dateLabel,entry.founder?'By '+entry.founder:''].filter(Boolean).join(' · ');
+        return `<li class="m-cof-history-item">
+          <span>
+            <strong class="m-cof-history-title">${escapeHtml(entry.mission||'Mission')}</strong>
+            <span class="m-cof-history-meta">${escapeHtml(meta)}</span>
+          </span>
+          <strong class="m-cof-history-amount${amount<0?' negative':''}">${escapeHtml(signedAmount)}</strong>
+        </li>`;
+      }).join('')}</ol>`:'<p class="m-cof-history-state">No logged mission contributions yet.</p>'}`;
+  }catch(error){
+    if(requestId!==cofHistoryRequest)return;
+    const section=document.getElementById('m-cof-history');
+    if(section)section.innerHTML='<h3>// COF ACTIVITY</h3><p class="m-cof-history-state"></p>';
+    const status=section&&section.querySelector('.m-cof-history-state');
+    if(status)status.textContent='Could not load contribution history: '+error.message;
+    console.error('COF history load failed:',error);
+  }
 }
 
 function applyFounderData(data,refreshDetails){
