@@ -616,7 +616,11 @@ function handleMission(data) {
   const memberNames = (data.member || "").split(",").map(n => n.trim()).filter(n => n.length > 0);
   if (memberNames.length === 0) return jsonResponse("error", "No member names provided.");
 
-  const cofsToAdd = parseInt(data.cofs) || 0;
+  const cofsToAdd = Number(data.cofs);
+  if (data.cofs === undefined || data.cofs === null || String(data.cofs).trim() === "" ||
+      !Number.isInteger(cofsToAdd) || cofsToAdd < -500 || cofsToAdd > 500) {
+    return jsonResponse("error", "COFs must be a whole number between -500 and 500.");
+  }
   const headers = mainSheet.getRange(1, 1, 1, mainSheet.getLastColumn()).getValues()[0];
   const nameCol = headers.findIndex(h => h.toString().trim().toLowerCase() === "name");
   const cofsCol = headers.findIndex(h => h.toString().trim().toLowerCase() === "cofs");
@@ -649,7 +653,7 @@ function handleMission(data) {
           data.notes || ""
         ]);
 
-        results.push(memberName + ": +" + cofsToAdd + " COFs");
+        results.push(memberName + ": " + (cofsToAdd > 0 ? "+" : "") + cofsToAdd + " COFs");
         found = true;
         break;
       }

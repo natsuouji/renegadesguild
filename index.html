@@ -1226,7 +1226,7 @@
       <!-- TAB: MISSION -->
       <div class="tab-panel active" id="tab-mission">
         <p style="font-size:.78rem;color:var(--text);margin-bottom:16px">
-          Log a completed mission. Select one or more approved operatives to award COFs to all of them.
+          Log a mission. Select one or more approved operatives to apply COFs to all of them; negative amounts deduct COFs.
         </p>
         <form id="mission-form" class="reg-form" style="max-width:100%">
           <div class="form-group">
@@ -1265,7 +1265,7 @@
             </div>
             <div class="form-group">
               <label for="m-cofs">COFs Per Member *</label>
-              <input type="number" id="m-cofs" required min="1" max="500" placeholder="e.g. 50">
+              <input type="number" id="m-cofs" required min="-500" max="500" placeholder="e.g. 50 or -50">
             </div>
           </div>
           <div class="form-group">
@@ -2973,7 +2973,9 @@ missionForm.addEventListener('submit',async function(e){
       body:JSON.stringify(payload)
     });
     missionStatus.style.color='var(--accent)';
-    missionStatus.textContent='✔ Mission logged. '+payload.cofs+' COFs sent to '+names.length+' operative(s).';
+    const cofAmount=Number(payload.cofs);
+    const cofLabel=(cofAmount>0?'+':'')+cofAmount+' COFs';
+    missionStatus.textContent='✔ Mission logged. '+cofLabel+' applied to '+names.length+' operative(s).';
     missionForm.reset();
     selectedMissionMembers.clear();
     missionMemberOptions.querySelectorAll('input[type="checkbox"]').forEach(input=>{input.checked=false;});
