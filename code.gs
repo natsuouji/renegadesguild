@@ -52,7 +52,10 @@ function doGet(e) {
       const founderSheet = spreadsheet.getSheetByName(FOUNDER_SHEET_NAME);
       payload.spreadsheetUrl = spreadsheet.getUrl().replace(/#.*$/, "") + "#gid=" + founderSheet.getSheetId();
     }
-    if (action === "members") payload.members = getApprovedMemberRecords();
+    if (action === "members") {
+      payload.members = getApprovedMemberRecords();
+      payload.stepGlitchImage = getStepGlitchImageUrl();
+    }
     if (action === "notices") payload.notices = getNoticeRecords();
     if (action === "cof_history") {
       const history = getMemberCofHistory(e.parameter.member || "");
@@ -146,6 +149,12 @@ function getFounderImageIds() {
     if (fileId) images[name] = fileId;
   });
   return images;
+}
+
+function getStepGlitchImageUrl() {
+  const files = DriveApp.getFolderById(FOUNDER_IMAGE_FOLDER_ID).getFilesByName("stepglitch.PNG");
+  if (!files.hasNext()) return "";
+  return "https://drive.google.com/thumbnail?id=" + encodeURIComponent(files.next().getId()) + "&sz=w800";
 }
 
 function getFounderRecords(spreadsheet) {

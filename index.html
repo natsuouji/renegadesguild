@@ -491,7 +491,82 @@
     font-family:var(--font-display);color:var(--red);font-size:2.5rem;
   }
   img.m-avatar{display:block}
-  
+  .step-portrait-frame{
+    display:block;position:relative;isolation:isolate;width:250px;height:250px;margin:0 auto 18px;
+  }
+  .step-portrait-frame .m-avatar{width:100%;height:100%;margin:0}
+  .step-glitch-layer{
+    position:absolute;inset:0;z-index:1;width:100%;height:100%;margin:0;
+    border:0;border-radius:50%;object-fit:cover;opacity:0;pointer-events:none;
+  }
+  .step-glitch-target{z-index:1;border:3px solid var(--red)}
+  .step-glitch-red{filter:sepia(1) saturate(12) hue-rotate(315deg);mix-blend-mode:screen}
+  .step-glitch-cyan{filter:sepia(1) saturate(12) hue-rotate(145deg);mix-blend-mode:screen}
+  .step-portrait-frame.step-glitch-active .step-glitch-target{opacity:1}
+  .step-portrait-frame.portrait-glitch{animation:step-frame-glitch .9s steps(2,end)}
+  .step-portrait-frame.portrait-glitch.step-glitch-active .step-glitch-target{
+    animation:step-reveal-in .9s steps(1,end) both;
+  }
+  .step-portrait-frame.portrait-glitch:not(.step-glitch-active) .step-glitch-target{
+    animation:step-reveal-out .9s steps(1,end) both;
+  }
+  .step-portrait-frame.portrait-glitch .step-glitch-red{animation:step-glitch-red .9s steps(1,end) both}
+  .step-portrait-frame.portrait-glitch .step-glitch-cyan{animation:step-glitch-cyan .9s steps(1,end) both}
+  @keyframes step-frame-glitch{
+    0%,100%{transform:translate(0) skewX(0);filter:none}
+    12%{transform:translate(-7px,2px) skewX(-4deg);filter:contrast(1.7)}
+    25%{transform:translate(6px,-2px) skewX(3deg);filter:contrast(1.3)}
+    42%{transform:translate(-4px,1px) skewX(-2deg);filter:contrast(1.8)}
+    61%{transform:translate(5px,0) skewX(3deg);filter:contrast(1.4)}
+    78%{transform:translate(-2px,1px);filter:contrast(1.2)}
+  }
+  @keyframes step-reveal-in{
+    0%{opacity:0;clip-path:inset(0 100% 0 0);transform:translateX(-18px)}
+    8%{opacity:1;clip-path:inset(8% 0 76%);transform:translateX(-12px)}
+    18%{opacity:.1;clip-path:inset(8% 0 76%);transform:translateX(9px)}
+    29%{opacity:1;clip-path:inset(43% 0 37%);transform:translateX(11px)}
+    39%{opacity:0;clip-path:inset(43% 0 37%);transform:translateX(-8px)}
+    51%{opacity:1;clip-path:inset(72% 0 9%);transform:translateX(-10px)}
+    62%{opacity:.2;clip-path:inset(72% 0 9%);transform:translateX(6px)}
+    74%{opacity:1;clip-path:inset(20% 0 58%);transform:translateX(7px)}
+    86%{opacity:.45;clip-path:inset(0);transform:translateX(-4px)}
+    100%{opacity:1;clip-path:inset(0);transform:translateX(0)}
+  }
+  @keyframes step-reveal-out{
+    0%{opacity:1;clip-path:inset(0);transform:translateX(0)}
+    12%{opacity:.2;clip-path:inset(18% 0 62%);transform:translateX(9px)}
+    24%{opacity:1;clip-path:inset(18% 0 62%);transform:translateX(-11px)}
+    38%{opacity:0;clip-path:inset(49% 0 30%);transform:translateX(12px)}
+    50%{opacity:1;clip-path:inset(49% 0 30%);transform:translateX(-8px)}
+    64%{opacity:.15;clip-path:inset(74% 0 8%);transform:translateX(-10px)}
+    76%{opacity:1;clip-path:inset(74% 0 8%);transform:translateX(7px)}
+    90%,100%{opacity:0;clip-path:inset(0);transform:translateX(0)}
+  }
+  @keyframes step-glitch-red{
+    0%,100%{opacity:0;clip-path:inset(0);transform:translateX(0)}
+    10%{opacity:.95;clip-path:inset(8% 0 76%);transform:translateX(-12px)}
+    21%{opacity:0;clip-path:inset(8% 0 76%);transform:translateX(8px)}
+    35%{opacity:.9;clip-path:inset(47% 0 31%);transform:translateX(11px)}
+    47%{opacity:0;clip-path:inset(47% 0 31%);transform:translateX(-7px)}
+    64%{opacity:.85;clip-path:inset(72% 0 9%);transform:translateX(-10px)}
+    77%{opacity:0;clip-path:inset(72% 0 9%);transform:translateX(6px)}
+  }
+  @keyframes step-glitch-cyan{
+    0%,100%{opacity:0;clip-path:inset(0);transform:translateX(0)}
+    16%{opacity:.9;clip-path:inset(26% 0 53%);transform:translateX(12px)}
+    28%{opacity:0;clip-path:inset(26% 0 53%);transform:translateX(-8px)}
+    45%{opacity:.95;clip-path:inset(66% 0 15%);transform:translateX(-11px)}
+    57%{opacity:0;clip-path:inset(66% 0 15%);transform:translateX(7px)}
+    72%{opacity:.8;clip-path:inset(12% 0 70%);transform:translateX(9px)}
+    84%{opacity:0;clip-path:inset(12% 0 70%);transform:translateX(-6px)}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .step-portrait-frame.portrait-glitch,
+    .step-portrait-frame.portrait-glitch .step-glitch-target,
+    .step-portrait-frame.portrait-glitch .step-glitch-red,
+    .step-portrait-frame.portrait-glitch .step-glitch-cyan{animation-duration:1ms}
+  }
+
   .m-file{font-size:.7rem;color:var(--red);letter-spacing:2px;margin-bottom:4px;text-align:center}
   .m-name{font-family:var(--font-display);font-size:1.6rem;color:var(--white);margin-bottom:2px;text-align:center}
   .m-handle{font-size:.78rem;color:var(--text);opacity:.6;text-align:center;margin-bottom:4px}
@@ -1454,6 +1529,13 @@ document.getElementById('yr').textContent = new Date().getFullYear();
 /* ---------- ENDPOINTS ---------- */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx2yTcKtDfolg9RZkCied9Wm4eDoTHKGclm7JleoktmtPLFTCjtFhf2599OHSY6D_cDMg/exec';
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR8ekE1phwUTs70v13LzPgtXN5KZ8mbPT74_RAM2rL7YL_cKVBmdPRpABZpdj01ry7r6hoY8uWR8_v5/pub?gid=0&single=true&output=csv';
+const STEP_GLITCH_DELAY_MS = 2000;
+const STEP_GLITCH_DURATION_MS = 2000;
+let stepGlitchImageUrl = '';
+let stepGlitchImagePreload = null;
+let stepGlitchActive = false;
+let stepGlitchStartTimeout = null;
+let stepGlitchEndTimeout = null;
 
 /* ---------- PARTICLE BACKGROUND ---------- */
 (function(){
@@ -1540,13 +1622,113 @@ function escapeHtml(value){
   }[char]));
 }
 
+function triggerPortraitGlitch(image){
+  const frame=image.closest('.step-portrait-frame')||image;
+  frame.onanimationend=event=>{
+    if(event.target.matches('.step-glitch-target')&&event.animationName.startsWith('step-reveal-')){
+      frame.classList.remove('portrait-glitch');
+    }
+  };
+  frame.classList.remove('portrait-glitch');
+  void frame.offsetWidth;
+  frame.classList.add('portrait-glitch');
+}
+
+function configurePortraitImage(image,d){
+  const isStep=(d.name||'').trim().toLowerCase()==='step';
+  const isStepDossier=isStep&&image.classList.contains('m-avatar');
+  if(isStepDossier){
+    image.dataset.stepNormalSrc=d.image;
+    image.dataset.stepGlitchActive=String(stepGlitchActive);
+    const frame=document.createElement('span');
+    frame.className='step-portrait-frame';
+    frame.dataset.stepNormalSrc=d.image;
+    image.parentNode.insertBefore(frame,image);
+    frame.appendChild(image);
+    ['target','red','cyan'].forEach(color=>{
+      const layer=image.cloneNode(false);
+      layer.className='step-glitch-layer step-glitch-'+color;
+      layer.alt='';
+      layer.setAttribute('aria-hidden','true');
+      layer.src=image.src;
+      layer.onerror=()=>{
+        layer.style.display='none';
+        if(color==='target'){
+          frame.classList.remove('step-glitch-active');
+          stepGlitchActive=false;
+          console.error('Unable to load stepglitch.PNG from the member image folder.');
+        }
+      };
+      frame.appendChild(layer);
+    });
+  }
+  image.onerror=()=>{
+    if(isStepDossier&&image.dataset.stepGlitchActive==='true'){
+      image.dataset.stepGlitchActive='false';
+      image.src=image.dataset.stepNormalSrc;
+      console.error('Unable to load stepglitch.PNG from the member image folder.');
+      return;
+    }
+    const placeholder=document.createElement('div');
+    placeholder.className=image.className;
+    placeholder.textContent=(d.name||'?').charAt(0).toUpperCase();
+    image.replaceWith(placeholder);
+  };
+}
+
+function updateStepPortraits(animate){
+  document.querySelectorAll('#modal-content .step-portrait-frame').forEach(frame=>{
+    const image=frame.querySelector('img.m-avatar');
+    if(!image)return;
+    image.dataset.stepGlitchActive=String(stepGlitchActive);
+    if(stepGlitchActive){
+      frame.querySelectorAll('.step-glitch-layer').forEach(layer=>{
+        layer.style.display='';
+        layer.src=stepGlitchImageUrl;
+      });
+      frame.classList.add('step-glitch-active');
+    }else{
+      frame.classList.remove('step-glitch-active');
+    }
+    if(animate)triggerPortraitGlitch(image);
+    else frame.classList.remove('portrait-glitch');
+  });
+}
+
+function cancelStepGlitch(){
+  clearTimeout(stepGlitchStartTimeout);
+  clearTimeout(stepGlitchEndTimeout);
+  stepGlitchStartTimeout=null;
+  stepGlitchEndTimeout=null;
+  stepGlitchActive=false;
+  updateStepPortraits(false);
+}
+
+function scheduleStepGlitch(){
+  if(!stepGlitchImageUrl){
+    console.error('Could not find stepglitch.PNG in the member image folder.');
+    return;
+  }
+  stepGlitchStartTimeout=setTimeout(()=>{
+    stepGlitchStartTimeout=null;
+    if(!modalOverlay.classList.contains('active'))return;
+    stepGlitchActive=true;
+    updateStepPortraits(true);
+    stepGlitchEndTimeout=setTimeout(()=>{
+      stepGlitchActive=false;
+      updateStepPortraits(true);
+      stepGlitchEndTimeout=null;
+    },STEP_GLITCH_DURATION_MS);
+  },STEP_GLITCH_DELAY_MS);
+}
+
 /* ---------- CARD BUILDER ---------- */
 function makeCard(d){
   const div=document.createElement('div');
   div.className='cyber-box db-card';
   const initial=(d.name||'?').charAt(0).toUpperCase();
   const avatar=d.image
-    ? `<img src="${d.image}" alt="${d.name}" class="card-avatar" onerror="this.outerHTML='<div class=\\'card-avatar\\'>${initial}</div>'">`
+    ? `<img src="${d.image}" alt="${escapeHtml(d.name)}" class="card-avatar">`
     : `<div class="card-avatar">${initial}</div>`;
   const handle=d.handle?`<div class="card-handle">@${escapeHtml(d.handle)}</div>`:'';
   div.innerHTML=`
@@ -1556,6 +1738,8 @@ function makeCard(d){
     ${handle}
     <div class="card-role">${escapeHtml(d.role)}</div>
     <div class="card-rank">${escapeHtml(d.rankIcon||'🜏')} ${escapeHtml(d.rank)}${d.cofs!==undefined?' · '+escapeHtml(d.cofs)+' COFs':''}</div>`;
+  const avatarImage=div.querySelector('img.card-avatar');
+  if(avatarImage)configurePortraitImage(avatarImage,d);
   div.addEventListener('click',()=>openModal(d));
   return div;
 }
@@ -1571,10 +1755,11 @@ function row(label,val){
 }
 
 function openModal(d){
+  cancelStepGlitch();
   const historyRequest=++cofHistoryRequest;
   const initial=(d.name||'?').charAt(0).toUpperCase();
   const avatar=d.image
-    ? `<img src="${d.image}" alt="${d.name}" class="m-avatar" onerror="this.outerHTML='<div class=\\'m-avatar\\'>${initial}</div>'">`
+    ? `<img src="${d.image}" alt="${escapeHtml(d.name)}" class="m-avatar">`
     : `<div class="m-avatar">${initial}</div>`;
 
   const story=d.story
@@ -1615,11 +1800,15 @@ function openModal(d){
         <p class="m-cof-history-state">Loading contribution history…</p>
       </section>`:''}`;
 
+  const avatarImage=modalContent.querySelector('img.m-avatar');
+  if(avatarImage)configurePortraitImage(avatarImage,d);
   modalOverlay.classList.add('active');
   document.body.style.overflow='hidden';
+  if((d.name||'').trim().toLowerCase()==='step')scheduleStepGlitch();
   if(d.cofs!==undefined)loadCofHistory(d.name,historyRequest);
 }
 function closeModal(){
+  cancelStepGlitch();
   cofHistoryRequest++;
   modalOverlay.classList.remove('active');
   document.body.style.overflow='';
@@ -2425,6 +2614,12 @@ async function loadDB(){
     const data=await loadApprovedMemberData();
     const members=data.members;
     if(!members.length){loading.textContent='No approved operatives yet.';return;}
+    stepGlitchImageUrl=typeof data.stepGlitchImage==='string'?data.stepGlitchImage:'';
+    if(stepGlitchImageUrl){
+      stepGlitchImagePreload=new Image();
+      stepGlitchImagePreload.onerror=()=>console.error('Unable to preload stepglitch.PNG from the member image folder.');
+      stepGlitchImagePreload.src=stepGlitchImageUrl;
+    }
 
     members.forEach((member,index)=>{
       const cofs=parseInt(member.cofs)||0;
