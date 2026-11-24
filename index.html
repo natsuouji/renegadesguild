@@ -1529,12 +1529,10 @@ document.getElementById('yr').textContent = new Date().getFullYear();
 /* ---------- ENDPOINTS ---------- */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx2yTcKtDfolg9RZkCied9Wm4eDoTHKGclm7JleoktmtPLFTCjtFhf2599OHSY6D_cDMg/exec';
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR8ekE1phwUTs70v13LzPgtXN5KZ8mbPT74_RAM2rL7YL_cKVBmdPRpABZpdj01ry7r6hoY8uWR8_v5/pub?gid=0&single=true&output=csv';
-const STEP_GLITCH_DELAY_MS = 2000;
 const STEP_GLITCH_DURATION_MS = 2000;
 let stepGlitchImageUrl = '';
 let stepGlitchImagePreload = null;
 let stepGlitchActive = false;
-let stepGlitchStartTimeout = null;
 let stepGlitchEndTimeout = null;
 
 /* ---------- PARTICLE BACKGROUND ---------- */
@@ -1696,30 +1694,25 @@ function updateStepPortraits(animate){
 }
 
 function cancelStepGlitch(){
-  clearTimeout(stepGlitchStartTimeout);
   clearTimeout(stepGlitchEndTimeout);
-  stepGlitchStartTimeout=null;
   stepGlitchEndTimeout=null;
   stepGlitchActive=false;
   updateStepPortraits(false);
 }
 
-function scheduleStepGlitch(){
+function triggerStepGlitch(){
   if(!stepGlitchImageUrl){
     console.error('Could not find stepglitch.PNG in the member image folder.');
     return;
   }
-  stepGlitchStartTimeout=setTimeout(()=>{
-    stepGlitchStartTimeout=null;
-    if(!modalOverlay.classList.contains('active'))return;
-    stepGlitchActive=true;
+  clearTimeout(stepGlitchEndTimeout);
+  stepGlitchActive=true;
+  updateStepPortraits(true);
+  stepGlitchEndTimeout=setTimeout(()=>{
+    stepGlitchActive=false;
     updateStepPortraits(true);
-    stepGlitchEndTimeout=setTimeout(()=>{
-      stepGlitchActive=false;
-      updateStepPortraits(true);
-      stepGlitchEndTimeout=null;
-    },STEP_GLITCH_DURATION_MS);
-  },STEP_GLITCH_DELAY_MS);
+    stepGlitchEndTimeout=null;
+  },STEP_GLITCH_DURATION_MS);
 }
 
 /* ---------- CARD BUILDER ---------- */
@@ -1804,7 +1797,12 @@ function openModal(d){
   if(avatarImage)configurePortraitImage(avatarImage,d);
   modalOverlay.classList.add('active');
   document.body.style.overflow='hidden';
-  if((d.name||'').trim().toLowerCase()==='step')scheduleStepGlitch();
+  if((d.name||'').trim().toLowerCase()==='step'){
+    const nameElement=modalContent.querySelector('.m-name');
+    if(nameElement){
+      nameElement.addEventListener('dblclick',triggerStepGlitch);
+    }
+  }
   if(d.cofs!==undefined)loadCofHistory(d.name,historyRequest);
 }
 function closeModal(){
